@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "911972201846",
+    "project_id": "jbnuu-support",
+    "storage_bucket": "jbnuu-support.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:911972201846:android:c1899df0210a96e834b657",
+        "android_client_info": {
+          "package_name": "uz.jbnuu.support"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "911972201846-2ltv66f0c8s2468thap2910gq0i8j918.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbQKjEBmZIV_L6tsqUJE6q__Bdk3IFsuE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "911972201846-2ltv66f0c8s2468thap2910gq0i8j918.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
