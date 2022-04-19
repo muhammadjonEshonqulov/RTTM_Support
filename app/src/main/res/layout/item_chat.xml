@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/user_has_chat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/left_right_margin_size"
+            android:layout_marginTop="@dimen/left_right_margin_size"
+            android:layout_marginEnd="@dimen/left_right_margin_size"
+            android:orientation="horizontal">
+
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/user_icon" />
+
+
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/default_margin"
+                android:fontFamily="@font/calibri"
+                android:maxWidth="150dp"
+                android:singleLine="true"
+                android:text="R.ABDURAHMONOV"
+                android:textColor="@color/black"
+                android:textSize="@dimen/small_text_size" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/default_margin"
+                app:cardBackgroundColor="@color/cl_color_primary"
+                app:cardCornerRadius="10dp">
+
+                <TextView
+                    android:id="@+id/user_bolim_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/calibri"
+                    android:maxWidth="100dp"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
+                    android:paddingBottom="2dp"
+                    android:singleLine="true"
+                    android:text="Hodimlar bo'limi"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/min_text_size" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/default_margin"
+                app:cardBackgroundColor="@color/manager_chat_date_color"
+                app:cardCornerRadius="10dp">
+
+                <TextView
+                    android:id="@+id/user_lavozim_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/calibri"
+                    android:maxWidth="100dp"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
+                    android:paddingBottom="2dp"
+                    android:singleLine="true"
+                    android:text="Bo'lim boshlig'i"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/min_text_size" />
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="@dimen/default_margin"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/default_text_color"
+                    android:padding="@dimen/default_margin">
+
+                    <TextView
+                        android:id="@+id/date_chat_user"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/calibri"
+                        android:text="11.04.2022 (09:30)"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/message_chat_user"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/stroke_chat_user"
+                    android:fontFamily="@font/calibri"
+                    android:minHeight="100dp"
+                    android:padding="@dimen/default_margin"
+                    android:paddingStart="@dimen/left_right_margin_size"
+                    android:text="Sizga tushlikdan keyin yordam berishadi. Sizga tushlikdan keyin yordam berishadi. Sizga tushlikdan keyin yordam berishadi.Sizga tushlikdan keyin yordam berishadi.Sizga tushlikdan keyin yordam berishadi.Sizga tushlikdan keyin yordam berishadi. Sizga tushlikdan keyin yordam berishadi.Sizga tushlikdan keyin yordam berishadi.Sizga tushlikdan keyin yordam berishadi. Sizga tushlikdan keyin yordam berishadi. Sizga tushlikdan keyin yordam berishadi. Sizga tushlikdan keyin yordam berishadi" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/user_img"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/left_right_margin_size"
+        android:src="@color/black" />
+
+    <LinearLayout
+        android:id="@+id/manager_has_chat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/left_right_margin_size"
+            android:layout_marginTop="@dimen/left_right_margin_size"
+            android:layout_marginEnd="@dimen/left_right_margin_size"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/manager_icon"
+                app:tint="@color/black" />
+
+            <TextView
+                android:id="@+id/manager_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/default_margin"
+                android:fontFamily="@font/calibri"
+                android:maxWidth="150dp"
+                android:singleLine="true"
+                android:text="A.HIDOYATOV"
+                android:textColor="@color/black"
+                android:textSize="@dimen/small_text_size" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/default_margin"
+                app:cardBackgroundColor="@color/cl_color_primary"
+                app:cardCornerRadius="10dp">
+
+                <TextView
+                    android:id="@+id/manager_bolim_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/calibri"
+                    android:maxWidth="100dp"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
+                    android:paddingBottom="2dp"
+                    android:singleLine="true"
+                    android:text="RTTM markazi"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/min_text_size" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/default_margin"
+                app:cardBackgroundColor="@color/manager_chat_date_color"
+                app:cardCornerRadius="10dp">
+
+                <TextView
+                    android:id="@+id/manager_lavozim_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/calibri"
+                    android:maxWidth="100dp"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
+                    android:paddingBottom="2dp"
+                    android:singleLine="true"
+                    android:text="Operator"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/min_text_size" />
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="@dimen/default_margin"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/manager_chat_date_color"
+                    android:padding="@dimen/default_margin">
+
+                    <TextView
+                        android:id="@+id/date_chat_manager"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/calibri"
+                        android:text="11.04.2022 (09:30)"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/message_chat_manager"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/stroke_chat_manager"
+                    android:fontFamily="@font/calibri"
+                    android:minHeight="100dp"
+                    android:padding="@dimen/default_margin"
+                    android:paddingStart="@dimen/default_margin"
+                    android:paddingEnd="@dimen/default_margin"
+                    android:text="Sizga tushlikdan keyin yordam berishadi" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <ImageView
+            android:id="@+id/manager_img"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_marginBottom="@dimen/left_right_margin_size"
+            android:src="@color/black" />
+    </LinearLayout>
+</LinearLayout>

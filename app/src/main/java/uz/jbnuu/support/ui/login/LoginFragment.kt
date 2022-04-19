@@ -1,134 +1,173 @@
 package uz.jbnuu.support.ui.login
 
-import android.os.Bundle
-import android.view.LayoutInflater
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import uz.jbnuu.support.R
 import uz.jbnuu.support.databinding.LoginFragmentBinding
 import uz.jbnuu.support.models.body.LoginBody
-import uz.jbnuu.support.utils.Constants.Companion.CUSTOMER_PASS
-import uz.jbnuu.support.utils.Constants.Companion.USER_ABROR
-import uz.jbnuu.support.utils.Constants.Companion.USER_Asilbek
-import uz.jbnuu.support.utils.Constants.Companion.USER_Boss
-import uz.jbnuu.support.utils.Constants.Companion.USER_JAMSHID
-import uz.jbnuu.support.utils.Constants.Companion.USER_Muhammad
-import uz.jbnuu.support.utils.NetworkResult
-import uz.jbnuu.support.utils.Prefs
-import uz.jbnuu.support.utils.snack
-import uz.jbnuu.support.viewmodels.LoginViewModel
+import uz.jbnuu.support.ui.base.BaseFragment
+import uz.jbnuu.support.ui.base.ProgressDialog
+import uz.jbnuu.support.utils.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class LoginFragment : Fragment(), View.OnClickListener {
+class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::inflate), View.OnClickListener {
 
-
-    lateinit var binding: LoginFragmentBinding
-
-//    @Inject
-//    lateinit var prefs: Prefs
+    @Inject
+    lateinit var prefs: Prefs
 
     private val vm: LoginViewModel by viewModels()
 
+    var progressDialog: ProgressDialog? = null
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        binding = LoginFragmentBinding.inflate(inflater)
-        return binding.root
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onCreate(view: View) {
         binding.loginBtn.setOnClickListener(this)
+        binding.passwordShow.setOnClickListener(this)
+        binding.loginRegistration.setOnClickListener(this)
     }
 
     override fun onClick(p0: View?) {
         when (p0) {
             binding.loginBtn -> {
+                hideKeyBoard()
                 val userName = binding.loginAuth.text.toString()
                 val password = binding.passwordAuth.text.toString()
                 if (userName.isNotEmpty() && password.isNotEmpty()) {
-                    if (userName.length and password.length < 6) {
+                    if (userName.endsWith("@jbnuu.uz") && userName.split("@jbnuu.uz").first().isNotEmpty()){
                         vm.login(LoginBody(userName, password))
-                        vm.loginResponse.onEach {
-                            when(it){
-                                is NetworkResult.Loading ->{
-                                    snack(requireView(),"Loading ... " )
-                                }
-                                is NetworkResult.Error -> {
-                                    snack(requireView(), "error ->"+it)
-//                                    Log.d("TTT", ""+it.message)
-
-                                }
-                                is NetworkResult.Success -> {
-                                    snack(requireView(), "Response -> "+it.data)
-//                                    Log.i("TTT", "zo'r "+it.data)
-
+                        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+                            vm.loginResponse.collect {
+                                when (it) {
+                                    is NetworkResult.Loading -> {
+                                        showLoader()
+                                    }
+                                    is NetworkResult.Error -> {
+                                        closeLoader()
+                                        snack(requireView(), "Xatolik ->" + it)
+                                    }
+                                    is NetworkResult.Success -> {
+                                        closeLoader()
+                                        it.data?.apply {
+                                            token?.let {
+                                                prefs.save(prefs.token, it)
+                                            }
+                                            user?.apply {
+                                                id?.let {
+                                                    prefs.save(prefs.userId, it)
+                                                }
+                                                fam?.let {
+                                                    prefs.save(prefs.fam, it)
+                                                }
+                                                phone?.let {
+                                                    prefs.save(prefs.phone, it)
+                                                }
+                                                photo?.let {
+                                                    prefs.save(prefs.photo, it)
+                                                }
+                                                role?.let {
+                                                    prefs.save(prefs.role, it)
+                                                }
+                                                bolim_id?.let {
+                                                    prefs.save(prefs.bolim_id, it)
+                                                }
+                                                name?.let {
+                                                    prefs.save(prefs.name, it)
+                                                }
+                                                lavozim?.let {
+                                                    prefs.save(prefs.lavozim, it)
+                                                }
+                                                bolim?.name?.let {
+                                                    prefs.save(prefs.bolim_name, it)
+                                                }
+                                            }
+                                        }
+                                        when (prefs.get(prefs.role, "")){
+                                            prefs.manager -> {
+                                                prefs.save(prefs.email, binding.loginAuth.text.toString())
+                                                prefs.save(prefs.password, binding.passwordAuth.text.toString())
+                                                val userNameTopicInFireBase = userName.split("@jbnuu.uz").first().toString()
+                                                prefs.save(prefs.userNameTopicInFireBase, userNameTopicInFireBase)
+                                                FirebaseMessaging.getInstance().subscribeToTopic(""+userNameTopicInFireBase)
+                                                FirebaseMessaging.getInstance().subscribeToTopic("support")
+                                                if(findNavControllerSafely()?.currentDestination?.id == R.id.loginFragment){
+                                                    findNavControllerSafely()?.navigate(R.id.action_loginFragment_to_manager_mainFragment)
+                                                }
+                                            }
+                                            prefs.user -> {
+                                                prefs.save(prefs.email, binding.loginAuth.text.toString())
+                                                prefs.save(prefs.password, binding.passwordAuth.text.toString())
+                                                val userNameTopicInFireBase = userName.split("@jbnuu.uz").first().toString()
+                                                prefs.save(prefs.userNameTopicInFireBase, userNameTopicInFireBase)
+                                                FirebaseMessaging.getInstance().subscribeToTopic(""+userNameTopicInFireBase)
+                                                if(findNavControllerSafely()?.currentDestination?.id == R.id.loginFragment){
+                                                    findNavControllerSafely()?.navigate(R.id.action_loginFragment_to_user_mainFragment)
+                                                }
+                                            }
+                                            prefs.admin -> {
+                                                prefs.save(prefs.email, binding.loginAuth.text.toString())
+                                                prefs.save(prefs.password, binding.passwordAuth.text.toString())
+                                                val userNameTopicInFireBase = userName.split("@jbnuu.uz").first().toString()
+                                                prefs.save(prefs.userNameTopicInFireBase, userNameTopicInFireBase)
+                                                FirebaseMessaging.getInstance().subscribeToTopic(""+userNameTopicInFireBase)
+                                                FirebaseMessaging.getInstance().subscribeToTopic("support")
+                                                if(findNavControllerSafely()?.currentDestination?.id == R.id.loginFragment){
+                                                    findNavControllerSafely()?.navigate(R.id.action_loginFragment_to_admin_mainFragment)
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
-                        }.launchIn(viewLifecycleOwner.lifecycleScope)
-//                        if (password == CUSTOMER_PASS) {
-//                            val role = ""
-//                            when (userName) {
-//                                USER_Boss -> {
-//                                    prefs.save(prefs.role, prefs.user)
-//                                    prefs.save(prefs.userLogin, USER_Boss)
-//                                }
-//                                USER_ABROR -> {
-//                                    prefs.save(prefs.role, prefs.customer)
-//                                    prefs.save(prefs.userLogin, USER_ABROR)
-//                                }
-//                                USER_JAMSHID -> {
-//                                    prefs.save(prefs.role, prefs.user)
-//                                    prefs.save(prefs.userLogin, USER_JAMSHID)
-//                                }
-//                                USER_Muhammad -> {
-//                                    prefs.save(prefs.role, prefs.user)
-//                                    prefs.save(prefs.userLogin, USER_Muhammad)
-//                                }
-//                                USER_Asilbek -> {
-//                                    prefs.save(prefs.role, prefs.customer)
-//                                    prefs.save(prefs.userLogin, USER_Asilbek)
-//                                }
-////                                    prefs.save(prefs.role, prefs.customer)
-////                                    if (findNavController().currentDestination?.id == R.id.loginFragment){
-////                                        findNavController().navigate(R.id.action_loginFragment_to_mainFragment)
-////                                    }
-////
-////                                    prefs.save(prefs.role, prefs.user)
-////                                    if (findNavController().currentDestination?.id == R.id.loginFragment){
-////                                        findNavController().navigate(R.id.action_loginFragment_to_mainFragment)
-////                                    }
-//
-//                            }
-//                        } else {
-//                            snack(requireView(), "Login yoki parol xato")
-//                        }
+                        }
                     } else {
-                        snack(requireView(), "Login va parol 6 xonadan kam bo'lmasligi kerak!")
+                        snackBar("Ushbu email orqali mazkur ilovadan foydalana olmaysiz.")
                     }
-
                 } else {
                     if (userName.isEmpty() && password.isEmpty()) {
-                        snack(requireView(), "Login va parolni kiriting")
+                        snack(requireView(), "Email va parolni kiriting")
                     } else if (userName.isEmpty()) {
-                        snack(requireView(), "Loginni kiriting")
+                        snack(requireView(), "Emailni kiriting")
                     } else if (password.isEmpty()) {
                         snack(requireView(), "Parolni kiriting")
                     }
                 }
             }
             binding.passwordShow -> {
-
+                if (binding.passwordAuth.transformationMethod == PasswordTransformationMethod.getInstance()) {
+                    binding.passwordShow.setImageResource(R.drawable.ic_eye)
+                    binding.passwordAuth.transformationMethod =
+                        HideReturnsTransformationMethod.getInstance()
+                } else {
+                    binding.passwordShow.setImageResource(R.drawable.ic_eyeslash)
+                    binding.passwordAuth.transformationMethod =
+                        PasswordTransformationMethod.getInstance()
+                }
+                binding.passwordAuth.setSelection(binding.passwordAuth.length())
+            }
+            binding.loginRegistration -> {
+                hideKeyBoard()
+                if (findNavControllerSafely()?.currentDestination?.id == R.id.loginFragment){
+                    findNavControllerSafely()?.navigate(R.id.action_loginFragment_to_registrationFragment)
+                }
             }
         }
     }
+
+    private fun showLoader() {
+        if (progressDialog == null) {
+            progressDialog = ProgressDialog(binding.root.context, "Iltimos kuting...")
+        }
+        progressDialog?.show()
+    }
+
+    private fun closeLoader() {
+        progressDialog?.dismiss()
+    }
+
 }

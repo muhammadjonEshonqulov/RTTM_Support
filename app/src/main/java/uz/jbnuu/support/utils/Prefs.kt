@@ -7,15 +7,29 @@ import javax.inject.Inject
 
 class Prefs @Inject constructor(context: Context) {
 
-
     private val prefsName: String = "JbnuuPref"
     private var prefs: SharedPreferences = context.getSharedPreferences(prefsName, Context.MODE_PRIVATE)
 
     val token: String = "token"
+    val fam: String = "fam"
+    val phone: String = "phone"
+    val photo: String = "photo"
     val role: String = "role"
-    val customer: String = "admin"
-    val user: String = "user"
+    val email: String = "email"
+    val bolim_id: String = "bolim_id"
+    val bolim_name: String = "bolim_name"
+    val lavozim: String = "lavozim"
+    val name: String = "name"
+    val manager: String = "2"
+    val user: String = "1"
+    val admin: String = "3"
+    val language: String = "language"
+    val userId: String = "user_id"
+    val theme: String = "theme"
+    val userNameTopicInFireBase: String = "userNameTopicInFireBase"
     val userLogin: String = "userLogin"
+//    val username: String = "username"
+    val password: String = "password"
     val firebaseToken: String = "FIREBASE_TOKEN"
 
     fun save(key: String, value: Int) {

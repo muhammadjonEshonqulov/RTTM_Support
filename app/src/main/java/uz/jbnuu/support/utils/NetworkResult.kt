@@ -10,10 +10,11 @@ import retrofit2.Response
 
 sealed class NetworkResult<T>(
     val data: T? = null,
-    val message: String? = null
+    val message: String? = null,
+    val code: Int? = null
 ) {
-    class Success<T>(data: T?) : NetworkResult<T>(data)
-    class Error<T>(message: String?, data: T?? = null) : NetworkResult<T>(data, message)
+    class Success<T>(data: T?, code: Int? = null) : NetworkResult<T>(data, code = code)
+    class Error<T>(message: String?, data: T? = null, code: Int? = null) : NetworkResult<T>(data, message, code)
     class Loading<T> : NetworkResult<T>()
 }
 fun hasInternetConnection (application: Application): Boolean {
@@ -36,14 +37,14 @@ fun <T> handleResponse(response: Response<T>): NetworkResult<T> {
             return NetworkResult.Error("Timeout.")
         }
         response.code() == 401 -> {
-            return NetworkResult.Error("Login yoki parol noto'g'ri kiritildi")
+            return NetworkResult.Error("Login yoki parol noto'g'ri kiritildi", code = 401)
         }
         response.code() == 404 -> {
-            return NetworkResult.Error("Not found")
+            return NetworkResult.Error("Not found",  code = 404)
         }
         response.isSuccessful -> {
             val topicData = response.body()
-            return NetworkResult.Success(topicData)
+            return NetworkResult.Success(topicData, code = 200)
         }
         else -> return NetworkResult.Error(response.message())
     }

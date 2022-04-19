@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="@color/cl_color_primary">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/left_right_margin_size"
+            android:layout_marginEnd="@dimen/left_right_margin_size"
+            android:layout_weight="1"
+            android:fontFamily="@font/ibm_plex_sans_medium"
+            android:gravity="center"
+            android:text="Admin"
+            android:textColor="@color/white"
+            android:textSize="@dimen/very_large_text_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <!--        <Button-->
+        <!--            android:id="@+id/send_notification"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_gravity="center"-->
+        <!--            android:layout_marginStart="25dp"-->
+        <!--            android:layout_marginTop="@dimen/default_margin"-->
+        <!--            android:layout_marginEnd="25dp"-->
+        <!--            android:background="@color/cl_color_primary"-->
+        <!--            android:text="Bildirishnoma berish"-->
+        <!--            android:textColor="@color/white" />-->
+
+        <Button
+            android:id="@+id/history_notification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="@dimen/default_margin"
+            android:layout_marginEnd="25dp"
+            android:background="@color/cl_color_primary"
+            android:text="Bildirishnomalar tarixi"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/settings_notification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="@dimen/default_margin"
+            android:layout_marginEnd="25dp"
+            android:background="@color/cl_color_primary"
+            android:text="Sozlamalar"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="@dimen/default_margin"
+            android:layout_marginEnd="25dp"
+            android:background="@color/cl_color_primary"
+            android:text="Chiqish"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+
+    <!--    <TextView-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:gravity="center"-->
+    <!--        android:text="Admin"-->
+    <!--        android:textSize="@dimen/very_large_text_size" />-->
+
+</LinearLayout>

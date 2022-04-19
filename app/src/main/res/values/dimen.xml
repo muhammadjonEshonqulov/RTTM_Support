@@ -1,0 +1,29 @@
+<resources>
+
+    <dimen name="actionbar_size">80dp</dimen>
+    <dimen name="small_action_bar_size">72dp</dimen>
+    <dimen name="normal_size">40dp</dimen>
+    <dimen name="monitoring_padding_size">35dp</dimen>
+
+    <dimen name="small_margin">4dp</dimen>
+    <dimen name="card_radius">4dp</dimen>
+    <dimen name="default_margin">8dp</dimen>
+    <dimen name="left_right_margin_size">16dp</dimen>
+    <dimen name="large_margin_size">20dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="very_large_text_size">20sp</dimen>
+    <dimen name="large_text_size">18sp</dimen>
+    <dimen name="standard_text_size">16sp</dimen>
+    <dimen name="small_text_size">14sp</dimen>
+    <dimen name="min_text_size">11sp</dimen>
+
+    <dimen name="cell_height">40dp</dimen>
+    <dimen name="row_header_width">55dp</dimen>
+    <dimen name="text_size">12sp</dimen>
+
+    <!-- Overriding the default values of the tableView -->
+    <dimen name="default_row_header_width">55dp</dimen>
+    <dimen name="default_column_header_height">40dp</dimen>
+
+</resources>

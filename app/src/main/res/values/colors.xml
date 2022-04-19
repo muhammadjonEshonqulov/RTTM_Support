@@ -1,10 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#1D578A</color>
-    <color name="colorPrimaryVariant">#1F497D</color>
+    <color name="cl_color_primary">#741617</color>
+    <color name="cl_color_primary_dark">#702223</color>
+    <color name="cl_secondary_text_color">#A3A3A3</color>
+    <color name="n_color_primary">#293742</color>
+    <color name="n_color_primary_dark">@color/black</color>
+    <color name="n_secondary_text_color">#A3A3A3</color>
+    <color name="cl_color_accent">#EB5757</color>
+    <color name="text_color">#17202B</color>
+    <color name="default_text_color">#A09F9F</color>
+    <color name="manager_chat_date_color">#ef4d27</color>
+    <color name="n_color_accent">#EB5757</color>
+    <color name="n_background">#202B33</color>
+    <color name="n_text_color">#E6F5F8FA</color>
+    <color name="n_def_text_color">#99F5F8FA</color>
+
     <color name="colorOnPrimary">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
+    <color name="new_tab_color">#9f3334</color>
+    <color name="closed_tab_color">#878787</color>
+    <color name="un_closed_tab_color">#3d3d3d</color>
+    <color name="message_un_submit_color">#FFEB3B</color>
+    <color name="message_submit_color">#FFEB3B</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/topic_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/small_text_size"
+    android:layout_marginEnd="@dimen/small_text_size"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/default_margin"
+        android:paddingBottom="@dimen/default_margin">
+
+        <TextView
+            android:id="@+id/ticket_number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:fontFamily="@font/calibri"
+            android:text="#9999"
+            android:textColor="@color/chuck_status_error"
+            android:textSize="@dimen/small_text_size" />
+
+        <TextView
+            android:id="@+id/title_ticket"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.9"
+            android:fontFamily="@font/calibri"
+            android:singleLine="true"
+            android:text="kompyuterim "
+            android:textColor="@color/chuck_status_error"
+            android:textSize="@dimen/small_text_size" />
+
+        <TextView
+            android:id="@+id/status_ticket"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.6"
+            android:fontFamily="@font/calibri"
+            android:text="O'qilmagan"
+            android:textColor="@color/chuck_status_error"
+            android:textSize="@dimen/small_text_size" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/default_text_color" />
+
+</LinearLayout>

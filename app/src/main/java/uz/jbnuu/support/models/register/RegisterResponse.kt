@@ -1,0 +1,15 @@
+package uz.jbnuu.support.models.register
+
+data class RegisterResponse(
+    val name: String?,
+    val fam: String?,
+    val sh: String?,
+    val phone: String?,
+    val bolim_id: String?,
+    val lavozim: String?,
+    val photo: String?,
+    val email: String?,
+    val updated_at: String?,
+    val created_at: String?,
+    val id: Int?
+)

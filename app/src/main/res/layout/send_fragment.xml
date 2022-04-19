@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:background="@color/colorPrimary"
+        android:background="@color/cl_color_primary"
         android:orientation="horizontal">
 
         <ImageView
@@ -30,34 +30,59 @@
             android:textSize="18sp" />
 
         <ImageView
-            android:id="@+id/make_pdf"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:padding="16dp"
-            android:src="@drawable/ic_pdf"
-            android:visibility="gone"
-            app:tint="@color/white" />
+            android:id="@+id/help_btn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="@dimen/left_right_margin_size"
+            android:src="@drawable/ic_baseline_help_24" />
+
+
     </LinearLayout>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="match_parent">
 
-        <EditText
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="your subject"
-            android:padding="16dp" />
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-        <Button
-            android:id="@+id/send"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="send"
-            android:textColor="@color/white" />
-    </LinearLayout>
+            <EditText
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/actionbar_size"
+                android:background="@drawable/back_edittext"
+                android:gravity="top"
+                android:hint="Bildirishnoma title"
+                android:padding="16dp"
+                android:singleLine="true" />
+
+            <EditText
+                android:id="@+id/message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/left_right_margin_size"
+                android:background="@drawable/back_edittext"
+                android:gravity="top"
+                android:hint="Bildirishnoma asosiy mazmunini kiriting"
+                android:maxHeight="300dp"
+                android:minHeight="200dp"
+                android:padding="16dp" />
+
+            <Button
+                android:id="@+id/send"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/left_right_margin_size"
+                android:background="@color/cl_color_primary"
+                android:text="send"
+                android:textColor="@color/white" />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
