@@ -27,7 +27,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -42,6 +41,7 @@ import uz.jbnuu.support.databinding.ChatFragmentsBinding
 import uz.jbnuu.support.models.body.LoginBody
 import uz.jbnuu.support.models.chat.ChatData
 import uz.jbnuu.support.models.chat.CreateChatBody
+import uz.jbnuu.support.models.chat.CreateChatResponse
 import uz.jbnuu.support.models.login.Bolim
 import uz.jbnuu.support.models.login.User
 import uz.jbnuu.support.models.message.NotificationsData
@@ -60,12 +60,13 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::inflate),View.OnClickListener,
+class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::inflate),
+    View.OnClickListener,
     ChatAdapter.OnItemClickListener {
 
     @Inject
     lateinit var prefs: Prefs
-    lateinit var chatData:ChatData
+    lateinit var chatData: ChatData
     var progressDialog: ProgressDialog? = null
     private val vm: ChatViewModel by viewModels()
     private val chatAdapter: ChatAdapter by lazy { ChatAdapter(this) }
@@ -91,6 +92,11 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
     private val REQUEST_CODE = 13
 
     override fun onCreate(view: View) {
+        if (prefs.get(prefs.role, "") == prefs.user) {
+            binding.closeAndRating.visibility = View.VISIBLE
+        } else {
+            binding.closeAndRating.visibility = View.GONE
+        }
         binding.sendChat.setOnClickListener(this)
         binding.backBtn.setOnClickListener(this)
         binding.addChat.setOnClickListener(this)
@@ -142,7 +148,27 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
             getString("message_id")?.let {
                 message_id = it
             }
-            chatData = ChatData(0, data_text, null, 0, message_id.toInt(), null, Gson().fromJson(data_updated_at, Date::class.java), User(prefs.get(prefs.userId, 0), name,fam,role,user_name+"@jbnuu.uz", phone, photo, lavozim,0, Bolim(0, bolim_name,0,null, null)))
+            chatData = ChatData(
+                0,
+                data_text,
+                null,
+                0,
+                message_id.toInt(),
+                null,
+                Gson().fromJson(data_updated_at, Date::class.java),
+                User(
+                    prefs.get(prefs.userId, 0),
+                    name,
+                    fam,
+                    role,
+                    user_name + "@jbnuu.uz",
+                    phone,
+                    photo,
+                    lavozim,
+                    0,
+                    Bolim(0, bolim_name, 0, null, null)
+                )
+            )
             chatDataList.add(chatData)
         }
 
@@ -170,7 +196,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                                 chatDataList.add(chatData)
                                 chatDataList.addAll(it)
                                 chatAdapter.setData(chatDataList)
-                                binding.listChat.scrollToPosition(chatAdapter.itemCount-1)
+                                binding.listChat.scrollToPosition(chatAdapter.itemCount - 1)
                             }
                         }
                         is NetworkResult.Loading -> {
@@ -223,79 +249,103 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
     }
 
     override fun onClick(p0: View?) {
-         when(p0){
-             binding.closeAndRating->{
-                 val dialog = CloseAndRatingDialog(binding.root.context)
-                 dialog.show()
-                 dialog.setOnCancelClick {
-                     dialog.dismiss()
-                 }
-                 dialog.setOnSubmitClick {
+        when (p0) {
+            binding.closeAndRating -> {
+                val dialog = CloseAndRatingDialog(binding.root.context)
+                dialog.show()
+                dialog.setOnCancelClick {
+                    dialog.dismiss()
+                }
+                dialog.setOnSubmitClick {
 
-                 }
-             }
-             binding.sendChat -> {
-                 hideKeyBoard()
-                 val imageUri: Uri = Uri.parse(image_uri)
-                 if (binding.chatMessage.text.toString().isNotEmpty()){
-                     val stringType = "text/plain".toMediaTypeOrNull()
-                     val imageTypee = "image/JPEG".toMediaTypeOrNull()
+                }
+            }
+            binding.sendChat -> {
+                hideKeyBoard()
+                val imageUri: Uri = Uri.parse(image_uri)
+                if (binding.chatMessage.text.toString().isNotEmpty()) {
+                    val stringType = "text/plain".toMediaTypeOrNull()
 
-                     val imageFile: File = FileUtils.getFile(requireContext(), imageUri)
-                     val image = saveBitmapToFile(imageFile)
+                    val imageFile: File = FileUtils.getFile(requireContext(), imageUri)
+                    val image = saveBitmapToFile(imageFile)
 
-                     sendMessage(CreateChatBody(
-                         binding.chatMessage.text.toString().toRequestBody(stringType),
-                         message_id.toRequestBody(stringType),
-//                         if (image?.exists() == true) MultipartBody.Part.createFormData("photo","", image.readBytes().toRequestBody(imageTypee)) else null
-                         if (image?.exists() == true) MultipartBody.Part.createFormData("photo", image.name, RequestBody.create("multipart/form-data".toMediaTypeOrNull(), image)) else null
-                     ))
-                 } else {
-                     snackBar("Bildirishnoma mazmunini kiriting")
-                 }
-             }
-             binding.backBtn -> {
-                 finish()
-             }
-             binding.uploadImage->{
-                 popupCamera(binding.uploadImage)
-             }
-             binding.cancelChat -> {
-                 binding.chatMessage.text.clear()
-                 hideKeyBoard()
-                 binding.answerLay.visibility = View.GONE
-                 binding.addChat.setImageResource(R.drawable.ic_baseline_add_circle_24)
-             }
-             binding.addChat -> {
-                 if (binding.answerLay.visibility == View.GONE) {
-                     binding.chatMessage.showKeyboard()
-                     binding.answerLay.visibility = View.VISIBLE
-                     binding.addChat.setImageResource(R.drawable.ic_baseline_remove_circle_24)
+                    sendMessage(
+                        CreateChatBody(
+                            binding.chatMessage.text.toString().toRequestBody(stringType),
+                            message_id.toRequestBody(stringType),
+                            if (image?.exists() == true) MultipartBody.Part.createFormData(
+                                "photo",
+                                image.name,
+                                RequestBody.create("multipart/form-data".toMediaTypeOrNull(), image)
+                            ) else null
+                        )
+                    )
+                } else {
+                    snackBar("Bildirishnoma mazmunini kiriting")
+                }
+            }
+            binding.backBtn -> {
+                finish()
+            }
+            binding.uploadImage -> {
+                popupCamera(binding.uploadImage)
+            }
+            binding.cancelChat -> {
+                binding.chatMessage.text.clear()
+                hideKeyBoard()
+                binding.answerLay.visibility = View.GONE
+                binding.addChat.setImageResource(R.drawable.ic_baseline_add_circle_24)
+            }
+            binding.addChat -> {
+                if (binding.answerLay.visibility == View.GONE) {
+                    binding.chatMessage.showKeyboard()
+                    binding.answerLay.visibility = View.VISIBLE
+                    binding.addChat.setImageResource(R.drawable.ic_baseline_remove_circle_24)
 
-                 } else if (binding.answerLay.visibility == View.VISIBLE) {
-                     hideKeyBoard()
-                     binding.answerLay.visibility = View.GONE
-                     binding.addChat.setImageResource(R.drawable.ic_baseline_add_circle_24)
-                 }
-             }
-         }
+                } else if (binding.answerLay.visibility == View.VISIBLE) {
+                    hideKeyBoard()
+                    binding.answerLay.visibility = View.GONE
+                    binding.addChat.setImageResource(R.drawable.ic_baseline_add_circle_24)
+                }
+            }
+        }
     }
 
     private fun sendMessage(body: CreateChatBody) {
         vm.chatCreate(body)
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.chatCreateResponse.collect {
                     when (it) {
                         is NetworkResult.Success -> {
-                            sendNotification(PushNotification(NotificationsData(bodyToString(body.message_id), data_text,bodyToString(body.text),file, Gson().toJson(data_updated_at),prefs.get(prefs.fam, ""),fam,prefs.get(prefs.name, ""),name,prefs.get(prefs.lavozim, ""),prefs.get(prefs.role, ""),prefs.get(prefs.bolim_name, ""),bolim_name,prefs.get(prefs.userNameTopicInFireBase, "")), "/topics/"+user_name))
+                            sendNotification(
+                                it.data,
+                                PushNotification(
+                                    NotificationsData(
+                                        bodyToString(body.message_id),
+                                        data_text,
+                                        bodyToString(body.text),
+                                        file,
+                                        Gson().toJson(data_updated_at),
+                                        prefs.get(prefs.fam, ""),
+                                        fam,
+                                        prefs.get(prefs.name, ""),
+                                        name,
+                                        prefs.get(prefs.lavozim, ""),
+                                        prefs.get(prefs.role, ""),
+                                        prefs.get(prefs.bolim_name, ""),
+                                        bolim_name,
+                                        prefs.get(prefs.userNameTopicInFireBase, "")
+                                    ), "/topics/" + user_name
+                                )
+                            )
                         }
                         is NetworkResult.Loading -> {
                             binding.charProgressbar.visibility = View.VISIBLE
                         }
                         is NetworkResult.Error -> {
                             binding.charProgressbar.visibility = View.GONE
-                                snackBar(it.message.toString())
+                            snackBar(it.message.toString())
 //                            }
                         }
                     }
@@ -303,6 +353,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
             }
         }
     }
+
     private fun bodyToString(request: RequestBody?): String? {
         return try {
             val buffer = Buffer()
@@ -312,11 +363,12 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
             "did not work"
         }
     }
-    private fun sendNotification(notification: PushNotification){
+
+    private fun sendNotification(response: CreateChatResponse?, notification: PushNotification) {
         try {
             vm.postNotify(notification) // api(requireContext()).postNotification(notification)
             viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                     vm.notificationResponse.collect {
                         when (it) {
                             is NetworkResult.Success -> {
@@ -332,7 +384,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                                 binding.charProgressbar.visibility = View.GONE
                                 snackBar(it.message.toString())
                             }
-                            is NetworkResult.Loading->{
+                            is NetworkResult.Loading -> {
                                 showLoader()
                             }
                         }
@@ -343,6 +395,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
             snackBar("Error message->  : ${e.message}")
         }
     }
+
     private fun showLoader() {
         if (progressDialog == null) {
             progressDialog = ProgressDialog(binding.root.context, "Iltimos kuting...")
@@ -380,7 +433,15 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
             var selectedBitmap = BitmapFactory.decodeStream(inputStream, null, o2)
             val matrix = Matrix()
             matrix.postRotate(90F)
-            selectedBitmap = Bitmap.createBitmap(selectedBitmap!!, 0, 0, selectedBitmap.width, selectedBitmap.height, matrix, true)
+            selectedBitmap = Bitmap.createBitmap(
+                selectedBitmap!!,
+                0,
+                0,
+                selectedBitmap.width,
+                selectedBitmap.height,
+                matrix,
+                true
+            )
             inputStream.close()
 
 

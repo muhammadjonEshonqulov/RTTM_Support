@@ -36,8 +36,8 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
         when (p0) {
             binding.loginBtn -> {
                 hideKeyBoard()
-                val userName = binding.loginAuth.text.toString()
-                val password = binding.passwordAuth.text.toString()
+                val userName = binding.loginAuth.text.toString().lowercase()
+                val password = binding.passwordAuth.text.toString().lowercase()
                 if (userName.isNotEmpty() && password.isNotEmpty()) {
                     if (userName.endsWith("@jbnuu.uz") && userName.split("@jbnuu.uz").first().isNotEmpty()){
                         vm.login(LoginBody(userName, password))
@@ -89,8 +89,8 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
                                         }
                                         when (prefs.get(prefs.role, "")){
                                             prefs.manager -> {
-                                                prefs.save(prefs.email, binding.loginAuth.text.toString())
-                                                prefs.save(prefs.password, binding.passwordAuth.text.toString())
+                                                prefs.save(prefs.email, userName)
+                                                prefs.save(prefs.password, password)
                                                 val userNameTopicInFireBase = userName.split("@jbnuu.uz").first().toString()
                                                 prefs.save(prefs.userNameTopicInFireBase, userNameTopicInFireBase)
                                                 FirebaseMessaging.getInstance().subscribeToTopic(""+userNameTopicInFireBase)
@@ -100,8 +100,8 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
                                                 }
                                             }
                                             prefs.user -> {
-                                                prefs.save(prefs.email, binding.loginAuth.text.toString())
-                                                prefs.save(prefs.password, binding.passwordAuth.text.toString())
+                                                prefs.save(prefs.email, userName)
+                                                prefs.save(prefs.password, password)
                                                 val userNameTopicInFireBase = userName.split("@jbnuu.uz").first().toString()
                                                 prefs.save(prefs.userNameTopicInFireBase, userNameTopicInFireBase)
                                                 FirebaseMessaging.getInstance().subscribeToTopic(""+userNameTopicInFireBase)
@@ -110,8 +110,8 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
                                                 }
                                             }
                                             prefs.admin -> {
-                                                prefs.save(prefs.email, binding.loginAuth.text.toString())
-                                                prefs.save(prefs.password, binding.passwordAuth.text.toString())
+                                                prefs.save(prefs.email, userName)
+                                                prefs.save(prefs.password, password)
                                                 val userNameTopicInFireBase = userName.split("@jbnuu.uz").first().toString()
                                                 prefs.save(prefs.userNameTopicInFireBase, userNameTopicInFireBase)
                                                 FirebaseMessaging.getInstance().subscribeToTopic(""+userNameTopicInFireBase)

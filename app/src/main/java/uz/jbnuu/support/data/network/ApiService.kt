@@ -39,8 +39,13 @@ interface ApiService {
         @Part photo: MultipartBody.Part?
     ): Response<RegisterResponse>
 
+    @Multipart
     @POST("message/create")
-    suspend fun messageCreate(@Body body: CreateMessageBody): Response<CreateMessageResponse>
+    suspend fun messageCreate(
+        @Part("title") title:RequestBody,
+        @Part("text") text:RequestBody,
+        @Part photo: MultipartBody.Part?,
+    ): Response<CreateMessageResponse>
 
     @POST("message/active")
     suspend fun messageActive(@Body body: MessageActive): Response<String>
@@ -62,10 +67,6 @@ interface ApiService {
     @Headers("Authorization: key=${SERVER_KEY}", "Content-Type:${CONTENT_TYPE}")
     @POST("fcm/send")
     suspend fun postNotification(@Body notification: PushNotification): Response<ResponseBody>
-
-    @Headers("Authorization: key=${SERVER_KEY}", "Content-Type:${CONTENT_TYPE}")
-    @GET("fcm/send")
-    suspend fun getTopicSubscribes(@Body notification: PushNotification): Response<ResponseBody>
 
     @GET("message/{status}")
     suspend fun getMessage(@Path("status") status: Int): Response<List<MessageResponse>>

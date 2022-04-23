@@ -43,7 +43,7 @@ class UserMainViewModel @Inject constructor(
     }
 
 //    private val _sendMessageResponse: MutableStateFlow<NetworkResult<CreateMessageResponse>> = Channel(NetworkResult.Loading())
-    private var _sendMessageResponse: Channel<NetworkResult<CreateMessageResponse>> = Channel<NetworkResult<CreateMessageResponse>>()
+    private var _sendMessageResponse: Channel<NetworkResult<CreateMessageResponse>> = Channel()
     val sendMessageResponse = _sendMessageResponse.receiveAsFlow()
     fun sendMessage(body: CreateMessageBody) = viewModelScope.launch {
         _sendMessageResponse.send(NetworkResult.Loading())

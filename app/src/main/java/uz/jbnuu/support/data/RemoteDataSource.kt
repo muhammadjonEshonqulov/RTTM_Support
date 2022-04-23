@@ -31,7 +31,7 @@ class RemoteDataSource @Inject constructor(private val apiService: ApiService, p
         return apiService.getMessage(status)
     }
     suspend fun messageCreate(body: CreateMessageBody): Response<CreateMessageResponse> {
-        return apiService.messageCreate(body)
+        return apiService.messageCreate(body.title, body.text,body.photo)
     }
     suspend fun messageActive(body: MessageActive): Response<String> {
         return apiService.messageActive(body)

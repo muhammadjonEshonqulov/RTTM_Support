@@ -45,7 +45,7 @@ class NewsFragment(val status:Int) : BaseFragment<AllNotificationsFragmentBindin
             finish()
         }
         setupRecycler()
-        getMessages()
+        //getMessages()
         binding.swipeRefreshLayoutTopics.setOnRefreshListener {
             getMessages()
         }
@@ -124,16 +124,16 @@ class NewsFragment(val status:Int) : BaseFragment<AllNotificationsFragmentBindin
     }
 
     private fun showLoader() {
-        if (progressDialog == null) {
-            progressDialog = ProgressDialog(binding.root.context, "Iltimos kuting ...")
-        }
+//        if (progressDialog == null) {
+//            progressDialog = ProgressDialog(binding.root.context, "Iltimos kuting ...")
+//        }
         binding.swipeRefreshLayoutTopics.isRefreshing = true
-        progressDialog?.show()
+//        progressDialog?.show()
     }
 
     private fun closeLoader() {
         binding.swipeRefreshLayoutTopics.isRefreshing = false
-        progressDialog?.dismiss()
+//        progressDialog?.dismiss()
     }
 
     override fun onItemClick(data: MessageResponse) {
