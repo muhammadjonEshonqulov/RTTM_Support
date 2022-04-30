@@ -49,7 +49,7 @@ class BottomSheetDialogPhoto(val url:String) : BottomSheetDialogFragment(){
 //        binding.fragmentPhoto.setOnTouchListener(this)
         Glide.with(requireContext())
             .load(url)
-            .placeholder(R.drawable.logo_rttm)
+            .placeholder(R.mipmap.ic_launcher)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(binding.photoVieww)
         return oldview

@@ -28,7 +28,6 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
 
     override fun onCreate(view: View) {
         binding.loginBtn.setOnClickListener(this)
-        binding.passwordShow.setOnClickListener(this)
         binding.loginRegistration.setOnClickListener(this)
     }
 
@@ -49,7 +48,7 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
                                     }
                                     is NetworkResult.Error -> {
                                         closeLoader()
-                                        snack(requireView(), "Xatolik ->" + it)
+                                        snack(requireView(), it.message.toString())
                                     }
                                     is NetworkResult.Success -> {
                                         closeLoader()
@@ -58,6 +57,14 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
                                                 prefs.save(prefs.token, it)
                                             }
                                             user?.apply {
+                                                bolim?.apply {
+                                                    id?.let {
+                                                        prefs.save(prefs.sub_bolim_id, it)
+                                                    }
+                                                    bolim_id?.let {
+                                                        prefs.save(prefs.bolim_id, it)
+                                                    }
+                                                }
                                                 id?.let {
                                                     prefs.save(prefs.userId, it)
                                                 }
@@ -72,9 +79,6 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
                                                 }
                                                 role?.let {
                                                     prefs.save(prefs.role, it)
-                                                }
-                                                bolim_id?.let {
-                                                    prefs.save(prefs.bolim_id, it)
                                                 }
                                                 name?.let {
                                                     prefs.save(prefs.name, it)
@@ -137,18 +141,6 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
                         snack(requireView(), "Parolni kiriting")
                     }
                 }
-            }
-            binding.passwordShow -> {
-                if (binding.passwordAuth.transformationMethod == PasswordTransformationMethod.getInstance()) {
-                    binding.passwordShow.setImageResource(R.drawable.ic_eye)
-                    binding.passwordAuth.transformationMethod =
-                        HideReturnsTransformationMethod.getInstance()
-                } else {
-                    binding.passwordShow.setImageResource(R.drawable.ic_eyeslash)
-                    binding.passwordAuth.transformationMethod =
-                        PasswordTransformationMethod.getInstance()
-                }
-                binding.passwordAuth.setSelection(binding.passwordAuth.length())
             }
             binding.loginRegistration -> {
                 hideKeyBoard()

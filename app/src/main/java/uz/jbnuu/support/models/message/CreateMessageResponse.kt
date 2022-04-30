@@ -9,4 +9,5 @@ data class CreateMessageResponse(
     val created_at:Date?,
     val id:Int?,
     val title:String?,
+    val img:String?,
 )

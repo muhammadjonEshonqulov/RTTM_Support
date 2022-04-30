@@ -11,11 +11,9 @@ import uz.jbnuu.support.models.chat.ChatData
 import uz.jbnuu.support.models.chat.CreateChatResponse
 import uz.jbnuu.support.models.login.Bolim
 import uz.jbnuu.support.models.login.LoginResponse
-import uz.jbnuu.support.models.message.CreateMessageResponse
-import uz.jbnuu.support.models.message.MessageActive
-import uz.jbnuu.support.models.message.MessageResponse
-import uz.jbnuu.support.models.message.PushNotification
+import uz.jbnuu.support.models.message.*
 import uz.jbnuu.support.models.register.RegisterResponse
+import uz.jbnuu.support.models.register.UpdateResponse
 import uz.jbnuu.support.utils.Constants.Companion.CONTENT_TYPE
 import uz.jbnuu.support.utils.Constants.Companion.SERVER_KEY
 
@@ -40,6 +38,20 @@ interface ApiService {
     ): Response<RegisterResponse>
 
     @Multipart
+    @POST("update")
+    suspend fun update(
+        @Part("name") name: RequestBody,
+        @Part("sh") sh: RequestBody,
+        @Part("fam") fam: RequestBody,
+        @Part("phone") phone: RequestBody,
+        @Part("lavozim") lavozim: RequestBody,
+        @Part("bolim_id") bolim_id: RequestBody,
+        @Part("oldpassword") oldpassword: RequestBody,
+        @Part("newpassword") newpassword: RequestBody,
+        @Part photo: MultipartBody.Part?
+    ): Response<UpdateResponse>
+
+    @Multipart
     @POST("message/create")
     suspend fun messageCreate(
         @Part("title") title:RequestBody,
@@ -49,6 +61,9 @@ interface ApiService {
 
     @POST("message/active")
     suspend fun messageActive(@Body body: MessageActive): Response<String>
+
+    @POST("message/ball")
+    suspend fun messageBall(@Body body: MessageBallBody): Response<String>
 
     @Multipart
     @POST("chat/create")
@@ -60,6 +75,9 @@ interface ApiService {
 
     @GET("chat/{message_id}")
     suspend fun getChat(@Path("message_id") message_id: Int): Response<List<ChatData>>
+
+    @GET("chat/active/{message_id}")
+    suspend fun chatActive(@Path("message_id") message_id: Int): Response<Int>
 
     @GET("bolim/{id}")
     suspend fun getBolim(@Path("id") id: Int): Response<List<Bolim>>

@@ -82,7 +82,7 @@ class FirebaseService : FirebaseMessagingService() {
             .setSubText(message.data["bolim_name"])
 //            .setSettingsText(message.data["fromUserName"])
             .setAutoCancel(true)
-            .setSmallIcon(R.drawable.logo_rttm)
+            .setSmallIcon(R.mipmap.ic_launcher)
             .build()
 
         notification.contentIntent = pendingIntent

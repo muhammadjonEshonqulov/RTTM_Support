@@ -22,7 +22,7 @@ fun snack(view: View, text: String) {
 }
 
 fun lg(text: String) {
-    Log.d("JBNUU", text)
+     Log.d("JBNUU", text)
 }
 
 fun Fragment.findNavControllerSafely(): NavController? {

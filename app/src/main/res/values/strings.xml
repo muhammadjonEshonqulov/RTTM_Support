@@ -1,4 +1,7 @@
 <resources>
+    <string name="app_link" translatable="false">https://play.google.com/store/apps/details?id=uz.jbnuu.support</string>
+
+
     <string name="app_name" translatable="false">RTTM Support</string>
     <string name="night_mode">Tungi rejim</string>
     <string name="day_mode">Kunduzgi rejim</string>

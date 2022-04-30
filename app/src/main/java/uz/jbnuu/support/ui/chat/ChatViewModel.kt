@@ -5,7 +5,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import uz.jbnuu.support.data.Repository
@@ -15,6 +18,7 @@ import uz.jbnuu.support.models.chat.CreateChatBody
 import uz.jbnuu.support.models.chat.CreateChatResponse
 import uz.jbnuu.support.models.login.LoginResponse
 import uz.jbnuu.support.models.message.MessageActive
+import uz.jbnuu.support.models.message.MessageBallBody
 import uz.jbnuu.support.models.message.PushNotification
 import uz.jbnuu.support.utils.NetworkResult
 import uz.jbnuu.support.utils.handleResponse
@@ -37,7 +41,7 @@ class ChatViewModel @Inject constructor(
                 val response =repository.remote.chatCreate(body)
                 _chatCreateResponse.send( handleResponse(response))
             } catch (e: Exception) {
-                _chatCreateResponse.send( NetworkResult.Error("Xatolik : "+e.message))
+                _chatCreateResponse.send(NetworkResult.Error("Xatolik in create chat: " + e.message))
             }
         } else {
             _chatCreateResponse.send( NetworkResult.Error("Server bilan aloqa yo'q"))
@@ -51,21 +55,48 @@ class ChatViewModel @Inject constructor(
         _getChatResponse.value = NetworkResult.Loading()
         if (hasInternetConnection(getApplication())) {
             try {
-                val response =repository.remote.getChat(message_id)
+                val response = repository.remote.getChat(message_id)
                 _getChatResponse.value = handleResponse(response)
             } catch (e: Exception) {
-                _getChatResponse.value = NetworkResult.Error("Xatolik : "+e.message)
+                _getChatResponse.value = NetworkResult.Error("Xatolik : " + e.message)
             }
         } else {
             _getChatResponse.value = NetworkResult.Error("Server bilan aloqa yo'q")
         }
     }
 
-    fun messageActive(message_id:Int) = viewModelScope.launch {
+    private val _ballResponse = Channel<NetworkResult<String>>()
+    var ballResponse = _ballResponse.receiveAsFlow()
+
+    fun ball(body: MessageBallBody) = viewModelScope.launch {
+        _ballResponse.send(NetworkResult.Loading())
+        if (hasInternetConnection(getApplication())) {
+            try {
+                val response = repository.remote.messageBall(body)
+                _ballResponse.send(handleResponse(response))
+            } catch (e: Exception) {
+                _ballResponse.send(NetworkResult.Error("Xatolik : " + e.message))
+            }
+        } else {
+            _ballResponse.send(NetworkResult.Error("Server bilan aloqa yo'q"))
+        }
+    }
+
+    fun chatActive(message_id: Int) = viewModelScope.launch {
+        if (hasInternetConnection(getApplication())) {
+            try {
+                val response = repository.remote.chatActive(message_id)
+            } catch (e: Exception) {
+            }
+        }
+    }
+
+    fun messageActive(message_id: Int) = viewModelScope.launch {
         if (hasInternetConnection(getApplication())) {
             try {
                 val response = repository.remote.messageActive(MessageActive(message_id))
-            } catch (e: Exception) { }
+            } catch (e: Exception) {
+            }
         }
     }
 
@@ -73,11 +104,11 @@ class ChatViewModel @Inject constructor(
     var notificationResponse = _notificationResponse.receiveAsFlow()
 
     fun postNotify(notification: PushNotification) = viewModelScope.launch {
-        _notificationResponse.send( NetworkResult.Loading())
+        _notificationResponse.send(NetworkResult.Loading())
         if (hasInternetConnection(getApplication())) {
             try {
                 val response = repository.remote.postNotification(notification)
-                _notificationResponse.send( handleResponse(response))
+                _notificationResponse.send(handleResponse(response))
             } catch (e: Exception) {
                 _notificationResponse.send( NetworkResult.Error("Xatolik : " + e.message))
             }

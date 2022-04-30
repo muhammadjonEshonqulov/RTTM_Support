@@ -22,6 +22,7 @@ import uz.jbnuu.support.ui.base.ProgressDialog
 import uz.jbnuu.support.ui.user_main.UserMainViewModel
 import uz.jbnuu.support.utils.Prefs
 import uz.jbnuu.support.utils.findNavControllerSafely
+import uz.jbnuu.support.utils.hasInternetConnection
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -32,7 +33,7 @@ class ManagerMainFragment :
     @Inject
     lateinit var prefs: Prefs
     private val vm: UserMainViewModel by viewModels()
-    private var fragments: ArrayList<Fragment>? = null
+    private var fragments: ArrayList<NewsFragment>? = null
     lateinit var pageAdapter: PageAdapter
     var progressDialog: ProgressDialog? = null
 
@@ -62,7 +63,6 @@ class ManagerMainFragment :
         binding.viewPager.offscreenPageLimit = 3
         binding.viewPager.adapter = pageAdapter
         binding.viewPager.setCurrentItem(1, true)
-
     }
 
     @SuppressLint("RestrictedApi")
@@ -82,20 +82,26 @@ class ManagerMainFragment :
             override fun onMenuItemSelected(menu: MenuBuilder, item: MenuItem): Boolean {
                 when (item.itemId) {
                     R.id.profile -> {
-
+                        if (findNavControllerSafely()?.currentDestination?.id == R.id.managerMainFragment){
+                            findNavControllerSafely()?.navigate(R.id.action_managerMainFragment_to_send_profileFragment)
+                        }
                     }
                     R.id.logout -> {
                         val logoutDialog = LogoutDialog(binding.root.context)
                         logoutDialog.show()
                         logoutDialog.setOnSubmitClick {
-                            showLoader()
-                            FirebaseMessaging.getInstance().unsubscribeFromTopic("support").addOnSuccessListener {
-                                FirebaseMessaging.getInstance().unsubscribeFromTopic(prefs.get(prefs.userNameTopicInFireBase, "")).addOnSuccessListener {
-                                    closeLoader()
-                                    prefs.clear()
-                                    logoutDialog.dismiss()
-                                    if (findNavControllerSafely()?.currentDestination?.id == R.id.managerMainFragment){
-                                        findNavControllerSafely()?.navigate(R.id.action_managerMainFragment_to_loginFragment)
+                            activity?.application?.let {
+                                if (hasInternetConnection(it)) {
+                                    showLoader()
+                                    FirebaseMessaging.getInstance().unsubscribeFromTopic("support").addOnSuccessListener {
+                                        FirebaseMessaging.getInstance().unsubscribeFromTopic(prefs.get(prefs.userNameTopicInFireBase, "")).addOnSuccessListener {
+                                            closeLoader()
+                                            prefs.clear()
+                                            logoutDialog.dismiss()
+                                            if (findNavControllerSafely()?.currentDestination?.id == R.id.managerMainFragment){
+                                                findNavControllerSafely()?.navigate(R.id.action_managerMainFragment_to_loginFragment)
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -222,5 +228,10 @@ class ManagerMainFragment :
 
     override fun onPageScrollStateChanged(state: Int) {
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.viewPager.adapter = null
     }
 }

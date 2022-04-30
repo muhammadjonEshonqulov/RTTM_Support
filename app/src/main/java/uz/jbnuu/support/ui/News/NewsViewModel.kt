@@ -41,13 +41,7 @@ class NewsViewModel @Inject constructor(
         }
     }
 
-    fun messageActive(message_id:Int) = viewModelScope.launch {
-        if (hasInternetConnection(getApplication())) {
-            try {
-                val response = repository.remote.messageActive(MessageActive(message_id))
-            } catch (e: Exception) { }
-        }
-    }
+
 
 
 

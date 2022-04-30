@@ -52,7 +52,7 @@ class NewsFragment(val status:Int) : BaseFragment<AllNotificationsFragmentBindin
     }
 
     @SuppressLint("RepeatOnLifecycleWrongUsage")
-    private fun getMessages() {
+    fun getMessages() {
         vm.getMessage(status)
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -67,7 +67,7 @@ class NewsFragment(val status:Int) : BaseFragment<AllNotificationsFragmentBindin
                                 if (it.isNotEmpty()) {
                                     binding.listMessages.visibility = View.VISIBLE
                                     binding.notFoundMessage.visibility = View.GONE
-                                    newsAdapter.setData(it)
+                                    newsAdapter.setData(it.sortedBy { it.updated_at})
                                 } else {
                                     binding.listMessages.visibility = View.GONE
                                     binding.notFoundMessage.visibility = View.VISIBLE
@@ -103,8 +103,12 @@ class NewsFragment(val status:Int) : BaseFragment<AllNotificationsFragmentBindin
                         }
 
                         is NetworkResult.Error -> {
-                            if (findNavControllerSafely()?.currentDestination?.id == R.id.allNotificationsFragment) {
-                                findNavControllerSafely()?.navigate(R.id.action_allNotificationsFragment_to_all_loginFragment)
+                            if (findNavControllerSafely()?.currentDestination?.id == R.id.userMainFragment) {
+                                prefs.clear()
+                                findNavControllerSafely()?.navigate(R.id.action_userMainFragment_to_all_loginFragment)
+                            } else  if (findNavControllerSafely()?.currentDestination?.id == R.id.managerMainFragment) {
+                                prefs.clear()
+                                findNavControllerSafely()?.navigate(R.id.action_managerMainFragment_to_all_loginFragment)
                             }
                         }
                     }
@@ -137,19 +141,13 @@ class NewsFragment(val status:Int) : BaseFragment<AllNotificationsFragmentBindin
     }
 
     override fun onItemClick(data: MessageResponse) {
-        activity?.application?.let {
-            if (hasInternetConnection(it)){
-                if (data.status == 0){
-                    data.id?.let {
-                        vm.messageActive(it)
-                    }
-                }
-            }
-        }
 
         var bundle = bundleOf(
+                "message_status" to status,
                 "message_id" to data.id.toString(),
                 "data_text" to data.text,
+                "chat_count" to data.chat_count,
+                "file" to data.img,
                 "name" to data.user?.name,
                 "fam" to data.user?.fam,
                 "phone" to data.user?.phone,
@@ -162,12 +160,15 @@ class NewsFragment(val status:Int) : BaseFragment<AllNotificationsFragmentBindin
             )
 
             if (findNavControllerSafely()?.currentDestination?.id == R.id.userMainFragment) {
-                findNavControllerSafely()?.navigate(R.id.action_allNotificationsFragment_to_all_chatFragment, bundle)
+                findNavControllerSafely()?.navigate(R.id.action_userMainFragment_to_all_chatFragment, bundle)
             } else if (findNavControllerSafely()?.currentDestination?.id == R.id.managerMainFragment) {
                 findNavControllerSafely()?.navigate(R.id.action_managerMainFragment_to_all_chatFragment, bundle)
             }
     }
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.listMessages.adapter = null
+    }
 //    viewLifecycleOwner.lifecycleScope.launch {
 //        viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 //            vm.login()

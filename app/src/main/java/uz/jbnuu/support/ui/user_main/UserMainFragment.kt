@@ -59,7 +59,7 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
     @Inject
     lateinit var prefs: Prefs
     private val vm: UserMainViewModel by viewModels()
-    private var fragments: ArrayList<Fragment>? = null
+    private var fragments: ArrayList<NewsFragment>? = null
     lateinit var pageAdapter: PageAdapter
     var progressDialog: ProgressDialog? = null
 
@@ -127,13 +127,17 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
                         val logoutDialog = LogoutDialog(binding.root.context)
                         logoutDialog.show()
                         logoutDialog.setOnSubmitClick {
-                            showLoader()
-                            FirebaseMessaging.getInstance().unsubscribeFromTopic(prefs.get(prefs.userNameTopicInFireBase, "")).addOnSuccessListener {
-                                closeLoader()
-                                prefs.clear()
-                                logoutDialog.dismiss()
-                                if (findNavControllerSafely()?.currentDestination?.id == R.id.userMainFragment){
-                                    findNavControllerSafely()?.navigate(R.id.action_userMainFragment_to_loginFragment)
+                            activity?.application?.let {
+                                if (hasInternetConnection(it)){
+                                    showLoader()
+                                    FirebaseMessaging.getInstance().unsubscribeFromTopic(prefs.get(prefs.userNameTopicInFireBase, "")).addOnSuccessListener {
+                                        closeLoader()
+                                        prefs.clear()
+                                        logoutDialog.dismiss()
+                                        if (findNavControllerSafely()?.currentDestination?.id == R.id.userMainFragment){
+                                            findNavControllerSafely()?.navigate(R.id.action_userMainFragment_to_loginFragment)
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -152,6 +156,7 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
     }
 
     override fun onClick(p0: View?) {
+        p0.blockClickable()
             when (p0) {
                 binding.closed -> {
                     binding.viewPager.setCurrentItem(2, true)
@@ -189,6 +194,8 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
                 }
                 binding.cancelMessageBtn -> {
                     binding.chatMessage.text.clear()
+                    binding.chatTitle.text.clear()
+                    binding.imageName.text = "Fayl nomi"
                     hideKeyBoard()
                     binding.answerLay.visibility = View.GONE
                     binding.addMessage.setImageResource(R.drawable.ic_baseline_add_circle_24)
@@ -196,21 +203,25 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
                 binding.sendMessageBtn -> {
                     hideKeyBoard()
                     if (binding.chatMessage.text.toString().isNotEmpty() && binding.chatTitle.text.toString().isNotEmpty()) {
-                        val message = binding.chatMessage.text.toString()
-                        val title = binding.chatTitle.text.toString()
+                        var message :String? = binding.chatMessage.text.toString()
+                        var title : String? = binding.chatTitle.text.toString()
 
                         val stringType = "text/plain".toMediaTypeOrNull()
                         val imageUri: Uri = Uri.parse(image_uri)
 
                         val imageFile: File = FileUtils.getFile(requireContext(), imageUri)
-                        val image = saveBitmapToFile(imageFile)
+                        val image : File? = saveBitmapToFile(imageFile)
 
-                        sendMessage(
-                            CreateMessageBody(
-                            title.toRequestBody(stringType),
-                            message.toRequestBody(stringType),
-                                if (image?.exists() == true) MultipartBody.Part.createFormData("photo", image.name, RequestBody.create("multipart/form-data".toMediaTypeOrNull(), image)) else null)
-                        )
+                        title?.toRequestBody(stringType)?.let {
+                            message?.toRequestBody(stringType)?.let { it1 ->
+                                CreateMessageBody(it, it1,
+                                    if (image?.exists() == true) MultipartBody.Part.createFormData("photo", image.name, RequestBody.create("multipart/form-data".toMediaTypeOrNull(), image)) else null)
+                            }
+                        }?.let {
+                            sendMessage(it)
+                        }
+                        message = null
+                        title = null
                     } else {
                         if (binding.chatTitle.text.toString().isEmpty()) {
                             snackBar("Bildirishnoma sarlavhasini kiriting")
@@ -236,8 +247,9 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
                                 hideKeyBoard()
                                 binding.answerLay.visibility = View.GONE
                                 binding.addMessage.setImageResource(R.drawable.ic_baseline_add_circle_24)
-                                pageAdapter.notifyDataSetChanged()
-                                snackBar("Arizangiz qabul qilindi. Tez orada sizga xizmat ko'rsatiladi.")
+                                binding.viewPager.setCurrentItem(0, true)
+                                fragments?.get(0)?.getMessages()
+                                snackBar("Bildirishnomangiz qabul qilindi. Tez orada sizga xizmat ko'rsatiladi.")
                             }
                             is NetworkResult.Error -> {
                                 closeLoader()
@@ -274,9 +286,9 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
                                 PushNotification(
                                     NotificationsData(
                                         it.data?.id.toString(),
-                                        bodyToString(body.text),
-                                        bodyToString(body.title),
-                                        file = null,
+                                        it.data?.text,
+                                        it.data?.title,
+                                        it.data?.img,
                                         Gson().toJson(it.data?.updated_at),
                                         prefs.get(prefs.fam, ""),
                                         prefs.get(prefs.fam, ""),
@@ -525,5 +537,10 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
 //                .load(image_uri)
 //                .into(binding.image)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.viewPager.adapter = null
     }
 }

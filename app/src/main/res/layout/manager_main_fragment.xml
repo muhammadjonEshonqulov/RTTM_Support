@@ -113,35 +113,49 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.5"
+                    android:layout_weight="0.83"
                     android:gravity="center|start"
-                    android:paddingStart="@dimen/default_margin"
-                    android:text="№"
+                    android:paddingStart="@dimen/small_margin"
+                    android:text="Tartib raqami"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/standard_text_size" />
+                    android:textSize="14sp" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/white" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.9"
+                    android:layout_marginStart="@dimen/small_margin"
+                    android:layout_weight="1.38"
                     android:gravity="center|start"
                     android:text="Ticket nomi"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/standard_text_size" />
+                    android:textSize="14sp" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/white" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.6"
+                    android:layout_marginStart="@dimen/small_margin"
+                    android:layout_weight="0.64"
                     android:gravity="center|start"
                     android:text="Holati"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <androidx.viewpager.widget.ViewPager
                 android:id="@+id/view_pager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:saveEnabled="false"
                 android:layout_below="@id/tickets_actionbar"
                 android:layout_alignParentBottom="true" />
 

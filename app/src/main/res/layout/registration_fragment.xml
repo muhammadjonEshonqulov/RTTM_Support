@@ -41,41 +41,63 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/left_right_margin_size"
                 android:layout_marginTop="@dimen/left_right_margin_size"
-                app:cardCornerRadius="@dimen/default_margin"
+                android:fontFamily="@font/calibri"
+                android:paddingStart="@dimen/default_margin"
+                android:text="Fayl biriktiring"
+                android:textColor="@color/black"
+                android:textSize="@dimen/small_text_size" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/left_right_margin_size"
+                android:layout_marginTop="@dimen/small_margin"
+                android:layout_marginEnd="@dimen/left_right_margin_size"
                 app:cardElevation="@dimen/left_right_margin_size">
 
-                <FrameLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:paddingBottom="@dimen/left_right_margin_size"
-                        android:src="@drawable/png" />
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:layout_marginBottom="@dimen/small_margin"
-                        android:fontFamily="@font/ibm_plex_sans_medium"
-                        android:gravity="center"
-                        android:text="Rasm tanlang"
-                        android:textColor="@color/cl_color_primary" />
+                        android:id="@+id/image_name"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/calibri"
+                        android:gravity="center|start"
+                        android:paddingStart="@dimen/left_right_margin_size"
+                        android:text="Fayl nomi"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/small_text_size" />
 
                     <ImageView
-                        android:id="@+id/logo"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="fitXY" />
-                </FrameLayout>
+                        android:id="@+id/upload_image"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:background="#5c5c5c"
+                        android:paddingTop="@dimen/small_margin"
+                        android:paddingBottom="@dimen/small_margin"
+                        android:src="@drawable/upload_file" />
 
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:background="#59c114"
+                        android:paddingTop="@dimen/small_margin"
+                        android:paddingBottom="@dimen/small_margin"
+                        android:src="@drawable/add_file"
+                        android:visibility="gone" />
+                </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 
@@ -90,6 +112,7 @@
                 <Spinner
                     android:id="@+id/spinner_organization"
                     android:layout_width="match_parent"
+                    android:paddingStart="@dimen/small_margin"
                     android:layout_height="50dp" />
 
             </FrameLayout>
@@ -119,6 +142,7 @@
                 <Spinner
                     android:id="@+id/spinner_organization_name"
                     android:layout_width="match_parent"
+                    android:paddingStart="@dimen/small_margin"
                     android:layout_height="50dp" />
             </FrameLayout>
 
@@ -136,72 +160,112 @@
                 android:textSize="@dimen/small_text_size"
                 android:visibility="gone" />
 
-            <EditText
-                android:id="@+id/position"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/position_lay"
+                style="@style/TextInputLayoutStyle"
                 android:layout_marginStart="@dimen/left_right_margin_size"
                 android:layout_marginTop="@dimen/left_right_margin_size"
                 android:layout_marginEnd="@dimen/left_right_margin_size"
-                android:background="@drawable/back_edittext"
-                android:hint="Lavozim"
-                android:inputType="textPersonName"
-                android:padding="@dimen/default_margin"
-                android:singleLine="true" />
-
-            <EditText
-                android:id="@+id/surname"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="wrap_content">
+
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/position"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Lavozim"
+                    android:inputType="textPersonName"
+                    android:padding="@dimen/default_margin"
+                    android:singleLine="true"
+                    android:textColor="@color/black" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/surname_lay"
+                style="@style/TextInputLayoutStyle"
                 android:layout_marginStart="@dimen/left_right_margin_size"
                 android:layout_marginTop="@dimen/left_right_margin_size"
                 android:layout_marginEnd="@dimen/left_right_margin_size"
-                android:background="@drawable/back_edittext"
-                android:hint="Familiya"
-                android:inputType="textPersonName"
-                android:padding="@dimen/default_margin"
-                android:singleLine="true" />
-
-
-            <EditText
-                android:id="@+id/name"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="wrap_content">
+
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/surname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Familiya"
+                    android:inputType="textPersonName"
+                    android:padding="@dimen/default_margin"
+                    android:singleLine="true"
+                    android:textColor="@color/black" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/name_lay"
+                style="@style/TextInputLayoutStyle"
                 android:layout_marginStart="@dimen/left_right_margin_size"
                 android:layout_marginTop="@dimen/left_right_margin_size"
                 android:layout_marginEnd="@dimen/left_right_margin_size"
-                android:background="@drawable/back_edittext"
-                android:hint="Ism"
-                android:inputType="textPersonName"
-                android:padding="@dimen/default_margin"
-                android:singleLine="true" />
-
-<!--            <EditText-->
-<!--                android:id="@+id/middle_name"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginStart="@dimen/left_right_margin_size"-->
-<!--                android:layout_marginTop="@dimen/left_right_margin_size"-->
-<!--                android:layout_marginEnd="@dimen/left_right_margin_size"-->
-<!--                android:background="@drawable/back_edittext"-->
-<!--                android:hint="Sharif"-->
-<!--                android:inputType="textPersonName"-->
-<!--                android:padding="@dimen/default_margin"-->
-<!--                android:singleLine="true" />-->
-
-            <EditText
-                android:id="@+id/phone"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="wrap_content">
+
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Ism"
+                    android:inputType="textPersonName"
+                    android:padding="@dimen/default_margin"
+                    android:singleLine="true"
+                    android:textColor="@color/black" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <!--            <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/login_auth_lay"
+                            style="@style/TextInputLayoutStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+
+                           >
+
+
+                            <com.google.android.material.textfield.TextInputEditText-->
+            <!--                android:id="@+id/middle_name"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginStart="@dimen/left_right_margin_size"-->
+            <!--                android:layout_marginTop="@dimen/left_right_margin_size"-->
+            <!--                android:layout_marginEnd="@dimen/left_right_margin_size"-->
+            <!--               -->
+            <!--                android:hint="Sharif"-->
+            <!--                android:inputType="textPersonName"-->
+            <!--                android:padding="@dimen/default_margin"-->
+            <!--                android:singleLine="true" />-->
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/phone_lay"
+                style="@style/TextInputLayoutStyle"
                 android:layout_marginStart="@dimen/left_right_margin_size"
                 android:layout_marginTop="@dimen/left_right_margin_size"
                 android:layout_marginEnd="@dimen/left_right_margin_size"
-                android:background="@drawable/back_edittext"
-                android:hint="Telefon"
-                android:inputType="number"
-                android:maxLength="9"
-                android:padding="@dimen/default_margin"
-                android:singleLine="true" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:hint="Telefon"
+                    android:inputType="number"
+                    android:maxLength="9"
+                    android:padding="@dimen/default_margin"
+                    android:singleLine="true" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:id="@+id/phone_mes"
@@ -217,18 +281,26 @@
                 android:textSize="@dimen/small_text_size"
                 android:visibility="gone" />
 
-            <EditText
-                android:id="@+id/email"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/email_lay"
+                style="@style/TextInputLayoutStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/left_right_margin_size"
                 android:layout_marginTop="@dimen/left_right_margin_size"
-                android:layout_marginEnd="@dimen/left_right_margin_size"
-                android:background="@drawable/back_edittext"
-                android:hint="Email"
-                android:inputType="textEmailAddress"
-                android:padding="@dimen/default_margin"
-                android:singleLine="true" />
+                android:layout_marginEnd="@dimen/left_right_margin_size">
+
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Email"
+                    android:textColor="@color/black"
+                    android:inputType="textEmailAddress"
+                    android:padding="@dimen/default_margin"
+                    android:singleLine="true" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <FrameLayout
                 android:id="@+id/password_lay"
@@ -238,17 +310,25 @@
                 android:layout_marginTop="@dimen/left_right_margin_size"
                 android:layout_marginEnd="@dimen/left_right_margin_size">
 
-                <EditText
-                    android:id="@+id/password_registration"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/password_registration_lay"
+                    style="@style/TextInputLayoutStyle"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/back_edittext"
-                    android:fontFamily="@font/ibm_plex_sans_medium"
-                    android:hint="parol"
-                    android:inputType="textPassword"
-                    android:minHeight="48dp"
-                    android:padding="10dp"
-                    android:singleLine="true" />
+                    android:layout_height="wrap_content">
+
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/password_registration"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/ibm_plex_sans_medium"
+                        android:hint="Parol"
+                        android:inputType="textPassword"
+                        android:textColor="@color/black"
+                        android:minHeight="48dp"
+                        android:padding="10dp"
+                        android:singleLine="true" />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <ImageView
                     android:id="@+id/password_registration_show"
@@ -286,17 +366,25 @@
                 android:layout_marginTop="@dimen/left_right_margin_size"
                 android:layout_marginEnd="@dimen/left_right_margin_size">
 
-                <EditText
-                    android:id="@+id/re_password_registration"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/re_password_registration_lay"
+                    style="@style/TextInputLayoutStyle"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/back_edittext"
-                    android:fontFamily="@font/ibm_plex_sans_medium"
-                    android:hint="parolni takrorlash"
-                    android:inputType="textPassword"
-                    android:minHeight="48dp"
-                    android:padding="10dp"
-                    android:singleLine="true" />
+                    android:layout_height="wrap_content">
+
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/re_password_registration"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/ibm_plex_sans_medium"
+                        android:hint="Parolni takrorlash"
+                        android:textColor="@color/black"
+                        android:inputType="textPassword"
+                        android:minHeight="48dp"
+                        android:padding="10dp"
+                        android:singleLine="true" />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <ImageView
                     android:id="@+id/re_password_registration_show"
@@ -323,17 +411,25 @@
                 android:textColor="@color/cl_color_primary"
                 android:visibility="gone" />
 
-            <Button
-                android:id="@+id/send"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/left_right_margin_size"
                 android:layout_marginTop="@dimen/left_right_margin_size"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="7dp"
                 android:layout_marginEnd="@dimen/left_right_margin_size"
                 android:layout_marginBottom="@dimen/left_right_margin_size"
-                android:background="@color/cl_color_primary"
-                android:text="Yuborish"
-                android:textColor="@color/white" />
+                app:cardElevation="@dimen/left_right_margin_size">
+
+                <Button
+                    android:id="@+id/send"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/cl_color_primary"
+                    android:text="Yuborish"
+                    android:textColor="@color/white" />
+            </androidx.cardview.widget.CardView>
+
         </LinearLayout>
     </ScrollView>
 

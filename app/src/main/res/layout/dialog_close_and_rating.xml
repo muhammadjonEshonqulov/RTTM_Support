@@ -7,6 +7,7 @@
         android:id="@+id/feedback_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         android:orientation="vertical"
         android:paddingBottom="@dimen/left_right_margin_size">
 
@@ -16,6 +17,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/ibm_plex_sans_medium"
             android:paddingStart="20dp"
+            android:textColor="@color/black"
             android:paddingTop="20dp"
             android:paddingEnd="20dp"
             android:text="Sizga xizmat ko'rsatganlikni baxolang" />
@@ -69,6 +71,9 @@
             android:id="@+id/feedback_text_lay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            style="@style/TextInputLayoutStyle"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
             android:layout_below="@id/stars_lay"
             android:textColorHint="@color/black">
 
@@ -76,11 +81,8 @@
                 android:id="@+id/feedback_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
                 android:fontFamily="@font/ibm_plex_sans_medium"
                 android:hint="O'z fikringizni qoldiring"
-                android:padding="10dp"
                 android:textColorHint="@color/white" />
 
         </com.google.android.material.textfield.TextInputLayout>

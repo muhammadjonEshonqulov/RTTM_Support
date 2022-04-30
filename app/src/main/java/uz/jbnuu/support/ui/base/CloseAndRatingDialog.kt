@@ -11,13 +11,13 @@ class CloseAndRatingDialog : AlertDialog {
     private var text: TextView? = null
 
 
-    var submit_listener_onclick: (() -> Unit)? = null
+    var submit_listener_onclick: ((Int, String) -> Unit)? = null
     var cancel_listener_onclick: (() -> Unit)? = null
     var rating = 0
 
-    lateinit var binding: DialogCloseAndRatingBinding
+    var binding: DialogCloseAndRatingBinding
 
-    fun setOnSubmitClick(l: (() -> Unit)?) {
+    fun setOnSubmitClick(l: ((Int, String) -> Unit)?) {
         submit_listener_onclick = l
     }
 
@@ -32,12 +32,14 @@ class CloseAndRatingDialog : AlertDialog {
             LayoutInflater.from(context).inflate(R.layout.dialog_close_and_rating, null, false)
         binding = DialogCloseAndRatingBinding.bind(view)
 
-
-
         view?.apply {
 
             binding.submit.setOnClickListener {
-                submit_listener_onclick?.invoke()
+                if (binding.feedbackText.text.toString().isNotEmpty()){
+                    submit_listener_onclick?.invoke(rating, binding.feedbackText.text.toString())
+                } else {
+                    binding.feedbackText.error = "Iltimos, o'z fikringizni qoldiring"
+                }
             }
             binding.cancel.setOnClickListener {
                 cancel_listener_onclick?.invoke()

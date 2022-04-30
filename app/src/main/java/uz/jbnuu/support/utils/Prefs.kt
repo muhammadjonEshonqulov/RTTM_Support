@@ -9,14 +9,18 @@ class Prefs @Inject constructor(context: Context) {
 
     private val prefsName: String = "JbnuuPref"
     private var prefs: SharedPreferences = context.getSharedPreferences(prefsName, Context.MODE_PRIVATE)
-
     val token: String = "token"
+
+    val versionCode = "versionCode"
+    val versionType = "versionType"
+    val countEnter = "countEnter"
     val fam: String = "fam"
     val phone: String = "phone"
     val photo: String = "photo"
     val role: String = "role"
     val email: String = "email"
     val bolim_id: String = "bolim_id"
+    val sub_bolim_id: String = "bolim_id"
     val bolim_name: String = "bolim_name"
     val lavozim: String = "lavozim"
     val name: String = "name"

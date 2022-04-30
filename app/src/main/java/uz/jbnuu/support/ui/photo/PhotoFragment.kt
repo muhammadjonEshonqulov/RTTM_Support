@@ -20,7 +20,7 @@ class PhotoFragment : BaseFragment<FragmentPhotoBinding>(FragmentPhotoBinding::i
             arguments?.getString("url_img")?.let {
                 Glide.with(requireContext())
                     .load(it)
-                    .placeholder(R.drawable.logo_background_circle)
+                    .placeholder(R.mipmap.ic_launcher)
                     .diskCacheStrategy(
                         DiskCacheStrategy.ALL)
                     .into(binding.photoVieww)

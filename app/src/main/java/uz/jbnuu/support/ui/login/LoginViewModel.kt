@@ -4,9 +4,11 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import uz.jbnuu.support.data.Repository
 import uz.jbnuu.support.models.body.LoginBody
@@ -23,20 +25,20 @@ class LoginViewModel @Inject constructor(
     application: Application,
 ) : AndroidViewModel(application) {
 
-    private val _loginResponse: MutableStateFlow<NetworkResult<LoginResponse>> = MutableStateFlow(NetworkResult.Loading())
-    var loginResponse: StateFlow<NetworkResult<LoginResponse>> = _loginResponse.asStateFlow()
+    private val _loginResponse = Channel<NetworkResult<LoginResponse>>()
+    var loginResponse = _loginResponse.receiveAsFlow()
 
     fun login(loginBody: LoginBody) = viewModelScope.launch {
-        _loginResponse.value = NetworkResult.Loading()
+        _loginResponse.send( NetworkResult.Loading())
         if (hasInternetConnection(getApplication())) {
             try {
-                val response =repository.remote.login(loginBody)
-                _loginResponse.value = handleResponse(response)
+                val response = repository.remote.login(loginBody)
+                _loginResponse.send(handleResponse(response))
             } catch (e: Exception) {
-                _loginResponse.value = NetworkResult.Error("Xatolik : "+e.message)
+                _loginResponse.send( NetworkResult.Error("Xatolik : "+e.message))
             }
         } else {
-            _loginResponse.value = NetworkResult.Error("Server bilan aloqa yo'q")
+            _loginResponse.send( NetworkResult.Error("Server bilan aloqa yo'q"))
         }
     }
 

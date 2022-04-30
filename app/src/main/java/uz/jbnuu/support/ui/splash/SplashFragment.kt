@@ -32,36 +32,41 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         onCreateTheme(themeManager.currentTheme)
 
-        activity?.application?.let {
-            if (hasInternetConnection(it)){
-                viewLifecycleOwner.lifecycleScope.launch {
-                    viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                        vm.login(LoginBody(prefss.get(prefss.email, ""), prefss.get(prefss.password, "")))
-                        vm.loginResponse.collect {
-                            when(it){
-                                is NetworkResult.Success->{
-                                    it.data?.token?.let {
-                                        prefss.save(prefss.token, it)
-                                    }
-                                    startDestination()
-                                }
-                                is NetworkResult.Loading->{
-                                    startDestination()
-                                }
-                                is NetworkResult.Error->{
-                                    startDestination()                                }
-                            }
-                        }
-                    }
-                }
-            } else {
-                viewLifecycleOwner.lifecycleScope.launch {
-                    delay(500).also {
-                        startDestination()
-                    }
-                }
-            }
+        viewLifecycleOwner.lifecycleScope.launch {
+            delay(500)
+            startDestination()
         }
+
+//        activity?.application?.let {
+//            if (hasInternetConnection(it)){
+//                viewLifecycleOwner.lifecycleScope.launch {
+//                    viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+//                        vm.login(LoginBody(prefss.get(prefss.email, ""), prefss.get(prefss.password, "")))
+//                        vm.loginResponse.collect {
+//                            when(it){
+//                                is NetworkResult.Success->{
+//                                    it.data?.token?.let {
+//                                        prefss.save(prefss.token, it)
+//                                    }
+//                                    startDestination()
+//                                }
+//                                is NetworkResult.Loading->{
+//                                    startDestination()
+//                                }
+//                                is NetworkResult.Error->{
+//                                    startDestination()                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            } else {
+//                viewLifecycleOwner.lifecycleScope.launch {
+//                    delay(500).also {
+//                        startDestination()
+//                    }
+//                }
+//            }
+//        }
 
     }
     

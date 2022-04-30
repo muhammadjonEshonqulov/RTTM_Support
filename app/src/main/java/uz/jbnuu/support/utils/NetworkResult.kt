@@ -5,7 +5,9 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import com.google.gson.JsonObject
 import dagger.hilt.android.internal.Contexts.getApplication
+import org.json.JSONObject
 import retrofit2.Response
 
 sealed class NetworkResult<T>(
@@ -42,9 +44,12 @@ fun <T> handleResponse(response: Response<T>): NetworkResult<T> {
         response.code() == 404 -> {
             return NetworkResult.Error("Not found",  code = 404)
         }
+        response.code() == 422 -> {
+            return NetworkResult.Error("Error",   code = 422)
+        }
         response.isSuccessful -> {
-            val topicData = response.body()
-            return NetworkResult.Success(topicData, code = 200)
+            val data = response.body()
+            return NetworkResult.Success(data = data, code = 200)
         }
         else -> return NetworkResult.Error(response.message())
     }

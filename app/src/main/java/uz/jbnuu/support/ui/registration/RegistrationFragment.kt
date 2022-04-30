@@ -44,16 +44,20 @@ import uz.jbnuu.support.ui.base.BaseFragment
 import uz.jbnuu.support.ui.base.ProgressDialog
 import uz.jbnuu.support.utils.FileUtils
 import uz.jbnuu.support.utils.NetworkResult
+import uz.jbnuu.support.utils.Prefs
 import uz.jbnuu.support.utils.lg
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.util.regex.Pattern
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(RegistrationFragmentBinding::inflate), View.OnClickListener {
 
     private val vm:RegistrationViewModel by viewModels()
+    @Inject
+    lateinit var prefs: Prefs
     private var filePhoto: File? = null
     private val PERMISSION_CODE = 1001
     private val IMAGE_CHOOSE = 1000
@@ -64,7 +68,7 @@ class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(Registrat
     private var progressDialog:ProgressDialog? = null
 
     override fun onCreate(view: View) {
-        binding.logo.setOnClickListener(this)
+        binding.uploadImage.setOnClickListener(this)
         binding.passwordRegistrationShow.setOnClickListener(this)
         binding.rePasswordRegistrationShow.setOnClickListener(this)
         binding.backBtn.setOnClickListener(this)
@@ -118,8 +122,7 @@ class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(Registrat
                     binding.rePasswordRegistrationMes.visibility = View.VISIBLE
                     binding.rePasswordRegistrationMes.text = "Parol kamida 6ta belgidan iborat bo'lishi kerak"
                 } else {
-                    lg("password->"+password)
-                    lg("p0->"+p0)
+
                     if (password == p0.toString()){
                         binding.rePasswordRegistrationMes.visibility = View.GONE
                     } else {
@@ -156,8 +159,8 @@ class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(Registrat
                             }
                         }
                     }
-                    val organizationAdapter = ArrayAdapter(binding.root.context, android.R.layout.simple_spinner_item, arraySpinner)
-                    organizationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    val organizationAdapter = ArrayAdapter(binding.root.context, R.layout.simple_spinner_item, arraySpinner)
+                    organizationAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
                     binding.spinnerOrganizationName.adapter = organizationAdapter
                     binding.spinnerOrganizationName.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                         override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
@@ -174,10 +177,11 @@ class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(Registrat
             }
         }
     }
+
     private fun setOrganizationItems() {
         var arraySpinner = arrayOf("tanlang","Tarkibiy bo'linma", "Fakultet","Kafedra")
-        val organizationAdapter = ArrayAdapter(binding.root.context, android.R.layout.simple_spinner_item, arraySpinner)
-        organizationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        val organizationAdapter = ArrayAdapter(binding.root.context, R.layout.simple_spinner_item, arraySpinner)
+        organizationAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
         binding.spinnerOrganization.adapter = organizationAdapter
         binding.spinnerOrganization.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
@@ -373,8 +377,8 @@ class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(Registrat
                 hideKeyBoard()
                 finish()
             }
-            binding.logo -> {
-                popupCamera(binding.logo)
+            binding.uploadImage -> {
+                popupCamera(binding.uploadImage)
             }
             binding.passwordRegistrationShow -> {
                 if (binding.passwordRegistration.transformationMethod == PasswordTransformationMethod.getInstance()) {
@@ -420,24 +424,16 @@ class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(Registrat
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
 
 //                binding.registrPassportImageMessage.visibility = View.GONE
-                image_uri = filePhoto?.absolutePath?.toUri().toString()
-            binding.logo.setImageURI(saveBitmapToFile(filePhoto)?.absolutePath?.toUri())
-
+            image_uri = filePhoto?.absolutePath?.toUri().toString()
+//            binding.logo.setImageURI(saveBitmapToFile(filePhoto)?.absolutePath?.toUri())
+            binding.imageName.text = filePhoto?.name
 
         } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
         if (requestCode == IMAGE_CHOOSE && resultCode == Activity.RESULT_OK) {
-
-//                binding.registrPassportImageMessage.visibility = View.GONE
-//                passportImageUri = filePhoto?.absolutePath?.toUri().toString()
-//                binding.logo.setImageURI(saveBitmapToFile(filePhoto)?.absolutePath?.toUri())
-//            binding.logo.setImageURI(data?.data)
-
-            Glide
-                .with(this)
-                .load(data?.data)
-                .into(binding.logo)
+            image_uri = data?.data.toString()
+            binding.imageName.text = filePhoto?.name
         }
     }
 
