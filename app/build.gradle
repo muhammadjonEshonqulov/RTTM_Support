@@ -12,28 +12,28 @@ android {
 
     signingConfigs {
         playStoreConfig {
-            storeFile file('C:\\Users\\Muhammad\\AndroidStudioProjects\\rttm-support-app\\build\\rttm_support.jks')
+            storeFile file('C:\\Users\\Muhammad\\AndroidStudioProjects\\rttm-support-app\\rttm_support.jks')
             storePassword 'rttm_support_jbnuu'
-            keyAlias 'keys()'
+            keyAlias 'rttm_support_jbnuu'
             keyPassword 'rttm_support_jbnuu'
         }
     }
 
-    packagingOptions {
+//    packagingOptions {
+////        exclude 'META-INF/DEPENDENCIES'
+////        exclude 'META-INF/LICENSE'
+////        exclude 'META-INF/LICENSE.txt'
+////        exclude 'META-INF/license.txt'
+////        exclude 'META-INF/NOTICE'
+////        exclude 'META-INF/NOTICE.txt'
+////        exclude 'META-INF/notice.txt'
+////        exclude 'META-INF/ASL2.0'
+////        exclude("META-INF/*.kotlin_module")
 //        exclude 'META-INF/DEPENDENCIES'
-//        exclude 'META-INF/LICENSE'
-//        exclude 'META-INF/LICENSE.txt'
-//        exclude 'META-INF/license.txt'
-//        exclude 'META-INF/NOTICE'
-//        exclude 'META-INF/NOTICE.txt'
-//        exclude 'META-INF/notice.txt'
-//        exclude 'META-INF/ASL2.0'
-//        exclude("META-INF/*.kotlin_module")
-        exclude 'META-INF/DEPENDENCIES'
-    }
+//    }
 
     defaultConfig {
-        applicationId "uz.jbnuu.support"
+        applicationId "uz.rttm.support"
         minSdk 23
         targetSdk 32
         versionCode 1

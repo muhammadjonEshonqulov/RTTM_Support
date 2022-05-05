@@ -13,5 +13,5 @@ dependencyResolutionManagement {
         maven { url 'https://jitpack.io' }
     }
 }
-rootProject.name = "JBNUU Support"
+rootProject.name = "RTTM Support"
 include ':app'

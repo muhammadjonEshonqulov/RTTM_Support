@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="uz.jbnuu.support">
+    package="uz.rttm.support">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
@@ -12,7 +12,7 @@
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:name=".app.App"
+        android:name="uz.rttm.support.app.App"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
@@ -22,7 +22,7 @@
         tools:targetApi="s">
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="uz.jbnuu.support.fileprovider"
+            android:authorities="uz.rttm.support.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

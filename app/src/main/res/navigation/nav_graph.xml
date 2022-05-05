@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="uz.jbnuu.support.ui.login.LoginFragment"
+        android:name="uz.rttm.support.ui.login.LoginFragment"
         android:label="LoginFragment"
         tools:layout="@layout/login_fragment">
         <action
@@ -49,12 +49,12 @@
 
     <fragment
         android:id="@+id/registrationFragment"
-        android:name="uz.jbnuu.support.ui.registration.RegistrationFragment"
+        android:name="uz.rttm.support.ui.registration.RegistrationFragment"
         android:label="RegistrationFragment"
         tools:layout="@layout/registration_fragment" />
     <fragment
         android:id="@+id/userMainFragment"
-        android:name="uz.jbnuu.support.ui.user_main.UserMainFragment"
+        android:name="uz.rttm.support.ui.user_main.UserMainFragment"
         android:label="UserMainFragment"
         tools:layout="@layout/user_main_fragment">
         <action
@@ -99,7 +99,7 @@
     </fragment>
     <fragment
         android:id="@+id/managerMainFragment"
-        android:name="uz.jbnuu.support.ui.manager_main.ManagerMainFragment"
+        android:name="uz.rttm.support.ui.manager_main.ManagerMainFragment"
         android:label="ManagerMainFragment"
         tools:layout="@layout/manager_main_fragment">
         <action
@@ -137,12 +137,12 @@
     </fragment>
     <fragment
         android:id="@+id/adminMainFragment"
-        android:name="uz.jbnuu.support.ui.admin_main.AdminMainFragment"
+        android:name="uz.rttm.support.ui.admin_main.AdminMainFragment"
         android:label="AdminMainFragment"
         tools:layout="@layout/admin_main_fragment" />
     <fragment
         android:id="@+id/allNotificationsFragment"
-        android:name="uz.jbnuu.support.ui.News.NewsFragment"
+        android:name="uz.rttm.support.ui.News.NewsFragment"
         android:label="AllNotificationsFragment"
         tools:layout="@layout/all_notifications_fragment">
         <action
@@ -156,7 +156,7 @@
     </fragment>
     <fragment
         android:id="@+id/splashFragment"
-        android:name="uz.jbnuu.support.ui.splash.SplashFragment"
+        android:name="uz.rttm.support.ui.splash.SplashFragment"
         android:label="SplashFragment"
         tools:layout="@layout/fragment_splash">
         <action
@@ -198,7 +198,7 @@
     </fragment>
     <fragment
         android:id="@+id/chatFragment"
-        android:name="uz.jbnuu.support.ui.chat.ChatFragment"
+        android:name="uz.rttm.support.ui.chat.ChatFragment"
         android:label="ChatFragment"
         tools:layout="@layout/chat_fragments">
         <action
@@ -213,7 +213,7 @@
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
-        android:name="uz.jbnuu.support.ui.profile.ProfileFragment"
+        android:name="uz.rttm.support.ui.profile.ProfileFragment"
         android:label="ProfileFragment"
         tools:layout="@layout/profile_fragment" />
 </navigation>
