@@ -101,10 +101,10 @@ class NewsFragment(val status:Int) : BaseFragment<AllNotificationsFragmentBindin
                         }
 
                         is NetworkResult.Error -> {
-                            if (findNavControllerSafely()?.currentDestination?.id == R.id.userMainFragment) {
-                                prefs.clear()
-                                findNavControllerSafely()?.navigate(R.id.action_userMainFragment_to_all_loginFragment)
-                            } else  if (findNavControllerSafely()?.currentDestination?.id == R.id.managerMainFragment) {
+                                if (findNavControllerSafely()?.currentDestination?.id == R.id.userMainFragment) {
+                                    prefs.clear()
+                                    findNavControllerSafely()?.navigate(R.id.action_userMainFragment_to_all_loginFragment)
+                                } else  if (findNavControllerSafely()?.currentDestination?.id == R.id.managerMainFragment) {
                                 prefs.clear()
                                 findNavControllerSafely()?.navigate(R.id.action_managerMainFragment_to_all_loginFragment)
                             }

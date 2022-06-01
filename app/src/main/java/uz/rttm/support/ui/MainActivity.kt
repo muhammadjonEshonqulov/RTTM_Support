@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         if (BuildConfig.VERSION_CODE < prefss.get(prefss.versionCode,1)){
             val updateDialog = UpdateDialog(this)
 
-            if (prefss.get( prefss.versionType, "0") == "0"){
+            if (prefss.get( prefss.versionType, 0) == 0){
                 if (prefss.get( prefss.countEnter, 3) >= 3){
                     updateDialog.show()
                 }
@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
             }
             updateDialog.setOnSubmitClick {
                 updateDialog.dismiss()
-                if (prefss.get( prefss.versionType, "0") == "1"){
+                if (prefss.get( prefss.versionType, 0) == 1){
                     finish()
                 } else {
                     prefss.save( prefss.countEnter, 0)

@@ -1,6 +1,7 @@
 package uz.rttm.support.models.register
 
 data class RegisterResponse(
+    val msg: String?,
     val name: String?,
     val fam: String?,
     val sh: String?,

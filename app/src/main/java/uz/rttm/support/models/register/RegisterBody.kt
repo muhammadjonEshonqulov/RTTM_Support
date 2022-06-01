@@ -13,5 +13,6 @@ data class RegisterBody(
     val phone: RequestBody,
     val bolim_id: RequestBody,
     val lavozim: RequestBody,
-    val photo: MultipartBody.Part?
+    val photo: MultipartBody.Part?,
+    var token: RequestBody? = null
 )

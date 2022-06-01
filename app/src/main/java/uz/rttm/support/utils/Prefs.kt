@@ -12,6 +12,7 @@ class Prefs @Inject constructor(context: Context) {
     val token: String = "token"
 
     val versionCode = "versionCode"
+    val versionName = "versionName"
     val versionType = "versionType"
     val countEnter = "countEnter"
     val fam: String = "fam"
@@ -20,7 +21,7 @@ class Prefs @Inject constructor(context: Context) {
     val role: String = "role"
     val email: String = "email"
     val bolim_id: String = "bolim_id"
-    val sub_bolim_id: String = "bolim_id"
+    val sub_bolim_id: String = "sub_bolim_id"
     val bolim_name: String = "bolim_name"
     val lavozim: String = "lavozim"
     val name: String = "name"

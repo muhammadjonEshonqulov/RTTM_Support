@@ -9,6 +9,7 @@ import uz.rttm.support.databinding.FragmentPhotoBinding
 import uz.rttm.support.ui.base.BaseFragment
 import uz.rttm.support.utils.theme.Theme
 
+
 class PhotoFragment : BaseFragment<FragmentPhotoBinding>(FragmentPhotoBinding::inflate) {
 
 

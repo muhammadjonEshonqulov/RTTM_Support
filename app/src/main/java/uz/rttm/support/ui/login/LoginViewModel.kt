@@ -14,6 +14,8 @@ import uz.rttm.support.data.Repository
 import uz.rttm.support.models.body.LoginBody
 import uz.rttm.support.models.login.LoginResponse
 import uz.rttm.support.models.login.User
+import uz.rttm.support.models.register.ForgetResponse
+import uz.rttm.support.models.repeat.RepeatBody
 import uz.rttm.support.utils.NetworkResult
 import uz.rttm.support.utils.handleResponse
 import uz.rttm.support.utils.hasInternetConnection
@@ -39,6 +41,38 @@ class LoginViewModel @Inject constructor(
             }
         } else {
             _loginResponse.send( NetworkResult.Error("Server bilan aloqa yo'q"))
+        }
+    }
+    private val _forgetResponse = Channel<NetworkResult<ForgetResponse>>()
+    var forgetResponse = _forgetResponse.receiveAsFlow()
+
+    fun forget(email:String) = viewModelScope.launch {
+        _forgetResponse.send( NetworkResult.Loading())
+        if (hasInternetConnection(getApplication())) {
+            try {
+                val response = repository.remote.forget(email)
+                _forgetResponse.send(handleResponse(response))
+            } catch (e: Exception) {
+                _forgetResponse.send( NetworkResult.Error("Xatolik : "+e.message))
+            }
+        } else {
+            _forgetResponse.send( NetworkResult.Error("Server bilan aloqa yo'q"))
+        }
+    }
+    private val _repeatResponse = Channel<NetworkResult<Int>>()
+    var repeatResponse = _repeatResponse.receiveAsFlow()
+
+    fun repeat(repeatBody: RepeatBody) = viewModelScope.launch {
+        _repeatResponse.send( NetworkResult.Loading())
+        if (hasInternetConnection(getApplication())) {
+            try {
+                val response = repository.remote.repeat(repeatBody)
+                _repeatResponse.send(handleResponse(response))
+            } catch (e: Exception) {
+                _repeatResponse.send( NetworkResult.Error("Xatolik : "+e.message))
+            }
+        } else {
+            _repeatResponse.send( NetworkResult.Error("Server bilan aloqa yo'q"))
         }
     }
 

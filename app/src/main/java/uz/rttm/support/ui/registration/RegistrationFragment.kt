@@ -3,6 +3,7 @@ package uz.rttm.support.ui.registration
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -15,6 +16,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.view.LayoutInflater
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
@@ -36,10 +38,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import uz.rttm.support.R
+import uz.rttm.support.databinding.DialogEmailVerificationBinding
+import uz.rttm.support.databinding.DialogRegisterVerificationBinding
 import uz.rttm.support.databinding.RegistrationFragmentBinding
 import uz.rttm.support.models.register.RegisterBody
+import uz.rttm.support.models.register.RegisterVerifyBody
 import uz.rttm.support.ui.base.BaseFragment
 import uz.rttm.support.ui.base.ProgressDialog
 import uz.rttm.support.utils.*
@@ -283,6 +289,49 @@ class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(Registrat
         )
     }
 
+    fun verifyDialog(registerBody: RegisterBody){
+        val stringType = "text/plain".toMediaTypeOrNull()
+        val dialog = AlertDialog.Builder(binding.root.context).create()
+        val dialogView = LayoutInflater.from(binding.root.context).inflate(R.layout.dialog_register_verification,null, false)
+        dialog.setView(dialogView)
+        dialog.show()
+        dialog.setCancelable(false)
+        val dialogBinding = DialogRegisterVerificationBinding.bind(dialogView)
+        dialogBinding.cancelBtn.setOnClickListener {
+            hideKeyBoard()
+            dialog.dismiss()
+        }
+        dialogBinding.sendBtn.setOnClickListener {
+            hideKeyBoard()
+            if (dialogBinding.code.text.toString().isNotEmpty()){
+                registerBody.token = dialogBinding.code.text.toString().toRequestBody(stringType)
+                vm.register(registerBody)
+                viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+                    viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                        vm.registerResponse.collect {
+                            when(it){
+                                is NetworkResult.Success ->{
+                                    dialog.dismiss()
+                                    closeLoader()
+                                    snackBar("Ro'yxatdan o'tish muvaffaqiyatli amalga oshirildi.")
+                                    finish()
+                                }
+                                is NetworkResult.Error -> {
+                                    closeLoader()
+                                    snackBar(it.message.toString())
+                                }
+                                is NetworkResult.Loading ->{
+                                    showLoader()
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                dialogBinding.code.error = ""
+            }
+        }
+    }
     override fun onClick(p0: View?) {
         p0.blockClickable()
         when (p0) {
@@ -290,46 +339,51 @@ class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(Registrat
                 hideKeyBoard()
                 if (organization_id > 0 && organization_sub_id > 0 && binding.surname.text.toString().isNotEmpty() && binding.name.text.toString().isNotEmpty() &&  binding.position.text.toString().isNotEmpty() && binding.phone.text.toString().isNotEmpty() && binding.email.text.toString().endsWith("@jbnuu.uz") && binding.passwordRegistration.text.toString().isNotEmpty() && binding.rePasswordRegistration.text.toString().isNotEmpty()){
                     if (binding.passwordRegistration.text.toString().length >= 6 && binding.rePasswordRegistration.text.toString().length >= 6 && binding.email.text.toString().endsWith("@jbnuu.uz")){
+
                         val stringType = "text/plain".toMediaTypeOrNull()
                         val imageTypee = "image/JPEG".toMediaTypeOrNull()
                         val imageUri: Uri = Uri.parse(image_uri)
                         val imageFile: File = FileUtils.getFile(requireContext(), imageUri)
                         val image = saveBitmapToFile(imageFile)
-                        vm.register(RegisterBody(
+                        val registerBody = RegisterBody(
                             binding.email.text.toString().toRequestBody(stringType),
                             binding.name.text.toString().toRequestBody(stringType),
                             binding.passwordRegistration.text.toString().toRequestBody(stringType),
                             binding.rePasswordRegistration.text.toString().toRequestBody(stringType),
                             binding.surname.text.toString().toRequestBody(stringType),
-                            " ".toRequestBody(stringType),
+                            "...".toRequestBody(stringType),
                             binding.phone.text.toString().toRequestBody(stringType),
                             organization_sub_id.toString().toRequestBody(stringType),
                             binding.position.text.toString().toRequestBody(stringType),
                             if (image?.exists() == true) MultipartBody.Part.createFormData("photo","", image.readBytes().toRequestBody(imageTypee)) else null
-                        ))
-                        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+                        )
+
+
+                        vm.registerVerify(RegisterVerifyBody(binding.email.text.toString()))
+                        viewLifecycleOwner.lifecycleScope.launch {
                             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                                vm.registerResponse.collect {
-                                    when(it){
-                                        is NetworkResult.Success ->{
-                                            progressDialog?.dismiss()
-                                            snackBar("Ro'yxatdan o'tish muvaffaqiyatli amalga oshirildi.")
-                                            finish()
+
+                                vm.registerVerifyResponse.collect {
+                                    when (it) {
+                                        is NetworkResult.Success -> {
+                                            closeLoader()
+                                            if (it.data?.response == "succes"){
+                                                verifyDialog(registerBody)
+                                            }
+                                        }
+                                        is NetworkResult.Loading -> {
+                                            showLoader()
                                         }
                                         is NetworkResult.Error -> {
-                                            progressDialog?.dismiss()
+                                            closeLoader()
                                             snackBar(it.message.toString())
-                                        }
-                                        is NetworkResult.Loading ->{
-                                            if (progressDialog == null){
-                                                progressDialog = ProgressDialog(binding.root.context, "Yuklanmoqda")
-                                            }
-                                            progressDialog?.show()
                                         }
                                     }
                                 }
                             }
                         }
+                    } else {
+                        snackBar("Siz @jbnuu.uz")
                     }
                 } else {
                     if (binding.name.text.toString().isEmpty()){
@@ -368,6 +422,8 @@ class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(Registrat
                             snackBar("Bu email emas")
                     } else if (binding.email.text.toString().split("@jbnuu.uz").first().isEmpty()){
                         binding.email.error = "Elektron pochtangizni to'g'ri kiriting"
+                    } else if (!binding.email.text.toString().endsWith("@jbnuu.uz")){
+                        snackBar("Faqatgina @jbnuu.uz email orqali ro'yxatdan o'ting")
                     }
                 }
             }
@@ -404,6 +460,18 @@ class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(Registrat
             }
         }
     }
+
+    private fun showLoader(){
+        if(progressDialog == null){
+            progressDialog = ProgressDialog(binding.root.context, "Yuklanmoqda ...")
+        }
+        progressDialog?.show()
+    }
+
+    private fun closeLoader(){
+        progressDialog?.dismiss()
+    }
+
 
     val EMAIL_ADDRESS_PATTERN: Pattern = Pattern.compile(
         "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +

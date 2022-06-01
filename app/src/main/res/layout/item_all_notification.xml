@@ -24,7 +24,6 @@
             android:layout_weight="0.85"
             android:fontFamily="@font/calibri"
             android:text="#9999"
-            android:textColor="@color/chuck_status_error"
             android:textSize="@dimen/small_text_size" />
 
         <TextView
@@ -35,7 +34,6 @@
             android:paddingStart="@dimen/small_margin"
             android:fontFamily="@font/calibri"
             android:text="kompyuterim "
-            android:textColor="@color/chuck_status_error"
             android:textSize="@dimen/small_text_size" />
 
         <TextView
@@ -46,7 +44,6 @@
             android:fontFamily="@font/calibri"
             android:layout_marginStart="@dimen/default_margin"
             android:text="O'qilmagan"
-            android:textColor="@color/chuck_status_error"
             android:textSize="@dimen/small_text_size" />
 
         <androidx.cardview.widget.CardView

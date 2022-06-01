@@ -19,13 +19,13 @@
             android:padding="@dimen/left_right_margin_size">
 
             <androidx.cardview.widget.CardView
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 android:layout_gravity="center"
-                app:cardBackgroundColor="@color/white"
-                app:cardElevation="@dimen/default_margin"
                 android:layout_marginTop="@dimen/actionbar_size"
-                app:cardCornerRadius="80dp">
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="80dp"
+                app:cardElevation="@dimen/default_margin">
 
                 <ImageView
                     android:id="@+id/logo"
@@ -40,11 +40,11 @@
                 android:id="@+id/login_auth_lay"
                 style="@style/TextInputLayoutStyle"
                 android:layout_width="match_parent"
-                android:layout_marginBottom="@dimen/left_right_margin_size"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="100dp"
-                app:endIconTint="@color/default_text_color"
-                app:endIconMode="clear_text">
+                android:layout_marginBottom="@dimen/left_right_margin_size"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/default_text_color">
 
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -67,10 +67,10 @@
                 android:id="@+id/password_auth_lay"
                 style="@style/TextInputLayoutStyle"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 app:endIconMode="password_toggle"
-                app:endIconTintMode="src_in"
                 app:endIconTint="@color/default_text_color"
-                android:layout_height="wrap_content">
+                app:endIconTintMode="src_in">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/password_auth"
@@ -78,11 +78,26 @@
                     android:layout_height="wrap_content"
                     android:hint="Password"
                     android:inputType="textPassword"
-                    android:textColor="@color/text_color"
                     android:minHeight="48dp"
                     android:padding="10dp"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textColor="@color/text_color" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/forget_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:background="?selectableItemBackground"
+                android:layout_marginTop="@dimen/default_margin"
+                android:gravity="center"
+                android:padding="@dimen/default_margin"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="Parolni unutdingizmi?"
+                android:textColor="@color/cl_color_primary"
+                android:textSize="@dimen/standard_text_size" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -104,9 +119,9 @@
                 android:id="@+id/login_registration"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:layout_marginTop="@dimen/left_right_margin_size"
                 android:background="?selectableItemBackground"
+                android:gravity="center"
                 android:padding="@dimen/default_margin"
                 android:text="Ro'yxatdan o'tish"
                 android:textColor="@color/cl_color_primary"

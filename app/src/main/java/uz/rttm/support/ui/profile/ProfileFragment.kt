@@ -140,6 +140,8 @@ class ProfileFragment:BaseFragment<ProfileFragmentBinding>(ProfileFragmentBindin
     }
 
     private fun getBolim(id:Int){
+        val sub_bolim_id = pref.get(pref.sub_bolim_id, 0)
+
         vm.bolim(id)
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -161,12 +163,14 @@ class ProfileFragment:BaseFragment<ProfileFragmentBinding>(ProfileFragmentBindin
                     organizationAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
                     binding.spinnerOrganizationName.adapter = organizationAdapter
                     delay(100)
-                    if (pref.get(pref.sub_bolim_id, 0) < arraySpinner.size){
-                        binding.spinnerOrganizationName.setSelection(pref.get(pref.sub_bolim_id, 0))
+
+                    if ( sub_bolim_id < arraySpinner.size){
+                        binding.spinnerOrganizationName.setSelection(sub_bolim_id)
                     }
                     binding.spinnerOrganizationName.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                         override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                             organization_sub_id = p2
+                            pref.save(pref.sub_bolim_id, organization_sub_id)
                             if (p2 > 0){
                                 binding.spinnerOrganizationNameMes.visibility = View.GONE
                             }
@@ -227,7 +231,6 @@ class ProfileFragment:BaseFragment<ProfileFragmentBinding>(ProfileFragmentBindin
                                         }
                                         is NetworkResult.Error -> {
 
-//                                            lg("body->"+ JSONObject(it.errorBody().toString()).getJSONObject("password"))
                                             progressDialog?.dismiss()
                                             if (it.code == 422){
                                                 snackBar("Eski parol noto'g'ri kiritildi")

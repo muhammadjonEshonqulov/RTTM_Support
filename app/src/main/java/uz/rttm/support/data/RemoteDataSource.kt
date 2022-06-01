@@ -10,12 +10,12 @@ import uz.rttm.support.models.body.UpdateBody
 import uz.rttm.support.models.chat.ChatData
 import uz.rttm.support.models.chat.CreateChatBody
 import uz.rttm.support.models.chat.CreateChatResponse
+import uz.rttm.support.models.getMe.GetMeResponse
 import uz.rttm.support.models.login.Bolim
 import uz.rttm.support.models.login.LoginResponse
 import uz.rttm.support.models.message.*
-import uz.rttm.support.models.register.RegisterBody
-import uz.rttm.support.models.register.RegisterResponse
-import uz.rttm.support.models.register.UpdateResponse
+import uz.rttm.support.models.register.*
+import uz.rttm.support.models.repeat.RepeatBody
 import javax.inject.Inject
 
 class RemoteDataSource @Inject constructor(private val apiService: ApiService, private val notificationApi: NotificationApi) {
@@ -24,7 +24,7 @@ class RemoteDataSource @Inject constructor(private val apiService: ApiService, p
         return apiService.login(loginBody)
     }
     suspend fun register(registerBody: RegisterBody): Response<RegisterResponse> {
-        return apiService.register(registerBody.email,registerBody.name, registerBody.password, registerBody.return_password, registerBody.fam, registerBody.sh, registerBody.phone, registerBody.bolim_id, registerBody.lavozim,registerBody.photo )
+        return apiService.register(registerBody.email,registerBody.name, registerBody.password, registerBody.return_password, registerBody.fam, registerBody.sh, registerBody.phone, registerBody.bolim_id, registerBody.lavozim,registerBody.photo, registerBody.token )
     }
     suspend fun update(updateBody: UpdateBody): Response<UpdateResponse> {
         return apiService.update(updateBody.name,updateBody.sh,updateBody.fam,updateBody.phone,updateBody.lavozim,updateBody.bolim_id,updateBody.oldpassword,updateBody.newpassword,updateBody.photo )
@@ -47,6 +47,15 @@ class RemoteDataSource @Inject constructor(private val apiService: ApiService, p
     suspend fun getChat(message_id:Int): Response<List<ChatData>> {
         return apiService.getChat(message_id)
     }
+    suspend fun forget(email:String): Response<ForgetResponse> {
+        return apiService.forget(email)
+    }
+    suspend fun repeat(repeatBody: RepeatBody): Response<Int> {
+        return apiService.repeat(repeatBody)
+    }
+    suspend fun registerVerify(registerVerifyBody: RegisterVerifyBody): Response<ForgetResponse> {
+        return apiService.registerVerify(registerVerifyBody)
+    }
     suspend fun chatActive(message_id:Int): Response<Int> {
         return apiService.chatActive(message_id)
     }
@@ -55,6 +64,10 @@ class RemoteDataSource @Inject constructor(private val apiService: ApiService, p
     }
     suspend fun postNotification(notification: PushNotification): Response<ResponseBody> {
         return notificationApi.postNotification(notification)
+    }
+
+    suspend fun getMe(): Response<GetMeResponse> {
+        return apiService.getMe()
     }
 
 }

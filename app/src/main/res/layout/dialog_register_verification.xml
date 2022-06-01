@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/left_right_margin_size"
+        android:fontFamily="@font/ibm_plex_sans_medium"
+        android:text="Emailni tasdiqlash"
+        android:textColor="@color/cl_color_primary"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/login_auth_lay"
+        style="@style/TextInputLayoutStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/left_right_margin_size"
+        android:layout_marginEnd="@dimen/left_right_margin_size"
+        android:layout_marginBottom="@dimen/left_right_margin_size"
+        app:endIconMode="clear_text"
+        app:endIconTint="@color/default_text_color">
+
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableEnd="@drawable/ic_baseline_person_24"
+            android:fontFamily="@font/ibm_plex_sans_medium"
+            android:hint="Emailga yuborilgan kod"
+            android:inputType="number"
+            android:minHeight="48dp"
+            android:padding="10dp"
+            android:singleLine="true"
+            android:textColor="@color/text_color"
+            app:layout_constraintTop_toBottomOf="@id/logo"
+            tools:layout_editor_absoluteX="26dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/left_right_margin_size"
+            android:layout_weight="1"
+            android:background="@drawable/cancel_background"
+            android:foreground="?selectableItemBackground"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="@dimen/left_right_margin_size">
+
+            <TextView
+                android:id="@+id/cancel_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="@dimen/default_margin"
+                android:text="Bekor qilish"
+                android:textColor="@color/cl_color_primary"
+                android:textSize="18sp" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/left_right_margin_size"
+            android:layout_weight="1"
+            android:foreground="?selectableItemBackground"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="@dimen/left_right_margin_size">
+
+            <TextView
+                android:id="@+id/send_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/cl_color_primary"
+                android:gravity="center"
+                android:padding="@dimen/default_margin"
+                android:text="Yuborish"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+</LinearLayout>

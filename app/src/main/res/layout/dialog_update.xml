@@ -4,15 +4,15 @@
     android:id="@+id/logout_back"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardElevation="@dimen/small_margin"
     android:orientation="vertical"
-    app:cardCornerRadius="@dimen/left_right_margin_size">
+    app:cardCornerRadius="@dimen/left_right_margin_size"
+    app:cardElevation="@dimen/small_margin">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:background="@color/white"
+        android:orientation="vertical"
         android:padding="20dp">
 
         <TextView
@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/ibm_plex_sans_medium"
-            android:text="Tizimdan chiqish"
+            android:text="Dastur yangilanishi"
             android:textColor="@color/black"
             android:textSize="@dimen/very_large_text_size"
             android:textStyle="bold" />
@@ -29,10 +29,10 @@
             android:id="@+id/logout_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/default_text_color"
             android:layout_marginTop="8dp"
             android:fontFamily="@font/ibm_plex_sans_medium"
-            android:text="Siz rostdan ham tizimdan chiqmoqchimisiz?"
+            android:text="Bizda yangilanish mavjud?"
+            android:textColor="@color/default_text_color"
             android:textSize="@dimen/standard_text_size" />
 
         <LinearLayout
@@ -51,20 +51,20 @@
                 android:focusable="true"
                 android:fontFamily="@font/ibm_plex_sans_medium"
                 android:padding="8dp"
-                android:text="Bekor qilish"
+                android:text="Yangilash"
                 android:textColor="@color/cl_color_primary"
                 android:textSize="@dimen/small_text_size" />
 
             <TextView
-                android:fontFamily="@font/ibm_plex_sans_medium"
                 android:id="@+id/logout_submit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="15dp"
                 android:clickable="true"
                 android:focusable="true"
+                android:fontFamily="@font/ibm_plex_sans_medium"
                 android:padding="8dp"
-                android:text="chiqish"
+                android:text="Yopish"
                 android:textColor="@color/cl_color_primary"
                 android:textSize="@dimen/small_text_size" />
         </LinearLayout>

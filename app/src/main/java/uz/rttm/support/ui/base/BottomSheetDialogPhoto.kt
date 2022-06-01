@@ -13,17 +13,18 @@ import uz.rttm.support.R
 import uz.rttm.support.databinding.FragmentPhotoBinding
 
 class BottomSheetDialogPhoto(val url:String) : BottomSheetDialogFragment(){
-    
-//    var slidrInterface: SlidrInterface? = null
+
+    //    var slidrInterface: SlidrInterface? = null
     lateinit var oldview: View
-    
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    
+
         val dialog = BottomSheetDialog(requireContext(), theme)
         dialog.setOnShowListener {
-        
+
             val bottomSheetDialog = it as BottomSheetDialog
-            val parentLayout = bottomSheetDialog.findViewById<View>(com.readystatesoftware.chuck.R.id.design_bottom_sheet)
+            val parentLayout = bottomSheetDialog.findViewById<View>(
+                com.google.android.material.R.id.design_bottom_sheet)
             parentLayout?.let { it ->
                 val behaviour = BottomSheetBehavior.from(it)
                 setupFullHeight(it)
@@ -32,13 +33,13 @@ class BottomSheetDialogPhoto(val url:String) : BottomSheetDialogFragment(){
         }
         return dialog
     }
-    
+
     private fun setupFullHeight(bottomSheet: View) {
         val layoutParams = bottomSheet.layoutParams
         layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT
         bottomSheet.layoutParams = layoutParams
     }
-    
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         oldview  = inflater.inflate(R.layout.fragment_photo, container, false)
@@ -49,16 +50,15 @@ class BottomSheetDialogPhoto(val url:String) : BottomSheetDialogFragment(){
 //        binding.fragmentPhoto.setOnTouchListener(this)
         Glide.with(requireContext())
             .load(url)
-            .placeholder(R.mipmap.ic_launcher)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(binding.photoVieww)
         return oldview
     }
-    
+
 //    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
 //        return event?.action == MotionEvent.ACTION_DOWN
 //    }
-    
+
 //    override fun onClick(v: View?) {
 //
 //    }

@@ -138,6 +138,9 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
                                             findNavControllerSafely()?.navigate(R.id.action_userMainFragment_to_loginFragment)
                                         }
                                     }
+                                } else {
+                                    snackBar(getString(R.string.connection_error_message))
+
                                 }
                             }
                         }
@@ -322,7 +325,6 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
 
     private fun login(body: CreateMessageBody) {
         viewLifecycleOwner.lifecycleScope.launch {
-            prefs.save(prefs.password, "a")
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.login(LoginBody(prefs.get(prefs.email, ""), prefs.get(prefs.password, "")))
                 vm.loginResponse.collect {

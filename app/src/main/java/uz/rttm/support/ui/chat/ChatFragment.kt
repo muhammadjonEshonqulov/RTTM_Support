@@ -230,7 +230,6 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
 
     private fun login(body: CreateChatBody?= null, message_id:Int? = null) {
         viewLifecycleOwner.lifecycleScope.launch {
-            prefs.save(prefs.password, "a")
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.login(LoginBody(prefs.get(prefs.email, ""), prefs.get(prefs.password, "")))
                 vm.loginResponse.collect {

@@ -5,15 +5,18 @@ import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.*
-import uz.rttm.support.models.body.CreateMessageBody
 import uz.rttm.support.models.body.LoginBody
 import uz.rttm.support.models.chat.ChatData
 import uz.rttm.support.models.chat.CreateChatResponse
+import uz.rttm.support.models.getMe.GetMeResponse
 import uz.rttm.support.models.login.Bolim
 import uz.rttm.support.models.login.LoginResponse
 import uz.rttm.support.models.message.*
+import uz.rttm.support.models.register.ForgetResponse
 import uz.rttm.support.models.register.RegisterResponse
+import uz.rttm.support.models.register.RegisterVerifyBody
 import uz.rttm.support.models.register.UpdateResponse
+import uz.rttm.support.models.repeat.RepeatBody
 import uz.rttm.support.utils.Constants.Companion.CONTENT_TYPE
 import uz.rttm.support.utils.Constants.Companion.SERVER_KEY
 
@@ -21,6 +24,9 @@ interface ApiService {
 
     @POST("login")
     suspend fun login(@Body loginBody: LoginBody): Response<LoginResponse>
+
+    @POST("getme")
+    suspend fun getMe(@Body text:String? = "Salom"): Response<GetMeResponse>
 
     @Multipart
     @POST("register")
@@ -34,7 +40,8 @@ interface ApiService {
         @Part("phone") phone: RequestBody,
         @Part("bolim_id") bolim_id: RequestBody,
         @Part("lavozim") lavozim: RequestBody,
-        @Part photo: MultipartBody.Part?
+        @Part photo: MultipartBody.Part?,
+        @Part("token") token: RequestBody?
     ): Response<RegisterResponse>
 
     @Multipart
@@ -75,6 +82,15 @@ interface ApiService {
 
     @GET("chat/{message_id}")
     suspend fun getChat(@Path("message_id") message_id: Int): Response<List<ChatData>>
+
+    @GET("forget")
+    suspend fun forget(@Query("email") email: String): Response<ForgetResponse>
+
+    @POST("repeat")
+    suspend fun repeat(@Body repeatBody: RepeatBody): Response<Int>
+
+    @POST("register/verify")
+    suspend fun registerVerify(@Body registerVerifyBody: RegisterVerifyBody): Response<ForgetResponse>
 
     @GET("chat/active/{message_id}")
     suspend fun chatActive(@Path("message_id") message_id: Int): Response<Int>

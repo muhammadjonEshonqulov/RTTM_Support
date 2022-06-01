@@ -1,14 +1,14 @@
 package uz.rttm.support.di
 
 import android.content.Context
-import com.readystatesoftware.chuck.ChuckInterceptor
+import com.chuckerteam.chucker.api.ChuckerCollector
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -32,26 +32,27 @@ object NetworkModule {
     @Provides
     fun provideContext(@ApplicationContext context: Context) = context
 
-    @Singleton
-    @Provides
-    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
-        return HttpLoggingInterceptor()
-    }
+//    @Singleton
+//    @Provides
+//    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
+//        return HttpLoggingInterceptor()
+//    }
 
-    @Singleton
-    @Provides
-    fun provideChuckInterceptor(
-        @ApplicationContext context: Context
-    ): ChuckInterceptor {
-        return ChuckInterceptor(context)
-    }
+//    @Singleton
+//    @Provides
+//    fun provideChuckInterceptor(
+//        @ApplicationContext context: Context
+//    ): ChuckerInterceptor {
+//        return ChuckerInterceptor.Builder(context).collector(
+//            ChuckerCollector(context)
+//        ).build()
+//    }
 
     @Singleton
     @Provides
     fun provideHttpClient(
-        chuckeInterceptor: ChuckInterceptor,
-        httpLoggingInterceptor: HttpLoggingInterceptor,
-        prefs: Prefs
+        prefs: Prefs,
+        @ApplicationContext context: Context
     ): OkHttpClient {
         val builder = OkHttpClient().newBuilder()
             .addInterceptor { chain ->
@@ -61,9 +62,12 @@ object NetworkModule {
             .connectTimeout(10000L, TimeUnit.MILLISECONDS)
             .readTimeout(10000L, TimeUnit.MILLISECONDS)
             .writeTimeout(10000L, TimeUnit.MILLISECONDS)
+
         if (BuildConfig.isDebug) {
-            builder.addInterceptor(chuckeInterceptor)
-                .addNetworkInterceptor(httpLoggingInterceptor)
+            builder.addInterceptor(
+                ChuckerInterceptor.Builder(context).collector(
+                ChuckerCollector(context)
+            ).build())
 
         }
 

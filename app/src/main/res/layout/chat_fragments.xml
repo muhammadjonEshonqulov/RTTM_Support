@@ -144,7 +144,7 @@
                 android:layout_marginStart="@dimen/left_right_margin_size"
                 android:layout_marginTop="@dimen/left_right_margin_size"
                 android:fontFamily="@font/calibri"
-                android:text="Matn kiriting"
+                android:text="Bildirishnoma mazmunini kiriting"
                 android:textColor="@color/black"
                 android:textSize="@dimen/min_text_size" />
 

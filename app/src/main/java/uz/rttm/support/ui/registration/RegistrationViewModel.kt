@@ -14,8 +14,10 @@ import uz.rttm.support.data.Repository
 import uz.rttm.support.models.body.LoginBody
 import uz.rttm.support.models.login.Bolim
 import uz.rttm.support.models.login.LoginResponse
+import uz.rttm.support.models.register.ForgetResponse
 import uz.rttm.support.models.register.RegisterBody
 import uz.rttm.support.models.register.RegisterResponse
+import uz.rttm.support.models.register.RegisterVerifyBody
 import uz.rttm.support.utils.NetworkResult
 import uz.rttm.support.utils.handleResponse
 import uz.rttm.support.utils.hasInternetConnection
@@ -42,6 +44,23 @@ class RegistrationViewModel @Inject constructor(
             }
         } else {
             _registerResponse.send( NetworkResult.Error("Server bilan aloqa yo'q"))
+        }
+    }
+
+    private val _registerVerifyResponse = Channel<NetworkResult<ForgetResponse>>()
+    var registerVerifyResponse = _registerVerifyResponse.receiveAsFlow()
+
+    fun registerVerify(registerVerifyBody: RegisterVerifyBody) = viewModelScope.launch {
+        _registerVerifyResponse.send( NetworkResult.Loading())
+        if (hasInternetConnection(getApplication())) {
+            try {
+                val response = repository.remote.registerVerify(registerVerifyBody)
+                _registerVerifyResponse.send( handleResponse(response))
+            } catch (e: Exception) {
+                _registerVerifyResponse.send( NetworkResult.Error("Xatolik : " + e.message))
+            }
+        } else {
+            _registerVerifyResponse.send( NetworkResult.Error("Server bilan aloqa yo'q"))
         }
     }
 

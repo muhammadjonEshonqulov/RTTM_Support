@@ -8,11 +8,16 @@ import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class App : Application() {
-     var context: Context? = null
+//     var context: Context? = null
 
     override fun onCreate() {
         super.onCreate()
+//        context = this.applicationContext
         FirebaseApp.initializeApp(applicationContext)
-        context = applicationContext
     }
+
+//
+//    companion object{
+//        lateinit var context: Context
+//    }
 }

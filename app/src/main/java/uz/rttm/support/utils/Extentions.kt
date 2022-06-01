@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import uz.rttm.support.BuildConfig
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -22,7 +23,9 @@ fun snack(view: View, text: String) {
 }
 
 fun lg(text: String) {
-     Log.d("JBNUU", text)
+    if(BuildConfig.isDebug){
+        Log.d("JBNUU", text)
+    }
 }
 
 fun Fragment.findNavControllerSafely(): NavController? {
