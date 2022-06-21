@@ -92,7 +92,7 @@ class ChatAdapter(val listener : OnItemClickListener) : RecyclerView.Adapter<Cha
                             .into(binding.managerImg)
                     }
                 } else {
-                    binding.userImg.visibility = View.GONE
+                    binding.managerImg.visibility = View.GONE
                 }
                 data.user.lavozim?.let {
                     binding.managerLavozimName.text = it

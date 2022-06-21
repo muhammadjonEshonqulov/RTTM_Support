@@ -10,7 +10,6 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
 import android.os.Environment
-import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
@@ -37,11 +36,9 @@ import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONObject
 import uz.rttm.support.R
 import uz.rttm.support.databinding.ProfileFragmentBinding
 import uz.rttm.support.models.body.UpdateBody
-import uz.rttm.support.models.register.RegisterBody
 import uz.rttm.support.ui.base.BaseFragment
 import uz.rttm.support.ui.base.ProgressDialog
 import uz.rttm.support.utils.*
@@ -52,11 +49,11 @@ import java.io.FileOutputStream
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ProfileFragment:BaseFragment<ProfileFragmentBinding>(ProfileFragmentBinding::inflate),View.OnClickListener {
+class ProfileFragment : BaseFragment<ProfileFragmentBinding>(ProfileFragmentBinding::inflate), View.OnClickListener {
 
     @Inject
-    lateinit var pref:Prefs
-    private val vm:ProfileViewModel by viewModels()
+    lateinit var pref: Prefs
+    private val vm: ProfileViewModel by viewModels()
 
     private var organization_id = -1
     private var organization_sub_id = -1
@@ -67,21 +64,33 @@ class ProfileFragment:BaseFragment<ProfileFragmentBinding>(ProfileFragmentBindin
     private val IMAGE_CHOOSE = 1000
     private var image_uri = ""
     private val REQUEST_CODE = 13
+    private var isPasswordChange = false
 
     override fun onCreate(view: View) {
-        pref.get(pref.photo,"").let {
+        pref.get(pref.photo, "").let {
             Glide
                 .with(binding.root)
-                .load(BASE_URL_IMG+it)
+                .load(BASE_URL_IMG + it)
         }
-        binding.position.setText(pref.get(pref.lavozim,""))
-        binding.surname.setText(pref.get(pref.fam,""))
-        binding.name.setText(pref.get(pref.name,""))
-        binding.phone.setText(pref.get(pref.phone,""))
+        binding.position.setText(pref.get(pref.lavozim, ""))
+        binding.surname.setText(pref.get(pref.fam, ""))
+        binding.name.setText(pref.get(pref.name, ""))
+        binding.fullNameOfUser.setText(pref.get(pref.name, "")+" "+pref.get(pref.fam, ""))
+        binding.phone.setText(pref.get(pref.phone, ""))
+        binding.organizationUser.setText(pref.get(pref.bolim_name, ""))
 
         binding.imgUser.setOnClickListener(this)
         binding.backBtnProfile.setOnClickListener(this)
         binding.send.setOnClickListener(this)
+        binding.changePasswordToggle.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                binding.passwordChangeLay.visibility = View.VISIBLE
+                isPasswordChange = isChecked
+            } else {
+                binding.passwordChangeLay.visibility = View.GONE
+                isPasswordChange = isChecked
+            }
+        }
         binding.currentPasswordRegistrationShow.setOnClickListener {
             if (binding.currentPasswordRegistration.transformationMethod == PasswordTransformationMethod.getInstance()) {
                 binding.currentPasswordRegistrationShow.setImageResource(R.drawable.ic_eye)
@@ -120,7 +129,7 @@ class ProfileFragment:BaseFragment<ProfileFragmentBinding>(ProfileFragmentBindin
         }
 
 
-        var arraySpinner = arrayOf("tanlang","Tarkibiy bo'linma", "Fakultet","Kafedra")
+        var arraySpinner = arrayOf("tanlang", "Tarkibiy bo'linma", "Fakultet", "Kafedra")
         val organizationAdapter = ArrayAdapter(binding.root.context, R.layout.simple_spinner_item, arraySpinner)
         organizationAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
         binding.spinnerOrganization.adapter = organizationAdapter
@@ -128,7 +137,7 @@ class ProfileFragment:BaseFragment<ProfileFragmentBinding>(ProfileFragmentBindin
         binding.spinnerOrganization.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 organization_id = p2
-                if (p2 > 0){
+                if (p2 > 0) {
                     binding.spinnerOrganizationMes.visibility = View.GONE
                 }
                 getBolim(p2)
@@ -139,7 +148,7 @@ class ProfileFragment:BaseFragment<ProfileFragmentBinding>(ProfileFragmentBindin
         }
     }
 
-    private fun getBolim(id:Int){
+    private fun getBolim(id: Int) {
         val sub_bolim_id = pref.get(pref.sub_bolim_id, 0)
 
         vm.bolim(id)
@@ -149,8 +158,8 @@ class ProfileFragment:BaseFragment<ProfileFragmentBinding>(ProfileFragmentBindin
                     var arraySpinner = ArrayList<String>()
                     arraySpinner.clear()
                     arraySpinner.add("tanlang")
-                    when(it){
-                        is NetworkResult.Success->{
+                    when (it) {
+                        is NetworkResult.Success -> {
 
                             it.data?.let {
                                 it.forEachIndexed { index, bolim ->
@@ -164,14 +173,16 @@ class ProfileFragment:BaseFragment<ProfileFragmentBinding>(ProfileFragmentBindin
                     binding.spinnerOrganizationName.adapter = organizationAdapter
                     delay(100)
 
-                    if ( sub_bolim_id < arraySpinner.size){
+                    if (sub_bolim_id < arraySpinner.size) {
                         binding.spinnerOrganizationName.setSelection(sub_bolim_id)
                     }
                     binding.spinnerOrganizationName.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                         override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                             organization_sub_id = p2
                             pref.save(pref.sub_bolim_id, organization_sub_id)
-                            if (p2 > 0){
+                            pref.save(pref.bolim_name, arraySpinner.get(p2))
+                            lg("name -<>"+arraySpinner.get(p2))
+                            if (p2 > 0) {
                                 binding.spinnerOrganizationNameMes.visibility = View.GONE
                             }
                         }
@@ -186,128 +197,207 @@ class ProfileFragment:BaseFragment<ProfileFragmentBinding>(ProfileFragmentBindin
 
     override fun onClick(p0: View?) {
         p0.blockClickable()
-        when(p0){
-            binding.backBtnProfile ->{
+        when (p0) {
+            binding.backBtnProfile -> {
                 hideKeyBoard()
-                finish()}
+                finish()
+            }
             binding.imgUser -> {
                 popupCamera(binding.imgUser)
             }
             binding.send -> {
                 hideKeyBoard()
-                if (organization_id > 0 && organization_sub_id > 0 && binding.currentPasswordRegistration.text.toString().isNotEmpty() && binding.surname.text.toString().isNotEmpty() && binding.name.text.toString().isNotEmpty() &&  binding.position.text.toString().isNotEmpty() && binding.phone.text.toString().isNotEmpty() && binding.newPasswordRegistration.text.toString().isNotEmpty() && binding.rePasswordRegistration.text.toString().isNotEmpty()){
-                    binding.currentPasswordRegistrationMes.visibility = View.GONE
-                    if (binding.newPasswordRegistration.text.toString().length >= 6 && binding.rePasswordRegistration.text.toString().length >= 6 && binding.newPasswordRegistration.text.toString() == binding.rePasswordRegistration.text.toString()){
-                        binding.passwordRegistrationMes.visibility = View.GONE
-                        binding.rePasswordRegistrationMes.visibility = View.GONE
-                        val stringType = "text/plain".toMediaTypeOrNull()
-                        val imageTypee = "image/JPEG".toMediaTypeOrNull()
-                        val imageUri: Uri = Uri.parse(image_uri)
-                        val imageFile: File = FileUtils.getFile(requireContext(), imageUri)
-                        val image = saveBitmapToFile(imageFile)
-                        vm.update(
-                            UpdateBody(
-                                binding.name.text.toString().toRequestBody(stringType),
-                                "...".toRequestBody(stringType),
-                                binding.surname.text.toString().toRequestBody(stringType),
-                                binding.phone.text.toString().toRequestBody(stringType),
-                                binding.position.text.toString().toRequestBody(stringType),
-                                organization_sub_id.toString().toRequestBody(stringType),
-                                binding.currentPasswordRegistration.text.toString().toRequestBody(stringType),
-                                binding.newPasswordRegistration.text.toString().toRequestBody(stringType),
-                                if (image?.exists() == true) MultipartBody.Part.createFormData("photo","", image.readBytes().toRequestBody(imageTypee)) else null
+                if (isPasswordChange) {
+                    if (organization_id > 0 && organization_sub_id > 0 && binding.currentPasswordRegistration.text.toString().isNotEmpty() && binding.surname.text.toString()
+                            .isNotEmpty() && binding.name.text.toString().isNotEmpty() && binding.position.text.toString().isNotEmpty() && binding.phone.text.toString()
+                            .isNotEmpty() && binding.newPasswordRegistration.text.toString().isNotEmpty() && binding.rePasswordRegistration.text.toString().isNotEmpty()
+                    ) {
+                        binding.currentPasswordRegistrationMes.visibility = View.GONE
+                        if (binding.newPasswordRegistration.text.toString().length >= 6 && binding.rePasswordRegistration.text.toString().length >= 6 && binding.newPasswordRegistration.text.toString() == binding.rePasswordRegistration.text.toString()) {
+                            binding.passwordRegistrationMes.visibility = View.GONE
+                            binding.rePasswordRegistrationMes.visibility = View.GONE
+                            val stringType = "text/plain".toMediaTypeOrNull()
+                            val imageTypee = "image/JPEG".toMediaTypeOrNull()
+                            val imageUri: Uri = Uri.parse(image_uri)
+                            val imageFile: File = FileUtils.getFile(requireContext(), imageUri)
+                            val image = saveBitmapToFile(imageFile)
+                            vm.update(
+                                UpdateBody(
+                                    binding.name.text.toString().toRequestBody(stringType),
+                                    "...".toRequestBody(stringType),
+                                    binding.surname.text.toString().toRequestBody(stringType),
+                                    binding.phone.text.toString().toRequestBody(stringType),
+                                    binding.position.text.toString().toRequestBody(stringType),
+                                    organization_sub_id.toString().toRequestBody(stringType),
+                                    binding.currentPasswordRegistration.text.toString().toRequestBody(stringType),
+                                    binding.newPasswordRegistration.text.toString().toRequestBody(stringType),
+                                    if (image?.exists() == true) MultipartBody.Part.createFormData("photo", "", image.readBytes().toRequestBody(imageTypee)) else null
+                                )
                             )
-                        )
-                        viewLifecycleOwner.lifecycleScope.launch {
-                            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                                vm.updateResponse.collect {
-                                    when(it){
-                                        is NetworkResult.Success ->{
-                                            progressDialog?.dismiss()
-                                            if (it.data?.succes == "ok"){
-                                                snackBar("Shaxsiy malumotlaringiz muvaffaqiyatli o'zgartirildi.")
-                                                finish()
+                            viewLifecycleOwner.lifecycleScope.launch {
+                                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                                    vm.updateResponse.collect {
+                                        when (it) {
+                                            is NetworkResult.Success -> {
+                                                progressDialog?.dismiss()
+                                                if (it.data?.succes == "ok") {
+                                                    snackBar("Shaxsiy malumotlaringiz muvaffaqiyatli o'zgartirildi.")
+                                                    finish()
+                                                }
                                             }
-                                        }
-                                        is NetworkResult.Error -> {
+                                            is NetworkResult.Error -> {
 
-                                            progressDialog?.dismiss()
-                                            if (it.code == 422){
-                                                snackBar("Eski parol noto'g'ri kiritildi")
-                                            } else {
-                                                snackBar(it.message.toString())
+                                                progressDialog?.dismiss()
+                                                if (it.code == 422) {
+                                                    snackBar("Eski parol noto'g'ri kiritildi")
+                                                } else {
+                                                    snackBar(it.message.toString())
+                                                }
                                             }
-                                        }
-                                        is NetworkResult.Loading ->{
-                                            if (progressDialog == null){
-                                                progressDialog = ProgressDialog(binding.root.context, "Yuklanmoqda")
+                                            is NetworkResult.Loading -> {
+                                                if (progressDialog == null) {
+                                                    progressDialog = ProgressDialog(binding.root.context, "Yuklanmoqda")
+                                                }
+                                                progressDialog?.show()
                                             }
-                                            progressDialog?.show()
                                         }
                                     }
                                 }
                             }
+                        } else {
+                            if (binding.newPasswordRegistration.text.toString().length < 6) {
+                                binding.passwordRegistrationMes.visibility = View.VISIBLE
+                                binding.passwordRegistrationMes.text = "Parol kamida 6ta belgidan iborat bo'lishi kerak"
+                            } else {
+                                binding.passwordRegistrationMes.visibility = View.GONE
+                            }
+                            if (binding.rePasswordRegistration.text.toString().length < 6) {
+                                binding.rePasswordRegistrationMes.visibility = View.VISIBLE
+                                binding.rePasswordRegistrationMes.text = "Parol kamida 6ta belgidan iborat bo'lishi kerak"
+                            } else {
+                                binding.rePasswordRegistrationMes.visibility = View.GONE
+                            }
+                            if (binding.newPasswordRegistration.text.toString() != binding.rePasswordRegistration.text.toString()) {
+                                binding.rePasswordRegistrationMes.visibility = View.VISIBLE
+                                binding.rePasswordRegistrationMes.text = "Parollar mos emas"
+                            } else {
+                                binding.rePasswordRegistrationMes.visibility = View.GONE
+                            }
                         }
                     } else {
-                        if (binding.newPasswordRegistration.text.toString().length < 6){
-                            binding.passwordRegistrationMes.visibility = View.VISIBLE
-                            binding.passwordRegistrationMes.text = "Parol kamida 6ta belgidan iborat bo'lishi kerak"
-                        } else {
-                            binding.passwordRegistrationMes.visibility = View.GONE
-                        }
-                        if (binding.rePasswordRegistration.text.toString().length < 6){
-                            binding.rePasswordRegistrationMes.visibility = View.VISIBLE
-                            binding.rePasswordRegistrationMes.text = "Parol kamida 6ta belgidan iborat bo'lishi kerak"
-                        } else {
-                            binding.rePasswordRegistrationMes.visibility = View.GONE
-                        }
-                        if (binding.newPasswordRegistration.text.toString() != binding.rePasswordRegistration.text.toString()){
-                            binding.rePasswordRegistrationMes.visibility = View.VISIBLE
-                            binding.rePasswordRegistrationMes.text = "Parollar mos emas"
-                        } else {
-                            binding.rePasswordRegistrationMes.visibility = View.GONE
-                        }
+                        validator()
                     }
                 } else {
-                    if (binding.name.text.toString().isEmpty()){
-                        binding.name.error = "Ismingizni kiriting"
-                    }
-                    if (binding.surname.text.toString().isEmpty()){
-                        binding.surname.error = "Familiyangizni kiriting"
-                    }
-                    if (binding.phone.text.toString().isEmpty()){
-                        binding.phone.error = "Telefoningizni kiriting"
-                    }
-                    if (binding.position.text.toString().isEmpty()){
-                        binding.position.error = "lavozimingizni kiriting"
-                    }
-
-                    if (binding.newPasswordRegistration.text.toString().isEmpty()){
-                        binding.passwordRegistrationMes.visibility = View.VISIBLE
-                        binding.passwordRegistrationMes.text = "Parolni kiriting"
-                    } else {
-                        binding.passwordRegistrationMes.visibility = View.GONE
-                    }
-                    if (binding.currentPasswordRegistration.text.toString().isEmpty()){
-                        binding.currentPasswordRegistrationMes.visibility = View.VISIBLE
-                        binding.currentPasswordRegistrationMes.text = "Joriy parolni kiriting"
-                    } else {
+                    if (organization_id > 0 && organization_sub_id > 0 &&  binding.surname.text.toString()
+                            .isNotEmpty() && binding.name.text.toString().isNotEmpty() && binding.position.text.toString().isNotEmpty() && binding.phone.text.toString()
+                            .isNotEmpty()
+                    ) {
                         binding.currentPasswordRegistrationMes.visibility = View.GONE
-                    }
-                    if (binding.rePasswordRegistration.text.toString().isEmpty()){
-                        binding.rePasswordRegistrationMes.visibility = View.VISIBLE
-                        binding.rePasswordRegistrationMes.text = "Parolni qayta kiriting"
+                            binding.passwordRegistrationMes.visibility = View.GONE
+                            binding.rePasswordRegistrationMes.visibility = View.GONE
+                            val stringType = "text/plain".toMediaTypeOrNull()
+                            val imageTypee = "image/JPEG".toMediaTypeOrNull()
+                            val imageUri: Uri = Uri.parse(image_uri)
+                            val imageFile: File = FileUtils.getFile(requireContext(), imageUri)
+                            val image = saveBitmapToFile(imageFile)
+                            vm.update(
+                                UpdateBody(
+                                    binding.name.text.toString().toRequestBody(stringType),
+                                    "...".toRequestBody(stringType),
+                                    binding.surname.text.toString().toRequestBody(stringType),
+                                    binding.phone.text.toString().toRequestBody(stringType),
+                                    binding.position.text.toString().toRequestBody(stringType),
+                                    organization_sub_id.toString().toRequestBody(stringType),
+                                    null,
+                                    null,
+                                    if (image?.exists() == true) MultipartBody.Part.createFormData("photo", "", image.readBytes().toRequestBody(imageTypee)) else null
+                                )
+                            )
+                            viewLifecycleOwner.lifecycleScope.launch {
+                                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                                    vm.updateResponse.collect {
+                                        when (it) {
+                                            is NetworkResult.Success -> {
+                                                progressDialog?.dismiss()
+                                                if (it.data?.succes == "ok") {
+                                                    pref.save(pref.lavozim, binding.position.text.toString())
+                                                    pref.save(pref.fam, binding.surname.text.toString())
+                                                    pref.save(pref.name,binding.name.text.toString() )
+                                                    pref.save(pref.phone, binding.phone.text.toString())
+                                                    pref.save(pref.bolim_id, organization_id)
+                                                    snackBar("Shaxsiy malumotlaringiz muvaffaqiyatli o'zgartirildi.")
+                                                    finish()
+                                                }
+                                            }
+                                            is NetworkResult.Error -> {
+
+                                                progressDialog?.dismiss()
+                                                if (it.code == 422) {
+                                                    snackBar("Eski parol noto'g'ri kiritildi")
+                                                } else {
+                                                    snackBar(it.message.toString())
+                                                }
+                                            }
+                                            is NetworkResult.Loading -> {
+                                                if (progressDialog == null) {
+                                                    progressDialog = ProgressDialog(binding.root.context, "Yuklanmoqda")
+                                                }
+                                                progressDialog?.show()
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                     } else {
-                        binding.rePasswordRegistrationMes.visibility = View.GONE
-                    }
-                    if (organization_id <= 0){
-                        binding.spinnerOrganizationMes.visibility = View.VISIBLE
-                    }
-                    if (organization_sub_id <= 0){
-                        binding.spinnerOrganizationNameMes.visibility = View.VISIBLE
+                        validator()
                     }
                 }
+
             }
+        }
+    }
+
+    private fun checkAll(){
+
+    }
+
+    private fun validator(){
+        if (binding.name.text.toString().isEmpty()) {
+            binding.name.error = "Ismingizni kiriting"
+        }
+        if (binding.surname.text.toString().isEmpty()) {
+            binding.surname.error = "Familiyangizni kiriting"
+        }
+        if (binding.phone.text.toString().isEmpty()) {
+            binding.phone.error = "Telefoningizni kiriting"
+        }
+        if (binding.position.text.toString().isEmpty()) {
+            binding.position.error = "lavozimingizni kiriting"
+        }
+
+        if (binding.newPasswordRegistration.text.toString().isEmpty()) {
+            binding.passwordRegistrationMes.visibility = View.VISIBLE
+            binding.passwordRegistrationMes.text = "Parolni kiriting"
+        } else {
+            binding.passwordRegistrationMes.visibility = View.GONE
+        }
+        if (binding.currentPasswordRegistration.text.toString().isEmpty()) {
+            binding.currentPasswordRegistrationMes.visibility = View.VISIBLE
+            binding.currentPasswordRegistrationMes.text = "Joriy parolni kiriting"
+        } else {
+            binding.currentPasswordRegistrationMes.visibility = View.GONE
+        }
+        if (binding.rePasswordRegistration.text.toString().isEmpty()) {
+            binding.rePasswordRegistrationMes.visibility = View.VISIBLE
+            binding.rePasswordRegistrationMes.text = "Parolni qayta kiriting"
+        } else {
+            binding.rePasswordRegistrationMes.visibility = View.GONE
+        }
+        if (organization_id <= 0) {
+            binding.spinnerOrganizationMes.visibility = View.VISIBLE
+        }
+        if (organization_sub_id <= 0) {
+            binding.spinnerOrganizationNameMes.visibility = View.VISIBLE
         }
     }
 
@@ -378,6 +468,7 @@ class ProfileFragment:BaseFragment<ProfileFragmentBinding>(ProfileFragmentBindin
             return file
         }
     }
+
     @SuppressLint("RestrictedApi", "ResourceType")
     fun popupCamera(view: View) {
         val menuBuilder = MenuBuilder(requireContext())

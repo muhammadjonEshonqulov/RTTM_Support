@@ -76,7 +76,7 @@
                     android:id="@+id/password_auth"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Password"
+                    android:hint="Parol"
                     android:inputType="textPassword"
                     android:minHeight="48dp"
                     android:padding="10dp"
@@ -111,7 +111,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/cl_color_primary"
-                    android:text="Login"
+                    android:text="Kirish"
                     android:textColor="@color/white" />
             </androidx.cardview.widget.CardView>
 

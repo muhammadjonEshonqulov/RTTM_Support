@@ -47,14 +47,14 @@ interface ApiService {
     @Multipart
     @POST("update")
     suspend fun update(
-        @Part("name") name: RequestBody,
-        @Part("sh") sh: RequestBody,
-        @Part("fam") fam: RequestBody,
-        @Part("phone") phone: RequestBody,
-        @Part("lavozim") lavozim: RequestBody,
-        @Part("bolim_id") bolim_id: RequestBody,
-        @Part("oldpassword") oldpassword: RequestBody,
-        @Part("newpassword") newpassword: RequestBody,
+        @Part("name") name: RequestBody?,
+        @Part("sh") sh: RequestBody?,
+        @Part("fam") fam: RequestBody?,
+        @Part("phone") phone: RequestBody?,
+        @Part("lavozim") lavozim: RequestBody?,
+        @Part("bolim_id") bolim_id: RequestBody?,
+        @Part("oldpassword") oldpassword: RequestBody?,
+        @Part("newpassword") newpassword: RequestBody?,
         @Part photo: MultipartBody.Part?
     ): Response<UpdateResponse>
 

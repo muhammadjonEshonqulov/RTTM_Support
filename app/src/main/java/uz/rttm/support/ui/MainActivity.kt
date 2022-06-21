@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkVersion() {
-        if (BuildConfig.VERSION_CODE < prefss.get(prefss.versionCode,1)){
+        if (BuildConfig.VERSION_CODE < prefss.get(prefss.versionCode,1)+1){
             val updateDialog = UpdateDialog(this)
 
             if (prefss.get( prefss.versionType, 0) == 0){

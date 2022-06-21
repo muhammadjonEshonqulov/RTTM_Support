@@ -23,9 +23,9 @@ fun snack(view: View, text: String) {
 }
 
 fun lg(text: String) {
-    if(BuildConfig.isDebug){
-        Log.d("JBNUU", text)
-    }
+//    if(BuildConfig.isDebug){
+//        Log.d("JBNUU", text)
+//    }
 }
 
 fun Fragment.findNavControllerSafely(): NavController? {

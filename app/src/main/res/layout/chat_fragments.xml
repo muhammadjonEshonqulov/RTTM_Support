@@ -38,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:layout_below="@id/action_bar_chat"
-        android:background="#FF9F88">
+        android:background="#8BC34A">
 
         <ImageView
             android:layout_width="30dp"

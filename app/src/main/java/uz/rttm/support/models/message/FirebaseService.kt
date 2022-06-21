@@ -43,13 +43,13 @@ class FirebaseService : FirebaseMessagingService() {
         val bundle = bundleOf(
             "message_id" to message.data["messageId"],
             "data_text" to message.data["data_text"],
-            "name" to message.data["name"],
-            "fam" to message.data["fam"],
+            "name" to message.data["name_mes"],
+            "fam" to message.data["fam_mes"],
             "file" to message.data["file"],
             "lavozim" to message.data["lavozim"],
             "user_name" to message.data["user_name"],
             "role" to message.data["role"],
-            "bolim_name" to message.data["bolim_name"],
+            "bolim_name" to message.data["bolim_name_mes"],
             "data_updated_at" to message.data["data_updated_at)"])
 //        if(role == prefs.manager){
 //            bundle.

@@ -72,6 +72,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
     private val vm: ChatViewModel by viewModels()
     private val chatAdapter: ChatAdapter by lazy { ChatAdapter(this) }
     private val chatDataList = ArrayList<ChatData>()
+    var image : File? = null
 
     var data_updated_at = ""
     var data_text = ""
@@ -101,7 +102,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
         }
         binding.sendChat.setOnClickListener(this)
         binding.backBtn.setOnClickListener(this)
-        binding.addChat.setOnClickListener(this)
+        binding.actionBarAnswerBtn.setOnClickListener(this)
         binding.closeAndRating.setOnClickListener(this)
         binding.cancelChat.setOnClickListener(this)
         binding.uploadImage.setOnClickListener(this)
@@ -305,16 +306,16 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                     val stringType = "text/plain".toMediaTypeOrNull()
 
                     val imageFile: File = FileUtils.getFile(requireContext(), imageUri)
-                    val image = saveBitmapToFile(imageFile)
+                    image = saveBitmapToFile(imageFile)
 
                     sendMessage(
                         CreateChatBody(
                             binding.chatMessage.text.toString().toRequestBody(stringType),
                             message_id.toRequestBody(stringType),
-                            if (image?.exists() == true) MultipartBody.Part.createFormData(
+                            if (image?.exists() == true && image != null) MultipartBody.Part.createFormData(
                                 "photo",
-                                image.name,
-                                RequestBody.create("multipart/form-data".toMediaTypeOrNull(), image)
+                                image?.name,
+                                RequestBody.create("multipart/form-data".toMediaTypeOrNull(), image!!)
                             ) else null
                         )
                     )
@@ -336,7 +337,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                 binding.answerLay.visibility = View.GONE
                 binding.addChat.setImageResource(R.drawable.ic_baseline_add_circle_24)
             }
-            binding.addChat -> {
+            binding.actionBarAnswerBtn -> {
                 if (binding.answerLay.visibility == View.GONE) {
                     binding.chatMessage.showKeyboard()
                     binding.answerLay.visibility = View.VISIBLE
@@ -371,7 +372,8 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                                         fam,
                                         prefs.get(prefs.name, ""),
                                         name,
-                                        prefs.get(prefs.lavozim, ""),
+                                        lavozim,
+//                                        prefs.get(prefs.lavozim, ""),
                                         role,
                                         prefs.get(prefs.bolim_name, ""),
                                         bolim_name,
@@ -389,8 +391,6 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                             } else {
                                 binding.charProgressbar.visibility = View.GONE
                                 snackBar(it.message.toString())
-                                lg("error ->"+it.message.toString())
-
                             }
                         }
                     }
@@ -419,9 +419,18 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                             is NetworkResult.Success -> {
                                 closeLoader()
                                 binding.charProgressbar.visibility = View.GONE
-                                finish()
+//                                finish()
                                 hideKeyBoard()
-
+                                binding.answerLay.visibility = View.GONE
+                                binding.addChat.setImageResource(R.drawable.ic_baseline_add_circle_24)
+                                image_uri = ""
+                                binding.imageName.text = "Fayl nomi"
+                                binding.chatMessage.text.clear()
+                                image = null
+                                chatAdapter.setData(listOf())
+                                getChat(message_id.toInt())
+//                                chatDataList.add(ChatData(0, notification.data.data_text,notification.data.file, 0,notification.data.messageId?.toInt(), response?.created_at, response?.updated_at,User  ))
+//                                chatAdapter.notifyItemChanged()
                                 snackBar("Habaringiz yuborildi.")
                             }
                             is NetworkResult.Error -> {

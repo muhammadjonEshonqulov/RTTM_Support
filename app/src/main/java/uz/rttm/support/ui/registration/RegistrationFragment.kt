@@ -303,6 +303,7 @@ class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(Registrat
         }
         dialogBinding.sendBtn.setOnClickListener {
             hideKeyBoard()
+            hideKeyBoard()
             if (dialogBinding.code.text.toString().isNotEmpty()){
                 registerBody.token = dialogBinding.code.text.toString().toRequestBody(stringType)
                 vm.register(registerBody)

@@ -63,13 +63,13 @@ object NetworkModule {
             .readTimeout(10000L, TimeUnit.MILLISECONDS)
             .writeTimeout(10000L, TimeUnit.MILLISECONDS)
 
-        if (BuildConfig.isDebug) {
-            builder.addInterceptor(
-                ChuckerInterceptor.Builder(context).collector(
-                ChuckerCollector(context)
-            ).build())
-
-        }
+//        if (BuildConfig.isDebug) {
+//            builder.addInterceptor(
+//                ChuckerInterceptor.Builder(context).collector(
+//                ChuckerCollector(context)
+//            ).build())
+//
+//        }
 
         return builder.build()
     }

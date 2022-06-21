@@ -74,7 +74,7 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
         fragmentsToViewPager()
         binding.closed.setOnClickListener(this)
         binding.unClosed.setOnClickListener(this)
-        binding.addMessage.setOnClickListener(this)
+        binding.actionBarAnswerBtn.setOnClickListener(this)
         binding.newBtn.setOnClickListener(this)
         binding.mainTopUser.setOnClickListener(this)
         binding.cancelMessageBtn.setOnClickListener(this)
@@ -183,7 +183,7 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
                     binding.tabUnderView.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.new_tab_color))
                     binding.ticketsActionbar.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.new_tab_color))
                 }
-                binding.addMessage -> {
+                binding.actionBarAnswerBtn -> {
                     if (binding.answerLay.visibility == View.GONE) {
                         binding.chatTitle.showKeyboard()
                         binding.answerLay.visibility = View.VISIBLE
