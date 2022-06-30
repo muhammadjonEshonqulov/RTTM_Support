@@ -13,6 +13,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import uz.rttm.support.BuildConfig
 import uz.rttm.support.R
 import uz.rttm.support.databinding.DialogEmailVerificationBinding
 import uz.rttm.support.databinding.DialogEmailVerificationEnterPasswordBinding
@@ -56,7 +57,7 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
                     ) {
                         vm.login(LoginBody(userName, password))
                         viewLifecycleOwner.lifecycleScope.launch {
-                            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
                                 vm.loginResponse.collect {
                                     when (it) {
@@ -113,7 +114,8 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
                                                     prefs.save(prefs.email, userName)
                                                     prefs.save(prefs.password, password)
                                                     val userNameTopicInFireBase =
-                                                        userName.split("@jbnuu.uz").first().toString()
+                                                        userName.split("@jbnuu.uz").first()
+                                                            .toString()
                                                     prefs.save(
                                                         prefs.userNameTopicInFireBase,
                                                         userNameTopicInFireBase
@@ -130,7 +132,8 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
                                                     prefs.save(prefs.email, userName)
                                                     prefs.save(prefs.password, password)
                                                     val userNameTopicInFireBase =
-                                                        userName.split("@jbnuu.uz").first().toString()
+                                                        userName.split("@jbnuu.uz").first()
+                                                            .toString()
                                                     prefs.save(
                                                         prefs.userNameTopicInFireBase,
                                                         userNameTopicInFireBase
@@ -138,6 +141,7 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
                                                     FirebaseMessaging.getInstance()
                                                         .subscribeToTopic("" + userNameTopicInFireBase)
                                                     if (findNavControllerSafely()?.currentDestination?.id == R.id.loginFragment) {
+                                                        hideKeyBoard()
                                                         findNavControllerSafely()?.navigate(R.id.action_loginFragment_to_user_mainFragment)
                                                     }
                                                 }
@@ -145,7 +149,8 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
                                                     prefs.save(prefs.email, userName)
                                                     prefs.save(prefs.password, password)
                                                     val userNameTopicInFireBase =
-                                                        userName.split("@jbnuu.uz").first().toString()
+                                                        userName.split("@jbnuu.uz").first()
+                                                            .toString()
                                                     prefs.save(
                                                         prefs.userNameTopicInFireBase,
                                                         userNameTopicInFireBase
@@ -155,6 +160,7 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
                                                     FirebaseMessaging.getInstance()
                                                         .subscribeToTopic("support")
                                                     if (findNavControllerSafely()?.currentDestination?.id == R.id.loginFragment) {
+                                                        hideKeyBoard()
                                                         findNavControllerSafely()?.navigate(R.id.action_loginFragment_to_admin_mainFragment)
                                                     }
                                                 }
@@ -185,7 +191,8 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
             }
             binding.forgetPassword -> {
                 val dialog = AlertDialog.Builder(binding.root.context).create()
-                val dialogView = LayoutInflater.from(binding.root.context).inflate(R.layout.dialog_email_verification,null, false)
+                val dialogView = LayoutInflater.from(binding.root.context)
+                    .inflate(R.layout.dialog_email_verification, null, false)
                 dialog.setView(dialogView)
                 dialog.show()
                 dialog.setCancelable(false)
@@ -196,101 +203,126 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
                 dialogBinding.sendBtn.setOnClickListener {
                     hideKeyBoard()
                     val email = dialogBinding.email.text.toString()
-                    if (email.isNotEmpty()){
-                        if (email.endsWith("@jbnuu.uz")){
+                    if (email.isNotEmpty()) {
+                        if (email.endsWith("@jbnuu.uz")) {
                             vm.forget(email)
                             viewLifecycleOwner.lifecycleScope.launch {
-                                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                                     vm.forgetResponse.collect {
-                                        when(it){
+                                        when (it) {
                                             is NetworkResult.Error -> {
                                                 closeLoader()
                                                 snackBar(it.message.toString())
                                             }
-                                            is NetworkResult.Loading->{
+                                            is NetworkResult.Loading -> {
                                                 showLoader()
                                             }
-                                            is NetworkResult.Success->{
+                                            is NetworkResult.Success -> {
                                                 closeLoader()
                                                 dialog.dismiss()
-                                                if(it.data?.response == "error"){
+                                                if (it.data?.response == "error") {
                                                     snackBar("Bu pochta orqali ro'yxatdan o'tilmagan")
                                                 } else {
 
-                                                    val dialogVerification = AlertDialog.Builder(binding.root.context).create()
-                                                    val dialogVerificationView = LayoutInflater.from(binding.root.context).inflate(R.layout.dialog_email_verification_enter_password,null, false)
-                                                    dialogVerification.setView(dialogVerificationView)
+                                                    val dialogVerification =
+                                                        AlertDialog.Builder(binding.root.context)
+                                                            .create()
+                                                    val dialogVerificationView =
+                                                        LayoutInflater.from(binding.root.context)
+                                                            .inflate(
+                                                                R.layout.dialog_email_verification_enter_password,
+                                                                null,
+                                                                false
+                                                            )
+                                                    dialogVerification.setView(
+                                                        dialogVerificationView
+                                                    )
                                                     dialogVerification.show()
                                                     dialogVerification.setCancelable(false)
-                                                    val dialogVerificationBinding = DialogEmailVerificationEnterPasswordBinding.bind(dialogVerificationView)
+                                                    val dialogVerificationBinding =
+                                                        DialogEmailVerificationEnterPasswordBinding.bind(
+                                                            dialogVerificationView
+                                                        )
                                                     var password = ""
                                                     var repassword = ""
-                                                    dialogVerificationBinding.newPassword.addTextChangedListener(object : TextWatcher{
-                                                        override fun beforeTextChanged(
-                                                            s: CharSequence?,
-                                                            start: Int,
-                                                            count: Int,
-                                                            after: Int
-                                                        ) {
+                                                    dialogVerificationBinding.newPassword.addTextChangedListener(
+                                                        object : TextWatcher {
+                                                            override fun beforeTextChanged(
+                                                                s: CharSequence?,
+                                                                start: Int,
+                                                                count: Int,
+                                                                after: Int
+                                                            ) {
 
-                                                        }
-
-                                                        override fun onTextChanged(
-                                                            s: CharSequence?,
-                                                            start: Int,
-                                                            before: Int,
-                                                            count: Int
-                                                        ) {
-                                                            password = dialogVerificationBinding.newPassword.text.toString()
-                                                            if(s!!.length < 6){
-                                                                dialogVerificationBinding.newPasswordMes.visibility = View.VISIBLE
-                                                                dialogVerificationBinding.newPasswordMes.text = "Parol kamida 6ta belgidan iborat bo'lishi kerak"
-                                                            } else {
-                                                                dialogVerificationBinding.newPasswordMes.visibility = View.GONE
                                                             }
-                                                        }
 
-                                                        override fun afterTextChanged(s: Editable?) {
-
-                                                        }
-
-                                                    })
-                                                    dialogVerificationBinding.newRePassword.addTextChangedListener(object : TextWatcher{
-                                                        override fun beforeTextChanged(
-                                                            s: CharSequence?,
-                                                            start: Int,
-                                                            count: Int,
-                                                            after: Int
-                                                        ) {
-
-                                                        }
-
-                                                        override fun onTextChanged(
-                                                            s: CharSequence?,
-                                                            start: Int,
-                                                            before: Int,
-                                                            count: Int
-                                                        ) {
-                                                            repassword = dialogVerificationBinding.newRePassword.text.toString()
-                                                            if(s!!.length < 6){
-                                                                dialogVerificationBinding.newRePasswordMes.visibility = View.VISIBLE
-                                                                dialogVerificationBinding.newRePasswordMes.text = "Parol kamida 6ta belgidan iborat bo'lishi kerak"
-                                                            } else {
-
-                                                                if (password == s.toString()){
-                                                                    dialogVerificationBinding.newRePasswordMes.visibility = View.GONE
+                                                            override fun onTextChanged(
+                                                                s: CharSequence?,
+                                                                start: Int,
+                                                                before: Int,
+                                                                count: Int
+                                                            ) {
+                                                                password =
+                                                                    dialogVerificationBinding.newPassword.text.toString()
+                                                                if (s!!.length < 6) {
+                                                                    dialogVerificationBinding.newPasswordMes.visibility =
+                                                                        View.VISIBLE
+                                                                    dialogVerificationBinding.newPasswordMes.text =
+                                                                        "Parol kamida 6ta belgidan iborat bo'lishi kerak"
                                                                 } else {
-                                                                    dialogVerificationBinding.newRePasswordMes.visibility = View.VISIBLE
-                                                                    dialogVerificationBinding.newRePasswordMes.text = "Parollar mos emas"
+                                                                    dialogVerificationBinding.newPasswordMes.visibility =
+                                                                        View.GONE
                                                                 }
                                                             }
-                                                        }
 
-                                                        override fun afterTextChanged(s: Editable?) {
+                                                            override fun afterTextChanged(s: Editable?) {
 
-                                                        }
+                                                            }
 
-                                                    })
+                                                        })
+                                                    dialogVerificationBinding.newRePassword.addTextChangedListener(
+                                                        object : TextWatcher {
+                                                            override fun beforeTextChanged(
+                                                                s: CharSequence?,
+                                                                start: Int,
+                                                                count: Int,
+                                                                after: Int
+                                                            ) {
+
+                                                            }
+
+                                                            override fun onTextChanged(
+                                                                s: CharSequence?,
+                                                                start: Int,
+                                                                before: Int,
+                                                                count: Int
+                                                            ) {
+                                                                repassword =
+                                                                    dialogVerificationBinding.newRePassword.text.toString()
+                                                                if (s!!.length < 6) {
+                                                                    dialogVerificationBinding.newRePasswordMes.visibility =
+                                                                        View.VISIBLE
+                                                                    dialogVerificationBinding.newRePasswordMes.text =
+                                                                        "Parol kamida 6ta belgidan iborat bo'lishi kerak"
+                                                                } else {
+
+                                                                    if (password == s.toString()) {
+                                                                        dialogVerificationBinding.newRePasswordMes.visibility =
+                                                                            View.GONE
+                                                                    } else {
+                                                                        dialogVerificationBinding.newRePasswordMes.visibility =
+                                                                            View.VISIBLE
+                                                                        dialogVerificationBinding.newRePasswordMes.text =
+                                                                            "Parollar mos emas"
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            override fun afterTextChanged(s: Editable?) {
+
+                                                            }
+
+                                                        })
 
                                                     dialogVerificationBinding.email.setText(email)
                                                     dialogVerificationBinding.cancelBtn.setOnClickListener {
@@ -298,31 +330,43 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
                                                     }
                                                     dialogVerificationBinding.sendBtn.setOnClickListener {
 
-                                                        val verifyCode = dialogVerificationBinding.emailVerCode.text.toString()
-                                                        val newPassword = dialogVerificationBinding.newPassword.text.toString()
-                                                        val newRePassword = dialogVerificationBinding.newRePassword.text.toString()
-                                                        if (verifyCode.isNotEmpty() && newPassword.isNotEmpty() && newRePassword.isNotEmpty()){
-                                                            if (password == repassword){
-                                                                dialogVerificationBinding.newRePasswordMes.visibility = View.GONE
+                                                        val verifyCode =
+                                                            dialogVerificationBinding.emailVerCode.text.toString()
+                                                        val newPassword =
+                                                            dialogVerificationBinding.newPassword.text.toString()
+                                                        val newRePassword =
+                                                            dialogVerificationBinding.newRePassword.text.toString()
+                                                        if (verifyCode.isNotEmpty() && newPassword.isNotEmpty() && newRePassword.isNotEmpty()) {
+                                                            if (password == repassword) {
+                                                                dialogVerificationBinding.newRePasswordMes.visibility =
+                                                                    View.GONE
 
-                                                                vm.repeat(RepeatBody(email, newPassword, verifyCode))
+                                                                vm.repeat(
+                                                                    RepeatBody(
+                                                                        email,
+                                                                        newPassword,
+                                                                        verifyCode
+                                                                    )
+                                                                )
                                                                 viewLifecycleOwner.lifecycleScope.launch {
-                                                                    viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                                                                    viewLifecycleOwner.repeatOnLifecycle(
+                                                                        Lifecycle.State.STARTED
+                                                                    ) {
                                                                         vm.repeatResponse.collect {
-                                                                            when(it){
+                                                                            when (it) {
                                                                                 is NetworkResult.Error -> {
                                                                                     closeLoader()
                                                                                     snackBar(it.message.toString())
                                                                                 }
-                                                                                is NetworkResult.Loading->{
+                                                                                is NetworkResult.Loading -> {
                                                                                     showLoader()
                                                                                 }
-                                                                                is NetworkResult.Success->{
+                                                                                is NetworkResult.Success -> {
                                                                                     dialogVerification.dismiss()
                                                                                     closeLoader()
-                                                                                    if (it.data == 1){
+                                                                                    if (it.data == 1) {
                                                                                         snackBar("Parolingiz muvaffaqiyatli o'zgartirildi")
-                                                                                    } else if (it.data == 0){
+                                                                                    } else if (it.data == 0) {
                                                                                         snackBar("Emailingizga kelgan parolni noto'g'ri kiritdinging")
                                                                                     }
                                                                                 }
@@ -331,23 +375,30 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
                                                                     }
                                                                 }
                                                             } else {
-                                                                dialogVerificationBinding.newRePasswordMes.visibility = View.VISIBLE
+                                                                dialogVerificationBinding.newRePasswordMes.visibility =
+                                                                    View.VISIBLE
                                                             }
                                                         } else {
-                                                            if (verifyCode.isEmpty()){
-                                                                dialogVerificationBinding.emailVerCodeMes.visibility = View.VISIBLE
+                                                            if (verifyCode.isEmpty()) {
+                                                                dialogVerificationBinding.emailVerCodeMes.visibility =
+                                                                    View.VISIBLE
                                                             } else {
-                                                                dialogVerificationBinding.emailVerCodeMes.visibility = View.GONE
+                                                                dialogVerificationBinding.emailVerCodeMes.visibility =
+                                                                    View.GONE
                                                             }
-                                                            if (newPassword.isEmpty()){
-                                                                dialogVerificationBinding.newPasswordMes.visibility = View.VISIBLE
+                                                            if (newPassword.isEmpty()) {
+                                                                dialogVerificationBinding.newPasswordMes.visibility =
+                                                                    View.VISIBLE
                                                             } else {
-                                                                dialogVerificationBinding.newPasswordMes.visibility = View.GONE
+                                                                dialogVerificationBinding.newPasswordMes.visibility =
+                                                                    View.GONE
                                                             }
-                                                            if (newRePassword.isEmpty()){
-                                                                dialogVerificationBinding.newRePasswordMes.visibility = View.VISIBLE
+                                                            if (newRePassword.isEmpty()) {
+                                                                dialogVerificationBinding.newRePasswordMes.visibility =
+                                                                    View.VISIBLE
                                                             } else {
-                                                                dialogVerificationBinding.newRePasswordMes.visibility = View.GONE
+                                                                dialogVerificationBinding.newRePasswordMes.visibility =
+                                                                    View.GONE
                                                             }
 
                                                         }

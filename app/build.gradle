@@ -12,32 +12,19 @@ android {
 
     signingConfigs {
         playStoreConfig {
-            storeFile file('C:\\Users\\Muhammad\\AndroidStudioProjects\\rttm-support-app\\rttm_support.jks')
+            storeFile file('C:\\Users\\ACER\\StudioProjects\\RTTM_Support\\rttm_support.jks')
             storePassword 'rttm_support_jbnuu'
             keyAlias 'rttm_support_jbnuu'
             keyPassword 'rttm_support_jbnuu'
         }
     }
 
-//    packagingOptions {
-////        exclude 'META-INF/DEPENDENCIES'
-////        exclude 'META-INF/LICENSE'
-////        exclude 'META-INF/LICENSE.txt'
-////        exclude 'META-INF/license.txt'
-////        exclude 'META-INF/NOTICE'
-////        exclude 'META-INF/NOTICE.txt'
-////        exclude 'META-INF/notice.txt'
-////        exclude 'META-INF/ASL2.0'
-////        exclude("META-INF/*.kotlin_module")
-//        exclude 'META-INF/DEPENDENCIES'
-//    }
-
     defaultConfig {
         applicationId "uz.rttm.support"
         minSdk 23
         targetSdk 32
-        versionCode 4
-        versionName "1.0.3"
+        versionCode 6
+        versionName "1.0.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -134,4 +121,7 @@ dependencies {
 
     // photo view
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+
+    // play updater
+    implementation "com.google.android.play:app-update-ktx:2.0.0"
 }

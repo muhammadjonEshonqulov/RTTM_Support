@@ -162,6 +162,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                 }
             }
             chatData = ChatData(0, data_text, file, 0, message_id.toInt(), null, Gson().fromJson(data_updated_at, Date::class.java), User(prefs.get(prefs.userId, 0), name, fam, role, user_name + "@jbnuu.uz", phone, photo, lavozim, 0, Bolim(0, bolim_name, 0, null, null)))
+            file = ""
             chatData?.let {
                 chatDataList.add(it)
             }
