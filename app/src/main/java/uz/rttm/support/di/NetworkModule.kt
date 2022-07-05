@@ -1,8 +1,6 @@
 package uz.rttm.support.di
 
 import android.content.Context
-import com.chuckerteam.chucker.api.ChuckerCollector
-import com.chuckerteam.chucker.api.ChuckerInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,7 +10,6 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import uz.rttm.support.BuildConfig
 import uz.rttm.support.data.network.NotificationApi
 import uz.rttm.support.data.network.ApiService
 import uz.rttm.support.utils.Constants.Companion.BASE_URL
@@ -62,14 +59,6 @@ object NetworkModule {
             .connectTimeout(10000L, TimeUnit.MILLISECONDS)
             .readTimeout(10000L, TimeUnit.MILLISECONDS)
             .writeTimeout(10000L, TimeUnit.MILLISECONDS)
-
-//        if (BuildConfig.isDebug) {
-//            builder.addInterceptor(
-//                ChuckerInterceptor.Builder(context).collector(
-//                ChuckerCollector(context)
-//            ).build())
-//
-//        }
 
         return builder.build()
     }

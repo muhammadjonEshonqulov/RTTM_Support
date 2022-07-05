@@ -3,6 +3,15 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/ACER/StudioProjects/RTTM_Support/app/src/main/res/drawable/cancel_background.xml" value="0.182" />
+        <entry key="..\:/Users/ACER/StudioProjects/RTTM_Support/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.1845" />
+        <entry key="..\:/Users/ACER/StudioProjects/RTTM_Support/app/src/main/res/layout/chat_fragments.xml" value="0.1734375" />
+        <entry key="..\:/Users/ACER/StudioProjects/RTTM_Support/app/src/main/res/layout/dialog_email_verification.xml" value="0.1734375" />
+        <entry key="..\:/Users/ACER/StudioProjects/RTTM_Support/app/src/main/res/layout/item_all_notification.xml" value="0.1734375" />
+        <entry key="..\:/Users/ACER/StudioProjects/RTTM_Support/app/src/main/res/layout/manager_main_fragment.xml" value="0.25" />
+        <entry key="..\:/Users/ACER/StudioProjects/RTTM_Support/app/src/main/res/layout/registration_fragment.xml" value="0.33" />
+        <entry key="..\:/Users/ACER/StudioProjects/RTTM_Support/app/src/main/res/layout/user_main_fragment.xml" value="0.2" />
+        <entry key="..\:/Users/ACER/StudioProjects/RTTM_Support/app/src/main/res/menu/menu_edit_imag.xml" value="0.35052083333333334" />
         <entry key="..\:/Users/Muhammad/AndroidStudioProjects/JBNUU Support/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.182" />
         <entry key="..\:/Users/Muhammad/AndroidStudioProjects/JBNUU Support/app/src/main/res/drawable/back_btn.xml" value="0.2255" />
         <entry key="..\:/Users/Muhammad/AndroidStudioProjects/JBNUU Support/app/src/main/res/drawable/back_edittext.xml" value="0.218" />

@@ -23,8 +23,8 @@ android {
         applicationId "uz.rttm.support"
         minSdk 23
         targetSdk 32
-        versionCode 6
-        versionName "1.0.6"
+        versionCode 7
+        versionName "1.0.7"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -34,13 +34,14 @@ android {
 //            buildConfigField "String", "BASE_URL", "\"URL\""
             buildConfigField "Boolean", "isDebug", "true"
             multiDexEnabled true
-
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         release {
             buildConfigField "Boolean", "isDebug", "false"
 //            buildConfigField "String", "BASE_URL", "\"URL\""
             multiDexEnabled true
+            shrinkResources true
+            minifyEnabled true
             signingConfig signingConfigs.playStoreConfig
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
