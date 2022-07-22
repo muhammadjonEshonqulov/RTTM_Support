@@ -24,7 +24,7 @@ fun snack(view: View, text: String) {
 
 fun lg(text: String) {
     if(BuildConfig.isDebug){
-        Log.d("JBNUU", text)
+        Log.d("RTTM", text)
     }
 }
 
