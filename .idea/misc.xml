@@ -4,9 +4,16 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/ACER/StudioProjects/RTTM_Support/app/src/main/res/drawable/cancel_background.xml" value="0.182" />
+        <entry key="..\:/Users/ACER/StudioProjects/RTTM_Support/app/src/main/res/drawable/ic_baseline_help_24.xml" value="0.199" />
+        <entry key="..\:/Users/ACER/StudioProjects/RTTM_Support/app/src/main/res/drawable/ic_baseline_person_24.xml" value="0.199" />
         <entry key="..\:/Users/ACER/StudioProjects/RTTM_Support/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.1845" />
+        <entry key="..\:/Users/ACER/StudioProjects/RTTM_Support/app/src/main/res/layout/activity_main.xml" value="0.35052083333333334" />
+        <entry key="..\:/Users/ACER/StudioProjects/RTTM_Support/app/src/main/res/layout/all_notifications_fragment.xml" value="0.35052083333333334" />
         <entry key="..\:/Users/ACER/StudioProjects/RTTM_Support/app/src/main/res/layout/chat_fragments.xml" value="0.1734375" />
         <entry key="..\:/Users/ACER/StudioProjects/RTTM_Support/app/src/main/res/layout/dialog_email_verification.xml" value="0.1734375" />
+        <entry key="..\:/Users/ACER/StudioProjects/RTTM_Support/app/src/main/res/layout/dialog_logut.xml" value="0.35052083333333334" />
+        <entry key="..\:/Users/ACER/StudioProjects/RTTM_Support/app/src/main/res/layout/dialog_wait.xml" value="0.35052083333333334" />
+        <entry key="..\:/Users/ACER/StudioProjects/RTTM_Support/app/src/main/res/layout/history_fragment.xml" value="0.35052083333333334" />
         <entry key="..\:/Users/ACER/StudioProjects/RTTM_Support/app/src/main/res/layout/item_all_notification.xml" value="0.1734375" />
         <entry key="..\:/Users/ACER/StudioProjects/RTTM_Support/app/src/main/res/layout/login_fragment.xml" value="0.1734375" />
         <entry key="..\:/Users/ACER/StudioProjects/RTTM_Support/app/src/main/res/layout/manager_main_fragment.xml" value="0.25" />
