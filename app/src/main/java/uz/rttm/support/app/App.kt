@@ -12,12 +12,12 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-//        context = this.applicationContext
+        context = this.applicationContext
         FirebaseApp.initializeApp(applicationContext)
     }
 
 //
-//    companion object{
-//        lateinit var context: Context
-//    }
+    companion object{
+        lateinit var context: Context
+    }
 }

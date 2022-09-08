@@ -12,7 +12,7 @@ android {
 
     signingConfigs {
         playStoreConfig {
-            storeFile file('C:\\Users\\ACER\\StudioProjects\\RTTM_Support\\rttm_support.jks')
+            storeFile file('/home/Muhammadjon/StudioProjects/RTTM_Support/rttm_support.jks')
             storePassword 'rttm_support_jbnuu'
             keyAlias 'rttm_support_jbnuu'
             keyPassword 'rttm_support_jbnuu'

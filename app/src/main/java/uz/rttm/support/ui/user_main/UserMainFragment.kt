@@ -22,16 +22,12 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import androidx.core.net.toUri
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager.widget.ViewPager
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -44,7 +40,10 @@ import uz.rttm.support.models.body.LoginBody
 import uz.rttm.support.models.message.NotificationsData
 import uz.rttm.support.models.message.PushNotification
 import uz.rttm.support.ui.News.NewsFragment
-import uz.rttm.support.ui.base.*
+import uz.rttm.support.ui.base.BaseFragment
+import uz.rttm.support.ui.base.LogoutDialog
+import uz.rttm.support.ui.base.PageAdapter
+import uz.rttm.support.ui.base.ProgressDialog
 import uz.rttm.support.utils.*
 import java.io.File
 import java.io.FileInputStream
@@ -119,7 +118,7 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
             override fun onMenuItemSelected(menu: MenuBuilder, item: MenuItem): Boolean {
                 when (item.itemId) {
                     R.id.profile -> {
-                        if (findNavControllerSafely()?.currentDestination?.id == R.id.userMainFragment){
+                        if (findNavControllerSafely()?.currentDestination?.id == R.id.userMainFragment) {
                             findNavControllerSafely()?.navigate(R.id.action_userMainFragment_to_send_profileFragment)
                         }
                     }
@@ -128,13 +127,13 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
                         logoutDialog.show()
                         logoutDialog.setOnSubmitClick {
                             activity?.application?.let {
-                                if (hasInternetConnection(it)){
+                                if (hasInternetConnection(it)) {
                                     showLoader()
                                     FirebaseMessaging.getInstance().unsubscribeFromTopic(prefs.get(prefs.userNameTopicInFireBase, "")).addOnSuccessListener {
                                         closeLoader()
                                         prefs.clear()
                                         logoutDialog.dismiss()
-                                        if (findNavControllerSafely()?.currentDestination?.id == R.id.userMainFragment){
+                                        if (findNavControllerSafely()?.currentDestination?.id == R.id.userMainFragment) {
                                             findNavControllerSafely()?.navigate(R.id.action_userMainFragment_to_loginFragment)
                                         }
                                     }
@@ -160,115 +159,115 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
 
     override fun onClick(p0: View?) {
         p0.blockClickable(1000)
-            when (p0) {
-                binding.closed -> {
-                    binding.viewPager.setCurrentItem(2, true)
-                    binding.tabUnderView.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.closed_tab_color))
-                    binding.ticketsActionbar.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.closed_tab_color))
-                }
-                binding.selectImage->{
-                    popupCamera(binding.selectImage)
-                }
-                binding.unClosed -> {
-                    binding.viewPager.setCurrentItem(1, true)
-                    binding.tabUnderView.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.un_closed_tab_color))
-                    binding.ticketsActionbar.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.un_closed_tab_color))
+        when (p0) {
+            binding.closed -> {
+                binding.viewPager.setCurrentItem(2, true)
+                binding.tabUnderView.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.closed_tab_color))
+                binding.ticketsActionbar.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.closed_tab_color))
+            }
+            binding.selectImage -> {
+                popupCamera(binding.selectImage)
+            }
+            binding.unClosed -> {
+                binding.viewPager.setCurrentItem(1, true)
+                binding.tabUnderView.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.un_closed_tab_color))
+                binding.ticketsActionbar.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.un_closed_tab_color))
 
-                }
-                binding.mainTopUser -> {
-                    popupLogout(binding.mainTopUser)
-                }
-                binding.newBtn -> {
-                    binding.viewPager.setCurrentItem(0, true)
-                    binding.tabUnderView.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.new_tab_color))
-                    binding.ticketsActionbar.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.new_tab_color))
-                }
-                binding.actionBarAnswerBtn -> {
-                    if (binding.answerLay.visibility == View.GONE) {
-                        binding.chatTitle.showKeyboard()
-                        binding.answerLay.visibility = View.VISIBLE
-                        binding.addMessage.setImageResource(R.drawable.ic_baseline_remove_circle_24)
+            }
+            binding.mainTopUser -> {
+                popupLogout(binding.mainTopUser)
+            }
+            binding.newBtn -> {
+                binding.viewPager.setCurrentItem(0, true)
+                binding.tabUnderView.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.new_tab_color))
+                binding.ticketsActionbar.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.new_tab_color))
+            }
+            binding.actionBarAnswerBtn -> {
+                if (binding.answerLay.visibility == View.GONE) {
+                    binding.chatTitle.showKeyboard()
+                    binding.answerLay.visibility = View.VISIBLE
+                    binding.addMessage.setImageResource(R.drawable.ic_baseline_remove_circle_24)
 
-                    } else if (binding.answerLay.visibility == View.VISIBLE) {
-                        hideKeyBoard()
-                        binding.answerLay.visibility = View.GONE
-                        binding.addMessage.setImageResource(R.drawable.ic_baseline_add_circle_24)
-                    }
-                }
-                binding.cancelMessageBtn -> {
-                    binding.chatMessage.text.clear()
-                    binding.chatTitle.text.clear()
-                    binding.imageName.text = "Fayl nomi"
+                } else if (binding.answerLay.visibility == View.VISIBLE) {
                     hideKeyBoard()
                     binding.answerLay.visibility = View.GONE
                     binding.addMessage.setImageResource(R.drawable.ic_baseline_add_circle_24)
                 }
-                binding.sendMessageBtn -> {
-                    hideKeyBoard()
-                    if (binding.chatMessage.text.toString().isNotEmpty() && binding.chatTitle.text.toString().isNotEmpty()) {
-                        var message :String? = binding.chatMessage.text.toString()
-                        var title : String? = binding.chatTitle.text.toString()
+            }
+            binding.cancelMessageBtn -> {
+                binding.chatMessage.text.clear()
+                binding.chatTitle.text.clear()
+                binding.imageName.text = "Fayl nomi"
+                hideKeyBoard()
+                binding.answerLay.visibility = View.GONE
+                binding.addMessage.setImageResource(R.drawable.ic_baseline_add_circle_24)
+            }
+            binding.sendMessageBtn -> {
+                hideKeyBoard()
+                if (binding.chatMessage.text.toString().isNotEmpty() && binding.chatTitle.text.toString().isNotEmpty()) {
+                    var message: String? = binding.chatMessage.text.toString()
+                    var title: String? = binding.chatTitle.text.toString()
 
-                        val stringType = "text/plain".toMediaTypeOrNull()
-                        val imageUri: Uri = Uri.parse(image_uri)
+                    val stringType = "text/plain".toMediaTypeOrNull()
+                    val imageUri: Uri = Uri.parse(image_uri)
 
-                        val imageFile: File = FileUtils.getFile(requireContext(), imageUri)
-                        val image : File? = saveBitmapToFile(imageFile)
+                    val imageFile: File = FileUtils.getFile(requireContext(), imageUri)
+                    val image: File? = saveBitmapToFile(imageFile)
 
-                        title?.toRequestBody(stringType)?.let {
-                            message?.toRequestBody(stringType)?.let { it1 ->
-                                CreateMessageBody(it, it1,
-                                    if (image?.exists() == true) MultipartBody.Part.createFormData("photo", image.name, RequestBody.create("multipart/form-data".toMediaTypeOrNull(), image)) else null)
-                            }
-                        }?.let {
-                            sendMessage(it)
+                    title?.toRequestBody(stringType)?.let {
+                        message?.toRequestBody(stringType)?.let { it1 ->
+                            CreateMessageBody(
+                                it, it1,
+                                if (image?.exists() == true) MultipartBody.Part.createFormData("photo", image.name, RequestBody.create("multipart/form-data".toMediaTypeOrNull(), image)) else null
+                            )
                         }
-                        message = null
-                        title = null
-                    } else {
-                        if (binding.chatTitle.text.toString().isEmpty()) {
-                            snackBar("Bildirishnoma sarlavhasini kiriting")
-                        } else if (binding.chatMessage.text.toString().isEmpty()) {
-                            snackBar("Bildirishnoma mazmunini kiriting")
-                        }
+                    }?.let {
+                        sendMessage(it)
+                    }
+                    message = null
+                    title = null
+                } else {
+                    if (binding.chatTitle.text.toString().isEmpty()) {
+                        snackBar("Bildirishnoma sarlavhasini kiriting")
+                    } else if (binding.chatMessage.text.toString().isEmpty()) {
+                        snackBar("Bildirishnoma mazmunini kiriting")
                     }
                 }
             }
         }
+    }
 
     private fun sendNotification(notification: PushNotification) {
         try {
             vm.postNotify(notification) // api(requireContext()).postNotification(notification)
-            viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    vm.notificationResponse.collect {
-                        when (it) {
-                            is NetworkResult.Success -> {
-                                closeLoader()
-                                binding.chatTitle.text.clear()
-                                binding.chatMessage.text.clear()
-                                hideKeyBoard()
-                                binding.answerLay.visibility = View.GONE
-                                binding.addMessage.setImageResource(R.drawable.ic_baseline_add_circle_24)
-                                binding.viewPager.setCurrentItem(0, true)
-                                fragments?.get(0)?.getMessages()
-                                snackBar("Bildirishnomangiz qabul qilindi. Tez orada sizga xizmat ko'rsatiladi.")
-                            }
-                            is NetworkResult.Error -> {
-                                closeLoader()
-                                snackBar(it.message.toString())
-                            }
-                            is NetworkResult.Loading -> {
-                                showLoader()
-                            }
-                        }
+            vm.notificationResponse.collectLatestLA(lifecycleScope) {
+                when (it) {
+                    is NetworkResult.Success -> {
+                        closeLoader()
+                        binding.chatTitle.text.clear()
+                        binding.chatMessage.text.clear()
+                        hideKeyBoard()
+                        binding.answerLay.visibility = View.GONE
+                        binding.addMessage.setImageResource(R.drawable.ic_baseline_add_circle_24)
+                        binding.viewPager.setCurrentItem(0, true)
+                        fragments?.get(0)?.getMessages()
+                        snackBar("Bildirishnomangiz qabul qilindi. Tez orada sizga xizmat ko'rsatiladi.")
+                    }
+                    is NetworkResult.Error -> {
+                        closeLoader()
+                        snackBar(it.message.toString())
+                    }
+                    is NetworkResult.Loading -> {
+                        showLoader()
                     }
                 }
+
             }
         } catch (e: Exception) {
             snackBar("Error message->  : ${e.message}")
         }
     }
+
     private fun bodyToString(request: RequestBody?): String? {
         return try {
             val buffer = Buffer()
@@ -278,71 +277,67 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
             "did not work"
         }
     }
-    private fun sendMessage(body:CreateMessageBody) {
+
+    private fun sendMessage(body: CreateMessageBody) {
         vm.sendMessage(body)
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                vm.sendMessageResponse.collect {
-                    when (it) {
-                        is NetworkResult.Success -> {
-                            sendNotification(
-                                PushNotification(
-                                    NotificationsData(
-                                        it.data?.id.toString(),
-                                        it.data?.text,
-                                        it.data?.title,
-                                        it.data?.img,
-                                        Gson().toJson(it.data?.updated_at),
-                                        prefs.get(prefs.fam, ""),
-                                        prefs.get(prefs.fam, ""),
-                                        prefs.get(prefs.name, ""),
-                                        prefs.get(prefs.name, ""),
-                                        prefs.get(prefs.lavozim, ""),
-                                        prefs.get(prefs.role, ""),
-                                        prefs.get(prefs.bolim_name, ""),
-                                        prefs.get(prefs.bolim_name, ""),
-                                        prefs.get(prefs.userNameTopicInFireBase, "")
-                                    ), "/topics/support"
-                                )
-                            )
-                        }
-                        is NetworkResult.Loading -> {
-                            showLoader()
-                        }
-                        is NetworkResult.Error -> {
-                            if (it.code == 401) {
-                                login(body)
-                            } else {
-                                closeLoader()
-                                snackBar(it.message.toString())
-                            }
-                        }
+        vm.sendMessageResponse.collectLatestLA(lifecycleScope) {
+            when (it) {
+                is NetworkResult.Success -> {
+                    sendNotification(
+                        PushNotification(
+                            NotificationsData(
+                                it.data?.id.toString(),
+                                it.data?.text,
+                                it.data?.title,
+                                it.data?.img,
+                                Gson().toJson(it.data?.updated_at),
+                                prefs.get(prefs.fam, ""),
+                                prefs.get(prefs.fam, ""),
+                                prefs.get(prefs.name, ""),
+                                prefs.get(prefs.name, ""),
+                                prefs.get(prefs.lavozim, ""),
+                                prefs.get(prefs.role, ""),
+                                prefs.get(prefs.bolim_name, ""),
+                                prefs.get(prefs.bolim_name, ""),
+                                prefs.get(prefs.userNameTopicInFireBase, "")
+                            ), "/topics/support"
+                        )
+                    )
+                }
+                is NetworkResult.Loading -> {
+                    showLoader()
+                }
+                is NetworkResult.Error -> {
+                    if (it.code == 401) {
+                        login(body)
+                    } else {
+                        closeLoader()
+                        snackBar(it.message.toString())
                     }
                 }
+
             }
         }
     }
 
     private fun login(body: CreateMessageBody) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                vm.login(LoginBody(prefs.get(prefs.email, ""), prefs.get(prefs.password, "")))
-                vm.loginResponse.collect {
-                    when (it) {
-                        is NetworkResult.Success -> {
-                            it.data?.token?.let {
-                                prefs.save(prefs.token, it)
-                            }
-                            sendMessage(body)
-                        }
 
-                        is NetworkResult.Error -> {
-                            if (findNavControllerSafely()?.currentDestination?.id == R.id.userMainFragment) {
-                                findNavControllerSafely()?.navigate(R.id.action_userMainFragment_to_loginFragment)
-                            }
-                        }
+        vm.login(LoginBody(prefs.get(prefs.email, ""), prefs.get(prefs.password, "")))
+        vm.loginResponse.collectLatestLA(lifecycleScope) {
+            when (it) {
+                is NetworkResult.Success -> {
+                    it.data?.token?.let {
+                        prefs.save(prefs.token, it)
+                    }
+                    sendMessage(body)
+                }
+
+                is NetworkResult.Error -> {
+                    if (findNavControllerSafely()?.currentDestination?.id == R.id.userMainFragment) {
+                        findNavControllerSafely()?.navigate(R.id.action_userMainFragment_to_loginFragment)
                     }
                 }
+
             }
         }
     }
@@ -382,8 +377,6 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
     override fun onPageScrollStateChanged(state: Int) {
 
     }
-
-
 
 
     private fun saveBitmapToFile(file: File?): File? {

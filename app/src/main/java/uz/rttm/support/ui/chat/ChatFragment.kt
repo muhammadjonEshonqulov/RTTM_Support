@@ -72,7 +72,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
     private val vm: ChatViewModel by viewModels()
     private val chatAdapter: ChatAdapter by lazy { ChatAdapter(this) }
     private val chatDataList = ArrayList<ChatData>()
-    var image : File? = null
+    var image: File? = null
 
     var data_updated_at = ""
     var data_text = ""
@@ -145,7 +145,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
             }
             getInt("message_status").let {
                 message_status = it
-                if (it == 2){
+                if (it == 2) {
                     binding.actionBarAnswerLay.visibility = View.GONE
                     binding.closeAndRating.visibility = View.GONE
                 }
@@ -157,7 +157,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                 message_id = it
             }
             getInt("chat_count").let {
-                if (it > 0){
+                if (it > 0) {
                     vm.chatActive(message_id.toInt())
                 }
             }
@@ -182,44 +182,41 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
 
     private fun getChat(message_id: Int) {
         activity?.application?.let {
-            if (hasInternetConnection(it)){
-                if (message_status == 0){
+            if (hasInternetConnection(it)) {
+                if (message_status == 0) {
                     if (prefs.get(prefs.role, "") != prefs.user) {
                         vm.messageActive(message_id)
                     }
                 }
                 vm.getChat(message_id)
-                viewLifecycleOwner.lifecycleScope.launch {
-                    viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                        vm.getChatResponse.collect {
-                            when (it) {
-                                is NetworkResult.Success -> {
+                vm.getChatResponse.collectLatestLA(lifecycleScope) {
+                    when (it) {
+                        is NetworkResult.Success -> {
 
-                                    binding.charProgressbar.visibility = View.GONE
-                                    it.data?.let {
-                                        chatDataList.clear()
-                                        chatData?.let {
-                                            chatDataList.add(it)
-                                        }
-                                        chatDataList.addAll(it)
-                                        chatAdapter.setData(chatDataList)
-                                        binding.listChat.scrollToPosition(chatAdapter.itemCount - 1)
-                                    }
+                            binding.charProgressbar.visibility = View.GONE
+                            it.data?.let {
+                                chatDataList.clear()
+                                chatData?.let {
+                                    chatDataList.add(it)
                                 }
-                                is NetworkResult.Loading -> {
-                                    binding.charProgressbar.visibility = View.VISIBLE
-
-                                }
-                                is NetworkResult.Error -> {
-                                    if (it.code == 401) {
-                                        login(message_id = message_id)
-                                    } else {
-                                        binding.charProgressbar.visibility = View.GONE
-                                        snackBar(it.message.toString())
-                                    }
-                                }
+                                chatDataList.addAll(it)
+                                chatAdapter.setData(chatDataList)
+                                binding.listChat.scrollToPosition(chatAdapter.itemCount - 1)
                             }
                         }
+                        is NetworkResult.Loading -> {
+                            binding.charProgressbar.visibility = View.VISIBLE
+
+                        }
+                        is NetworkResult.Error -> {
+                            if (it.code == 401) {
+                                login(message_id = message_id)
+                            } else {
+                                binding.charProgressbar.visibility = View.GONE
+                                snackBar(it.message.toString())
+                            }
+                        }
+
                     }
                 }
             } else {
@@ -230,7 +227,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
 
     }
 
-    private fun login(body: CreateChatBody?= null, message_id:Int? = null) {
+    private fun login(body: CreateChatBody? = null, message_id: Int? = null) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.login(LoginBody(prefs.get(prefs.email, ""), prefs.get(prefs.password, "")))
@@ -277,27 +274,24 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                 dialog.setOnSubmitClick { ball, text ->
                     hideKeyBoard()
                     vm.ball(MessageBallBody(message_id.toInt(), ball, text))
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                            vm.ballResponse.collect {
-                                when (it) {
-                                    is NetworkResult.Success -> {
-                                        closeLoader()
-                                        snackBar("Bildirishnomangiz yakunlandi.")
-                                        dialog.dismiss()
-                                        finish()
-                                    }
-                                    is NetworkResult.Loading -> {
-                                        showLoader()
-                                    }
-                                    is NetworkResult.Error -> {
-                                        closeLoader()
-                                        snackBar(it.message.toString())
-                                    }
-                                }
+                    vm.ballResponse.collectLatestLA(lifecycleScope) {
+                        when (it) {
+                            is NetworkResult.Success -> {
+                                closeLoader()
+                                snackBar("Bildirishnomangiz yakunlandi.")
+                                dialog.dismiss()
+                                finish()
+                            }
+                            is NetworkResult.Loading -> {
+                                showLoader()
+                            }
+                            is NetworkResult.Error -> {
+                                closeLoader()
+                                snackBar(it.message.toString())
                             }
                         }
                     }
+
                 }
             }
             binding.sendChat -> {
@@ -355,48 +349,45 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
 
     private fun sendMessage(body: CreateChatBody) {
         vm.chatCreate(body)
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                vm.chatCreateResponse.collect {
-                    when (it) {
-                        is NetworkResult.Success -> {
-                            sendNotification(
-                                it.data,
-                                PushNotification(
-                                    NotificationsData(
-                                        bodyToString(body.message_id),
-                                        data_text,
-                                        bodyToString(body.text),
-                                        file,
-                                        Gson().toJson(data_updated_at),
-                                        prefs.get(prefs.fam, ""),
-                                        fam,
-                                        prefs.get(prefs.name, ""),
-                                        name,
-                                        lavozim,
+        vm.chatCreateResponse.collectLatestLA(lifecycleScope) {
+            when (it) {
+                is NetworkResult.Success -> {
+                    sendNotification(
+                        it.data,
+                        PushNotification(
+                            NotificationsData(
+                                bodyToString(body.message_id),
+                                data_text,
+                                bodyToString(body.text),
+                                file,
+                                Gson().toJson(data_updated_at),
+                                prefs.get(prefs.fam, ""),
+                                fam,
+                                prefs.get(prefs.name, ""),
+                                name,
+                                lavozim,
 //                                        prefs.get(prefs.lavozim, ""),
-                                        role,
-                                        prefs.get(prefs.bolim_name, ""),
-                                        bolim_name,
-                                        prefs.get(prefs.userNameTopicInFireBase, "")
-                                    ), "/topics/" + user_name
-                                )
-                            )
-                        }
-                        is NetworkResult.Loading -> {
-                            binding.charProgressbar.visibility = View.VISIBLE
-                        }
-                        is NetworkResult.Error -> {
-                            if (it.code == 401){
-                                login(body = body)
-                            } else {
-                                binding.charProgressbar.visibility = View.GONE
-                                snackBar(it.message.toString())
-                            }
-                        }
+                                role,
+                                prefs.get(prefs.bolim_name, ""),
+                                bolim_name,
+                                prefs.get(prefs.userNameTopicInFireBase, "")
+                            ), "/topics/" + user_name
+                        )
+                    )
+                }
+                is NetworkResult.Loading -> {
+                    binding.charProgressbar.visibility = View.VISIBLE
+                }
+                is NetworkResult.Error -> {
+                    if (it.code == 401) {
+                        login(body = body)
+                    } else {
+                        binding.charProgressbar.visibility = View.GONE
+                        snackBar(it.message.toString())
                     }
                 }
             }
+
         }
     }
 

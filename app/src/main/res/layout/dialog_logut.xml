@@ -6,13 +6,13 @@
     android:layout_height="wrap_content"
     app:cardElevation="@dimen/small_margin"
     android:orientation="vertical"
+    app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="@dimen/left_right_margin_size">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/white"
         android:padding="20dp">
 
         <TextView
@@ -64,7 +64,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:padding="8dp"
-                android:text="chiqish"
+                android:text="Chiqish"
                 android:textColor="@color/cl_color_primary"
                 android:textSize="@dimen/small_text_size" />
         </LinearLayout>

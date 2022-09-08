@@ -123,6 +123,7 @@
                     android:background="@drawable/stroke_chat_user"
                     android:fontFamily="@font/calibri"
                     android:minHeight="100dp"
+                    android:textColor="@color/black"
                     android:padding="@dimen/default_margin"
                     android:paddingStart="@dimen/left_right_margin_size"
                     android:text="Sizga tushlikdan keyin yordam berishadi. Sizga tushlikdan keyin yordam berishadi. Sizga tushlikdan keyin yordam berishadi.Sizga tushlikdan keyin yordam berishadi.Sizga tushlikdan keyin yordam berishadi.Sizga tushlikdan keyin yordam berishadi. Sizga tushlikdan keyin yordam berishadi.Sizga tushlikdan keyin yordam berishadi.Sizga tushlikdan keyin yordam berishadi. Sizga tushlikdan keyin yordam berishadi. Sizga tushlikdan keyin yordam berishadi. Sizga tushlikdan keyin yordam berishadi" />

@@ -75,7 +75,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentBinding>(ProfileFragmentBind
         binding.position.setText(pref.get(pref.lavozim, ""))
         binding.surname.setText(pref.get(pref.fam, ""))
         binding.name.setText(pref.get(pref.name, ""))
-        binding.fullNameOfUser.setText(pref.get(pref.name, "")+" "+pref.get(pref.fam, ""))
+        binding.fullNameOfUser.setText(pref.get(pref.name, "") + " " + pref.get(pref.fam, ""))
         binding.phone.setText(pref.get(pref.phone, ""))
         binding.organizationUser.setText(pref.get(pref.bolim_name, ""))
 
@@ -152,46 +152,43 @@ class ProfileFragment : BaseFragment<ProfileFragmentBinding>(ProfileFragmentBind
         val sub_bolim_id = pref.get(pref.sub_bolim_id, 0)
 
         vm.bolim(id)
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                vm.bolimResponse.collect {
-                    var arraySpinner = ArrayList<String>()
-                    arraySpinner.clear()
-                    arraySpinner.add("tanlang")
-                    when (it) {
-                        is NetworkResult.Success -> {
+        vm.bolimResponse.collectLatestLA(lifecycleScope) {
+            var arraySpinner = ArrayList<String>()
+            arraySpinner.clear()
+            arraySpinner.add("tanlang")
+            when (it) {
+                is NetworkResult.Success -> {
 
-                            it.data?.let {
-                                it.forEachIndexed { index, bolim ->
-                                    arraySpinner.add(bolim.name.toString())
-                                }
-                            }
+                    it.data?.let {
+                        it.forEachIndexed { index, bolim ->
+                            arraySpinner.add(bolim.name.toString())
                         }
-                    }
-                    val organizationAdapter = ArrayAdapter(binding.root.context, R.layout.simple_spinner_item, arraySpinner)
-                    organizationAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
-                    binding.spinnerOrganizationName.adapter = organizationAdapter
-                    delay(100)
-
-                    if (sub_bolim_id < arraySpinner.size) {
-                        binding.spinnerOrganizationName.setSelection(sub_bolim_id)
-                    }
-                    binding.spinnerOrganizationName.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                        override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                            organization_sub_id = p2
-                            pref.save(pref.sub_bolim_id, organization_sub_id)
-                            pref.save(pref.bolim_name, arraySpinner.get(p2))
-                            lg("name -<>"+arraySpinner.get(p2))
-                            if (p2 > 0) {
-                                binding.spinnerOrganizationNameMes.visibility = View.GONE
-                            }
-                        }
-
-                        override fun onNothingSelected(p0: AdapterView<*>?) {}
-
                     }
                 }
             }
+            val organizationAdapter = ArrayAdapter(binding.root.context, R.layout.simple_spinner_item, arraySpinner)
+            organizationAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
+            binding.spinnerOrganizationName.adapter = organizationAdapter
+            delay(100)
+
+            if (sub_bolim_id < arraySpinner.size) {
+                binding.spinnerOrganizationName.setSelection(sub_bolim_id)
+            }
+            binding.spinnerOrganizationName.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                    organization_sub_id = p2
+                    pref.save(pref.sub_bolim_id, organization_sub_id)
+                    pref.save(pref.bolim_name, arraySpinner.get(p2))
+                    lg("name -<>" + arraySpinner.get(p2))
+                    if (p2 > 0) {
+                        binding.spinnerOrganizationNameMes.visibility = View.GONE
+                    }
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {}
+
+            }
+
         }
     }
 
@@ -234,34 +231,32 @@ class ProfileFragment : BaseFragment<ProfileFragmentBinding>(ProfileFragmentBind
                                     if (image?.exists() == true) MultipartBody.Part.createFormData("photo", "", image.readBytes().toRequestBody(imageTypee)) else null
                                 )
                             )
-                            viewLifecycleOwner.lifecycleScope.launch {
-                                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                                    vm.updateResponse.collect {
-                                        when (it) {
-                                            is NetworkResult.Success -> {
-                                                progressDialog?.dismiss()
-                                                if (it.data?.succes == "ok") {
-                                                    snackBar("Shaxsiy malumotlaringiz muvaffaqiyatli o'zgartirildi.")
-                                                    finish()
-                                                }
-                                            }
-                                            is NetworkResult.Error -> {
 
-                                                progressDialog?.dismiss()
-                                                if (it.code == 422) {
-                                                    snackBar("Eski parol noto'g'ri kiritildi")
-                                                } else {
-                                                    snackBar(it.message.toString())
-                                                }
-                                            }
-                                            is NetworkResult.Loading -> {
-                                                if (progressDialog == null) {
-                                                    progressDialog = ProgressDialog(binding.root.context, "Yuklanmoqda")
-                                                }
-                                                progressDialog?.show()
-                                            }
+                            vm.updateResponse.collectLatestLA(lifecycleScope) {
+                                when (it) {
+                                    is NetworkResult.Success -> {
+                                        progressDialog?.dismiss()
+                                        if (it.data?.succes == "ok") {
+                                            snackBar("Shaxsiy malumotlaringiz muvaffaqiyatli o'zgartirildi.")
+                                            finish()
                                         }
                                     }
+                                    is NetworkResult.Error -> {
+
+                                        progressDialog?.dismiss()
+                                        if (it.code == 422) {
+                                            snackBar("Eski parol noto'g'ri kiritildi")
+                                        } else {
+                                            snackBar(it.message.toString())
+                                        }
+                                    }
+                                    is NetworkResult.Loading -> {
+                                        if (progressDialog == null) {
+                                            progressDialog = ProgressDialog(binding.root.context, "Yuklanmoqda")
+                                        }
+                                        progressDialog?.show()
+                                    }
+
                                 }
                             }
                         } else {
@@ -288,66 +283,66 @@ class ProfileFragment : BaseFragment<ProfileFragmentBinding>(ProfileFragmentBind
                         validator()
                     }
                 } else {
-                    if (organization_id > 0 && organization_sub_id > 0 &&  binding.surname.text.toString()
+                    if (organization_id > 0 && organization_sub_id > 0 && binding.surname.text.toString()
                             .isNotEmpty() && binding.name.text.toString().isNotEmpty() && binding.position.text.toString().isNotEmpty() && binding.phone.text.toString()
                             .isNotEmpty()
                     ) {
                         binding.currentPasswordRegistrationMes.visibility = View.GONE
-                            binding.passwordRegistrationMes.visibility = View.GONE
-                            binding.rePasswordRegistrationMes.visibility = View.GONE
-                            val stringType = "text/plain".toMediaTypeOrNull()
-                            val imageTypee = "image/JPEG".toMediaTypeOrNull()
-                            val imageUri: Uri = Uri.parse(image_uri)
-                            val imageFile: File = FileUtils.getFile(requireContext(), imageUri)
-                            val image = saveBitmapToFile(imageFile)
-                            vm.update(
-                                UpdateBody(
-                                    binding.name.text.toString().toRequestBody(stringType),
-                                    "...".toRequestBody(stringType),
-                                    binding.surname.text.toString().toRequestBody(stringType),
-                                    binding.phone.text.toString().toRequestBody(stringType),
-                                    binding.position.text.toString().toRequestBody(stringType),
-                                    organization_sub_id.toString().toRequestBody(stringType),
-                                    null,
-                                    null,
-                                    if (image?.exists() == true) MultipartBody.Part.createFormData("photo", "", image.readBytes().toRequestBody(imageTypee)) else null
-                                )
+                        binding.passwordRegistrationMes.visibility = View.GONE
+                        binding.rePasswordRegistrationMes.visibility = View.GONE
+                        val stringType = "text/plain".toMediaTypeOrNull()
+                        val imageTypee = "image/JPEG".toMediaTypeOrNull()
+                        val imageUri: Uri = Uri.parse(image_uri)
+                        val imageFile: File = FileUtils.getFile(requireContext(), imageUri)
+                        val image = saveBitmapToFile(imageFile)
+                        vm.update(
+                            UpdateBody(
+                                binding.name.text.toString().toRequestBody(stringType),
+                                "...".toRequestBody(stringType),
+                                binding.surname.text.toString().toRequestBody(stringType),
+                                binding.phone.text.toString().toRequestBody(stringType),
+                                binding.position.text.toString().toRequestBody(stringType),
+                                organization_sub_id.toString().toRequestBody(stringType),
+                                null,
+                                null,
+                                if (image?.exists() == true) MultipartBody.Part.createFormData("photo", "", image.readBytes().toRequestBody(imageTypee)) else null
                             )
-                            viewLifecycleOwner.lifecycleScope.launch {
-                                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                                    vm.updateResponse.collect {
-                                        when (it) {
-                                            is NetworkResult.Success -> {
-                                                progressDialog?.dismiss()
-                                                if (it.data?.succes == "ok") {
-                                                    pref.save(pref.lavozim, binding.position.text.toString())
-                                                    pref.save(pref.fam, binding.surname.text.toString())
-                                                    pref.save(pref.name,binding.name.text.toString() )
-                                                    pref.save(pref.phone, binding.phone.text.toString())
-                                                    pref.save(pref.bolim_id, organization_id)
-                                                    snackBar("Shaxsiy malumotlaringiz muvaffaqiyatli o'zgartirildi.")
-                                                    finish()
-                                                }
+                        )
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                                vm.updateResponse.collect {
+                                    when (it) {
+                                        is NetworkResult.Success -> {
+                                            progressDialog?.dismiss()
+                                            if (it.data?.succes == "ok") {
+                                                pref.save(pref.lavozim, binding.position.text.toString())
+                                                pref.save(pref.fam, binding.surname.text.toString())
+                                                pref.save(pref.name, binding.name.text.toString())
+                                                pref.save(pref.phone, binding.phone.text.toString())
+                                                pref.save(pref.bolim_id, organization_id)
+                                                snackBar("Shaxsiy malumotlaringiz muvaffaqiyatli o'zgartirildi.")
+                                                finish()
                                             }
-                                            is NetworkResult.Error -> {
+                                        }
+                                        is NetworkResult.Error -> {
 
-                                                progressDialog?.dismiss()
-                                                if (it.code == 422) {
-                                                    snackBar("Eski parol noto'g'ri kiritildi")
-                                                } else {
-                                                    snackBar(it.message.toString())
-                                                }
+                                            progressDialog?.dismiss()
+                                            if (it.code == 422) {
+                                                snackBar("Eski parol noto'g'ri kiritildi")
+                                            } else {
+                                                snackBar(it.message.toString())
                                             }
-                                            is NetworkResult.Loading -> {
-                                                if (progressDialog == null) {
-                                                    progressDialog = ProgressDialog(binding.root.context, "Yuklanmoqda")
-                                                }
-                                                progressDialog?.show()
+                                        }
+                                        is NetworkResult.Loading -> {
+                                            if (progressDialog == null) {
+                                                progressDialog = ProgressDialog(binding.root.context, "Yuklanmoqda")
                                             }
+                                            progressDialog?.show()
                                         }
                                     }
                                 }
                             }
+                        }
                     } else {
                         validator()
                     }
@@ -357,11 +352,11 @@ class ProfileFragment : BaseFragment<ProfileFragmentBinding>(ProfileFragmentBind
         }
     }
 
-    private fun checkAll(){
+    private fun checkAll() {
 
     }
 
-    private fun validator(){
+    private fun validator() {
         if (binding.name.text.toString().isEmpty()) {
             binding.name.error = "Ismingizni kiriting"
         }

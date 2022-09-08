@@ -4,9 +4,7 @@ import android.content.pm.ActivityInfo
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -15,10 +13,7 @@ import uz.rttm.support.R
 import uz.rttm.support.databinding.FragmentSplashBinding
 import uz.rttm.support.models.body.LoginBody
 import uz.rttm.support.ui.base.BaseFragment
-import uz.rttm.support.utils.NetworkResult
-import uz.rttm.support.utils.Prefs
-import uz.rttm.support.utils.findNavControllerSafely
-import uz.rttm.support.utils.hasInternetConnection
+import uz.rttm.support.utils.*
 import uz.rttm.support.utils.theme.Theme
 import javax.inject.Inject
 
@@ -36,37 +31,34 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
         activity?.application?.let {
             if (hasInternetConnection(it)) {
                 vm.getMe()
-                viewLifecycleOwner.lifecycleScope.launch {
-                    viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                        vm.getMeResponse.collect {
-                            when (it) {
-                                is NetworkResult.Success -> {
-                                    it.data?.app_version?.apply {
-                                        version?.let {
-                                            prefs.save(prefs.versionCode, it)
-                                        }
-                                        name?.let {
-                                            prefs.save(prefs.versionName, it)
-                                        }
-                                        type?.let {
-                                            prefs.save(prefs.versionType, it)
-                                        }
-                                    }
-                                    startDestination()
+                vm.getMeResponse.collectLatestLA(lifecycleScope) {
+                    when (it) {
+                        is NetworkResult.Success -> {
+                            it.data?.app_version?.apply {
+                                version?.let {
+                                    prefs.save(prefs.versionCode, it)
                                 }
+                                name?.let {
+                                    prefs.save(prefs.versionName, it)
+                                }
+                                type?.let {
+                                    prefs.save(prefs.versionType, it)
+                                }
+                            }
+                            startDestination()
+                        }
 //                                is NetworkResult.Loading -> {
 //                                    startDestination()
 //                                }
-                                is NetworkResult.Error -> {
-                                    if (it.code == 401) {
-                                        login()
-                                    } else {
-                                        startDestination()
-                                    }
-                                }
+                        is NetworkResult.Error -> {
+                            if (it.code == 401) {
+                                login()
+                            } else {
+                                startDestination()
                             }
                         }
                     }
+
                 }
             } else {
                 viewLifecycleOwner.lifecycleScope.launch {
@@ -80,24 +72,24 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
     }
 
     private fun login() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                vm.login(LoginBody(prefs.get(prefs.email, ""), prefs.get(prefs.password, "")))
-                vm.loginResponse.collect {
-                    when (it) {
-                        is NetworkResult.Success -> {
-                            it.data?.token?.let {
-                                prefs.save(prefs.token, it)
-                                startDestination()
-                            }
-                        }
-                        is NetworkResult.Error -> {
-                            if (findNavControllerSafely()?.currentDestination?.id == R.id.splashFragment) {
-                                findNavControllerSafely()?.navigate(R.id.action_splashFragment_to_loginFragment)
-                            }
-                        }
+        vm.login(LoginBody(prefs.get(prefs.email, ""), prefs.get(prefs.password, "")))
+        vm.loginResponse.collectLatestLA(lifecycleScope) {
+            when (it) {
+                is NetworkResult.Success -> {
+                    it.data?.token?.let {
+                        prefs.save(prefs.token, it)
+                        startDestination()
                     }
                 }
+                is NetworkResult.Loading -> {
+
+                }
+                is NetworkResult.Error -> {
+                    if (findNavControllerSafely()?.currentDestination?.id == R.id.splashFragment) {
+                        findNavControllerSafely()?.navigate(R.id.action_splashFragment_to_loginFragment)
+                    }
+                }
+
             }
         }
     }

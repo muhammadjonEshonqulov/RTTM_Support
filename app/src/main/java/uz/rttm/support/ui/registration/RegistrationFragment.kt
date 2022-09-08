@@ -30,18 +30,12 @@ import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import uz.rttm.support.R
-import uz.rttm.support.databinding.DialogEmailVerificationBinding
 import uz.rttm.support.databinding.DialogRegisterVerificationBinding
 import uz.rttm.support.databinding.RegistrationFragmentBinding
 import uz.rttm.support.models.register.RegisterBody
@@ -58,7 +52,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(RegistrationFragmentBinding::inflate), View.OnClickListener {
 
-    private val vm:RegistrationViewModel by viewModels()
+    private val vm: RegistrationViewModel by viewModels()
+
     @Inject
     lateinit var prefs: Prefs
     private var filePhoto: File? = null
@@ -68,7 +63,7 @@ class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(Registrat
     private val REQUEST_CODE = 13
     private var organization_id = -1
     private var organization_sub_id = -1
-    private var progressDialog:ProgressDialog? = null
+    private var progressDialog: ProgressDialog? = null
 
     override fun onCreate(view: View) {
         binding.uploadImage.setOnClickListener(this)
@@ -76,13 +71,13 @@ class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(Registrat
         binding.rePasswordRegistrationShow.setOnClickListener(this)
         binding.backBtn.setOnClickListener(this)
         binding.send.setOnClickListener(this)
-        binding.phone.addTextChangedListener(object :TextWatcher{
+        binding.phone.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if(p0!!.length < 9){
+                if (p0!!.length < 9) {
                     binding.phoneMes.visibility = View.VISIBLE
                 } else {
                     binding.phoneMes.visibility = View.GONE
@@ -95,14 +90,14 @@ class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(Registrat
 
         })
         var password = ""
-        binding.passwordRegistration.addTextChangedListener(object :TextWatcher{
+        binding.passwordRegistration.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 password = binding.passwordRegistration.text.toString()
-                if(p0!!.length < 6){
+                if (p0!!.length < 6) {
                     binding.passwordRegistrationMes.visibility = View.VISIBLE
                     binding.passwordRegistrationMes.text = "Parol kamida 6ta belgidan iborat bo'lishi kerak"
                 } else {
@@ -115,18 +110,18 @@ class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(Registrat
             }
 
         })
-        binding.rePasswordRegistration.addTextChangedListener(object :TextWatcher{
+        binding.rePasswordRegistration.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if(p0!!.length < 6){
+                if (p0!!.length < 6) {
                     binding.rePasswordRegistrationMes.visibility = View.VISIBLE
                     binding.rePasswordRegistrationMes.text = "Parol kamida 6ta belgidan iborat bo'lishi kerak"
                 } else {
 
-                    if (password == p0.toString()){
+                    if (password == p0.toString()) {
                         binding.rePasswordRegistrationMes.visibility = View.GONE
                     } else {
                         binding.rePasswordRegistrationMes.visibility = View.VISIBLE
@@ -144,52 +139,49 @@ class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(Registrat
         setOrganizationItems()
     }
 
-    private fun getBolim(id:Int){
+    private fun getBolim(id: Int) {
         vm.bolim(id)
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                vm.bolimResponse.collect {
-                    var arraySpinner = ArrayList<String>()
-                    arraySpinner.clear()
-                    arraySpinner.add("tanlang")
-                    when(it){
-                        is NetworkResult.Success->{
+        vm.bolimResponse.collectLatestLA(lifecycleScope) {
+            var arraySpinner = ArrayList<String>()
+            arraySpinner.clear()
+            arraySpinner.add("tanlang")
+            when (it) {
+                is NetworkResult.Success -> {
 
-                            it.data?.let {
-                                it.forEachIndexed { index, bolim ->
-                                    arraySpinner.add(bolim.name.toString())
-                                }
-                            }
+                    it.data?.let {
+                        it.forEachIndexed { index, bolim ->
+                            arraySpinner.add(bolim.name.toString())
                         }
-                    }
-                    val organizationAdapter = ArrayAdapter(binding.root.context, R.layout.simple_spinner_item, arraySpinner)
-                    organizationAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
-                    binding.spinnerOrganizationName.adapter = organizationAdapter
-                    binding.spinnerOrganizationName.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                        override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                            organization_sub_id = p2
-                            if (p2 > 0){
-                                binding.spinnerOrganizationNameMes.visibility = View.GONE
-                            }
-                        }
-
-                        override fun onNothingSelected(p0: AdapterView<*>?) {}
-
                     }
                 }
             }
+            val organizationAdapter = ArrayAdapter(binding.root.context, R.layout.simple_spinner_item, arraySpinner)
+            organizationAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
+            binding.spinnerOrganizationName.adapter = organizationAdapter
+            binding.spinnerOrganizationName.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                    organization_sub_id = p2
+                    if (p2 > 0) {
+                        binding.spinnerOrganizationNameMes.visibility = View.GONE
+                    }
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {}
+
+            }
+
         }
     }
 
     private fun setOrganizationItems() {
-        var arraySpinner = arrayOf("tanlang","Tarkibiy bo'linma", "Fakultet","Kafedra")
+        var arraySpinner = arrayOf("tanlang", "Tarkibiy bo'linma", "Fakultet", "Kafedra")
         val organizationAdapter = ArrayAdapter(binding.root.context, R.layout.simple_spinner_item, arraySpinner)
         organizationAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
         binding.spinnerOrganization.adapter = organizationAdapter
         binding.spinnerOrganization.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 organization_id = p2
-                if (p2 > 0){
+                if (p2 > 0) {
                     binding.spinnerOrganizationMes.visibility = View.GONE
                 }
                 getBolim(p2)
@@ -289,10 +281,10 @@ class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(Registrat
         )
     }
 
-    fun verifyDialog(registerBody: RegisterBody){
+    fun verifyDialog(registerBody: RegisterBody) {
         val stringType = "text/plain".toMediaTypeOrNull()
         val dialog = AlertDialog.Builder(binding.root.context).create()
-        val dialogView = LayoutInflater.from(binding.root.context).inflate(R.layout.dialog_register_verification,null, false)
+        val dialogView = LayoutInflater.from(binding.root.context).inflate(R.layout.dialog_register_verification, null, false)
         dialog.setView(dialogView)
         dialog.show()
         dialog.setCancelable(false)
@@ -304,42 +296,41 @@ class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(Registrat
         dialogBinding.sendBtn.setOnClickListener {
             hideKeyBoard()
             hideKeyBoard()
-            if (dialogBinding.code.text.toString().isNotEmpty()){
+            if (dialogBinding.code.text.toString().isNotEmpty()) {
                 registerBody.token = dialogBinding.code.text.toString().toRequestBody(stringType)
                 vm.register(registerBody)
-                viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-                    viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                        vm.registerResponse.collect {
-                            when(it){
-                                is NetworkResult.Success ->{
-                                    dialog.dismiss()
-                                    closeLoader()
-                                    snackBar("Ro'yxatdan o'tish muvaffaqiyatli amalga oshirildi.")
-                                    finish()
-                                }
-                                is NetworkResult.Error -> {
-                                    closeLoader()
-                                    snackBar(it.message.toString())
-                                }
-                                is NetworkResult.Loading ->{
-                                    showLoader()
-                                }
-                            }
+                vm.registerResponse.collectLatestLA(lifecycleScope) {
+                    when (it) {
+                        is NetworkResult.Success -> {
+                            dialog.dismiss()
+                            closeLoader()
+                            snackBar("Ro'yxatdan o'tish muvaffaqiyatli amalga oshirildi.")
+                            finish()
+                        }
+                        is NetworkResult.Error -> {
+                            closeLoader()
+                            dialog.dismiss()
+                            snackBar(it.message.toString())
+                        }
+                        is NetworkResult.Loading -> {
+                            showLoader()
                         }
                     }
                 }
+
             } else {
                 dialogBinding.code.error = ""
             }
         }
     }
+
     override fun onClick(p0: View?) {
         p0.blockClickable()
         when (p0) {
             binding.send -> {
                 hideKeyBoard()
-                if (organization_id > 0 && organization_sub_id > 0 && binding.surname.text.toString().isNotEmpty() && binding.name.text.toString().isNotEmpty() &&  binding.position.text.toString().isNotEmpty() && binding.phone.text.toString().isNotEmpty() && binding.email.text.toString().endsWith("@jbnuu.uz") && binding.passwordRegistration.text.toString().isNotEmpty() && binding.rePasswordRegistration.text.toString().isNotEmpty()){
-                    if (binding.passwordRegistration.text.toString().length >= 6 && binding.rePasswordRegistration.text.toString().length >= 6 && binding.email.text.toString().endsWith("@jbnuu.uz")){
+                if (organization_id > 0 && organization_sub_id > 0 && binding.surname.text.toString().isNotEmpty() && binding.name.text.toString().isNotEmpty() && binding.position.text.toString().isNotEmpty() && binding.phone.text.toString().isNotEmpty() && binding.email.text.toString().endsWith("@jbnuu.uz") && binding.passwordRegistration.text.toString().isNotEmpty() && binding.rePasswordRegistration.text.toString().isNotEmpty()) {
+                    if (binding.passwordRegistration.text.toString().length >= 6 && binding.rePasswordRegistration.text.toString().length >= 6 && binding.email.text.toString().endsWith("@jbnuu.uz")) {
 
                         val stringType = "text/plain".toMediaTypeOrNull()
                         val imageTypee = "image/JPEG".toMediaTypeOrNull()
@@ -356,74 +347,70 @@ class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(Registrat
                             binding.phone.text.toString().toRequestBody(stringType),
                             organization_sub_id.toString().toRequestBody(stringType),
                             binding.position.text.toString().toRequestBody(stringType),
-                            if (image?.exists() == true) MultipartBody.Part.createFormData("photo","", image.readBytes().toRequestBody(imageTypee)) else null
+                            if (image?.exists() == true) MultipartBody.Part.createFormData("photo", "", image.readBytes().toRequestBody(imageTypee)) else null
                         )
 
 
                         vm.registerVerify(RegisterVerifyBody(binding.email.text.toString()))
-                        viewLifecycleOwner.lifecycleScope.launch {
-                            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-
-                                vm.registerVerifyResponse.collect {
-                                    when (it) {
-                                        is NetworkResult.Success -> {
-                                            closeLoader()
-                                            if (it.data?.response == "succes"){
-                                                verifyDialog(registerBody)
-                                            }
-                                        }
-                                        is NetworkResult.Loading -> {
-                                            showLoader()
-                                        }
-                                        is NetworkResult.Error -> {
-                                            closeLoader()
-                                            snackBar(it.message.toString())
-                                        }
+                        vm.registerVerifyResponse.collectLatestLA(lifecycleScope) {
+                            when (it) {
+                                is NetworkResult.Success -> {
+                                    closeLoader()
+                                    if (it.data?.response == "succes") {
+                                        verifyDialog(registerBody)
                                     }
                                 }
+                                is NetworkResult.Loading -> {
+                                    showLoader()
+                                }
+                                is NetworkResult.Error -> {
+                                    closeLoader()
+                                    snackBar(it.message.toString())
+                                }
                             }
+
                         }
                     } else {
                         snackBar("Siz @jbnuu.uz")
                     }
                 } else {
-                    if (binding.name.text.toString().isEmpty()){
+                    if (binding.name.text.toString().isEmpty()) {
                         binding.name.error = "Ismingizni kiriting"
                     }
-                    if (binding.surname.text.toString().isEmpty()){
+                    if (binding.surname.text.toString().isEmpty()) {
                         binding.surname.error = "Familiyangizni kiriting"
                     }
-                    if (binding.phone.text.toString().isEmpty()){
+                    if (binding.phone.text.toString().isEmpty()) {
                         binding.phone.error = "Telefoningizni kiriting"
                     }
-                    if (binding.email.text.toString().isEmpty()){
+                    if (binding.email.text.toString().isEmpty()) {
                         binding.email.error = "pochtangizni kiriting"
                     }
-                    if (binding.position.text.toString().isEmpty()){
+                    if (binding.position.text.toString().isEmpty()) {
                         binding.position.error = "lavozimingizni kiriting"
                     }
 
-                    if (binding.passwordRegistration.text.toString().isEmpty()){
-                      binding.passwordRegistrationMes.visibility = View.VISIBLE
-                      binding.passwordRegistrationMes.text = "parolni kiriting"
+                    if (binding.passwordRegistration.text.toString().isEmpty()) {
+                        binding.passwordRegistrationMes.visibility = View.VISIBLE
+                        binding.passwordRegistrationMes.text = "parolni kiriting"
                     }
-                    if (binding.rePasswordRegistration.text.toString().isEmpty()){
+                    if (binding.rePasswordRegistration.text.toString().isEmpty()) {
                         binding.rePasswordRegistrationMes.visibility = View.VISIBLE
                         binding.rePasswordRegistrationMes.text = "parolni qayta kiriting"
                     }
-                    if (organization_id <= 0){
+                    if (organization_id <= 0) {
                         binding.spinnerOrganizationMes.visibility = View.VISIBLE
                     }
-                    if (organization_sub_id <= 0){
+                    if (organization_sub_id <= 0) {
                         binding.spinnerOrganizationNameMes.visibility = View.VISIBLE
                     }
-                    if (binding.email.text.toString().isEmpty()){
+                    if (binding.email.text.toString().isEmpty()) {
                         binding.email.error = "Elektron pochta kiriting"
-                    } else if (!checkEmail(binding.email.text.toString())){
-                            snackBar("Bu email emas")
-                    } else if (binding.email.text.toString().split("@jbnuu.uz").first().isEmpty()){
+                    } else if (!checkEmail(binding.email.text.toString())) {
+                        snackBar("Bu email emas")
+                    } else if (binding.email.text.toString().split("@jbnuu.uz").first().isEmpty()) {
                         binding.email.error = "Elektron pochtangizni to'g'ri kiriting"
-                    } else if (!binding.email.text.toString().endsWith("@jbnuu.uz")){
+                    } else if (!binding.email.text.toString().endsWith("@jbnuu.uz")) {
                         snackBar("Faqatgina @jbnuu.uz email orqali ro'yxatdan o'ting")
                     }
                 }
@@ -462,14 +449,14 @@ class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(Registrat
         }
     }
 
-    private fun showLoader(){
-        if(progressDialog == null){
+    private fun showLoader() {
+        if (progressDialog == null) {
             progressDialog = ProgressDialog(binding.root.context, "Yuklanmoqda ...")
         }
         progressDialog?.show()
     }
 
-    private fun closeLoader(){
+    private fun closeLoader() {
         progressDialog?.dismiss()
     }
 
@@ -483,9 +470,11 @@ class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(Registrat
                 "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
                 ")+"
     )
+
     private fun checkEmail(email: String): Boolean {
         return EMAIL_ADDRESS_PATTERN.matcher(email).matches()
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
