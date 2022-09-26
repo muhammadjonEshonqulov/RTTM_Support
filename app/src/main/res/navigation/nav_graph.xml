@@ -142,7 +142,7 @@
         tools:layout="@layout/admin_main_fragment" />
     <fragment
         android:id="@+id/allNotificationsFragment"
-        android:name="uz.rttm.support.ui.News.NewsFragment"
+        android:name="uz.rttm.support.ui.news.NewsFragment"
         android:label="AllNotificationsFragment"
         tools:layout="@layout/all_notifications_fragment">
         <action

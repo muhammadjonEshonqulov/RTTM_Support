@@ -44,7 +44,7 @@ class NewsAdapter(val listener : OnItemClickListener) : RecyclerView.Adapter<New
     
     inner class MyViewHolder(private val binding: ItemAllNotificationBinding): RecyclerView.ViewHolder(binding.root) {
 
-        @SuppressLint("SimpleDateFormat", "SetTextI18n")
+        @SuppressLint("SetTextI18n")
         fun bind(data: MessageResponse) {
             if (data.status == 0){
                 binding.ticketNumber.setTextColor(binding.root.context.getColor(R.color.new_tab_color))

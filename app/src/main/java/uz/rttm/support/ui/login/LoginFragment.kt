@@ -105,14 +105,9 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
                                             val userNameTopicInFireBase =
                                                 userName.split("@jbnuu.uz").first()
                                                     .toString()
-                                            prefs.save(
-                                                prefs.userNameTopicInFireBase,
-                                                userNameTopicInFireBase
-                                            )
-                                            FirebaseMessaging.getInstance()
-                                                .subscribeToTopic("" + userNameTopicInFireBase)
-                                            FirebaseMessaging.getInstance()
-                                                .subscribeToTopic("support")
+                                            prefs.save(prefs.userNameTopicInFireBase, userNameTopicInFireBase)
+                                            FirebaseMessaging.getInstance().subscribeToTopic("" + userNameTopicInFireBase)
+                                            FirebaseMessaging.getInstance().subscribeToTopic("support")
                                             if (findNavControllerSafely()?.currentDestination?.id == R.id.loginFragment) {
                                                 findNavControllerSafely()?.navigate(R.id.action_loginFragment_to_manager_mainFragment)
                                             }
@@ -127,8 +122,7 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
                                                 prefs.userNameTopicInFireBase,
                                                 userNameTopicInFireBase
                                             )
-                                            FirebaseMessaging.getInstance()
-                                                .subscribeToTopic("" + userNameTopicInFireBase)
+                                            FirebaseMessaging.getInstance().subscribeToTopic("" + userNameTopicInFireBase)
                                             if (findNavControllerSafely()?.currentDestination?.id == R.id.loginFragment) {
                                                 hideKeyBoard()
                                                 findNavControllerSafely()?.navigate(R.id.action_loginFragment_to_user_mainFragment)

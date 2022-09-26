@@ -7,14 +7,13 @@ import android.view.View
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.view.menu.MenuPopupHelper
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.viewpager.widget.ViewPager
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import uz.rttm.support.R
 import uz.rttm.support.databinding.ManagerMainFragmentBinding
-import uz.rttm.support.ui.News.NewsFragment
+import uz.rttm.support.ui.news.NewsFragment
 import uz.rttm.support.ui.base.BaseFragment
 import uz.rttm.support.ui.base.LogoutDialog
 import uz.rttm.support.ui.base.PageAdapter

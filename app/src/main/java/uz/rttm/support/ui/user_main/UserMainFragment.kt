@@ -39,7 +39,7 @@ import uz.rttm.support.models.body.CreateMessageBody
 import uz.rttm.support.models.body.LoginBody
 import uz.rttm.support.models.message.NotificationsData
 import uz.rttm.support.models.message.PushNotification
-import uz.rttm.support.ui.News.NewsFragment
+import uz.rttm.support.ui.news.NewsFragment
 import uz.rttm.support.ui.base.BaseFragment
 import uz.rttm.support.ui.base.LogoutDialog
 import uz.rttm.support.ui.base.PageAdapter
@@ -290,7 +290,7 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
                                 it.data?.text,
                                 it.data?.title,
                                 it.data?.img,
-                                Gson().toJson(it.data?.updated_at),
+                                it.data?.updated_at,
                                 prefs.get(prefs.fam, ""),
                                 prefs.get(prefs.fam, ""),
                                 prefs.get(prefs.name, ""),

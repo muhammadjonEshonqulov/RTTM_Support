@@ -14,6 +14,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.NavDeepLinkBuilder
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import uz.rttm.support.R
 import uz.rttm.support.ui.MainActivity
@@ -49,15 +50,9 @@ class FirebaseService : FirebaseMessagingService() {
             "lavozim" to message.data["lavozim"],
             "user_name" to message.data["user_name"],
             "role" to message.data["role"],
-            "bolim_name" to message.data["bolim_name_mes"],
-            "data_updated_at" to message.data["data_updated_at)"])
-//        if(role == prefs.manager){
-//            bundle.
-//        } else if (role == prefs.user){
-//
-//        } else if(role == prefs.admin){
-//
-//        }
+            "bolim_name" to message.data["bolim_name_mes"]
+        )
+        bundle.putString("data_updated_at", Gson().toJson(message.data["data_updated_at"]))
 
         val pendingIntent = NavDeepLinkBuilder(baseContext)
             .setComponentName(MainActivity::class.java)
@@ -74,7 +69,7 @@ class FirebaseService : FirebaseMessagingService() {
 
 //        val pendingIntent = PendingIntent.getActivities(this, 0, arrayOf(intent, intent), FLAG_ONE_SHOT)
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle(message.data["fam"]+" "+message.data["name"])
+            .setContentTitle(message.data["fam"] + " " + message.data["name"])
             .setContentText(message.data["content_text"])
             .setSubText(message.data["bolim_name"])
 //            .setSettingsText(message.data["fromUserName"])

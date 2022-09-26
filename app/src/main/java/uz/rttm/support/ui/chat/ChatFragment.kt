@@ -360,7 +360,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                                 data_text,
                                 bodyToString(body.text),
                                 file,
-                                Gson().toJson(data_updated_at),
+                                Gson().fromJson(data_updated_at, Date::class.java),
                                 prefs.get(prefs.fam, ""),
                                 fam,
                                 prefs.get(prefs.name, ""),
@@ -404,37 +404,34 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
     private fun sendNotification(response: CreateChatResponse?, notification: PushNotification) {
         try {
             vm.postNotify(notification) // api(requireContext()).postNotification(notification)
-            viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    vm.notificationResponse.collect {
-                        when (it) {
-                            is NetworkResult.Success -> {
-                                closeLoader()
-                                binding.charProgressbar.visibility = View.GONE
+            vm.notificationResponse.collectLatestLA(lifecycleScope) {
+                when (it) {
+                    is NetworkResult.Success -> {
+                        closeLoader()
+                        binding.charProgressbar.visibility = View.GONE
 //                                finish()
-                                hideKeyBoard()
-                                binding.answerLay.visibility = View.GONE
-                                binding.addChat.setImageResource(R.drawable.ic_baseline_add_circle_24)
-                                image_uri = ""
-                                binding.imageName.text = "Fayl nomi"
-                                binding.chatMessage.text.clear()
-                                image = null
-                                chatAdapter.setData(listOf())
-                                getChat(message_id.toInt())
+                        hideKeyBoard()
+                        binding.answerLay.visibility = View.GONE
+                        binding.addChat.setImageResource(R.drawable.ic_baseline_add_circle_24)
+                        image_uri = ""
+                        binding.imageName.text = "Fayl nomi"
+                        binding.chatMessage.text.clear()
+                        image = null
+                        chatAdapter.setData(listOf())
+                        getChat(message_id.toInt())
 //                                chatDataList.add(ChatData(0, notification.data.data_text,notification.data.file, 0,notification.data.messageId?.toInt(), response?.created_at, response?.updated_at,User  ))
 //                                chatAdapter.notifyItemChanged()
-                                snackBar("Habaringiz yuborildi.")
-                            }
-                            is NetworkResult.Error -> {
-                                closeLoader()
-                                binding.charProgressbar.visibility = View.GONE
-                                snackBar(it.message.toString())
-                            }
-                            is NetworkResult.Loading -> {
-                                showLoader()
-                            }
-                        }
+                        snackBar("Habaringiz yuborildi.")
                     }
+                    is NetworkResult.Error -> {
+                        closeLoader()
+                        binding.charProgressbar.visibility = View.GONE
+                        snackBar(it.message.toString())
+                    }
+                    is NetworkResult.Loading -> {
+                        showLoader()
+                    }
+
                 }
             }
         } catch (e: Exception) {

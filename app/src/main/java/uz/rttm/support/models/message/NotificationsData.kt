@@ -1,11 +1,13 @@
 package uz.rttm.support.models.message
 
+import java.util.*
+
 data class NotificationsData(
     val messageId: String?,
     val data_text: String?,
     val content_text: String?,
     val file: String?,
-    val data_updated_at: String?,
+    val data_updated_at: Date?,
     val fam: String?,
     val fam_mes: String?,
     val name: String?,

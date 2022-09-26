@@ -3,7 +3,7 @@ package uz.rttm.support.ui.base
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import uz.rttm.support.ui.News.NewsFragment
+import uz.rttm.support.ui.news.NewsFragment
 
 class PageAdapter(fm: FragmentManager, var data: ArrayList<NewsFragment>) : FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
