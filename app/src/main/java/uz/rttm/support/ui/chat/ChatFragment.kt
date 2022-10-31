@@ -23,13 +23,10 @@ import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -41,7 +38,6 @@ import uz.rttm.support.databinding.ChatFragmentsBinding
 import uz.rttm.support.models.body.LoginBody
 import uz.rttm.support.models.chat.ChatData
 import uz.rttm.support.models.chat.CreateChatBody
-import uz.rttm.support.models.chat.CreateChatResponse
 import uz.rttm.support.models.login.Bolim
 import uz.rttm.support.models.login.User
 import uz.rttm.support.models.message.MessageBallBody
@@ -107,7 +103,6 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
         binding.cancelChat.setOnClickListener(this)
         binding.uploadImage.setOnClickListener(this)
         setupRecycle(arguments)
-
     }
 
     private fun setupRecycle(arguments: Bundle?) {
@@ -127,6 +122,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
             }
             getString("user_name")?.let {
                 user_name = it
+                lg("user_name->" + user_name)
             }
             getString("fam")?.let {
                 fam = it
@@ -176,6 +172,9 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
             adapter = chatAdapter
         }
         chatAdapter.setData(chatDataList)
+        if (prefs.get(prefs.role, "") == prefs.manager) {
+            closeNotificationsFromAnother()
+        }
         getChat(message_id.toInt())
 
     }
@@ -228,30 +227,28 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
     }
 
     private fun login(body: CreateChatBody? = null, message_id: Int? = null) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                vm.login(LoginBody(prefs.get(prefs.email, ""), prefs.get(prefs.password, "")))
-                vm.loginResponse.collect {
-                    when (it) {
-                        is NetworkResult.Success -> {
-                            it.data?.token?.let {
-                                prefs.save(prefs.token, it)
-                            }
-                            body?.let {
-                                sendMessage(it)
-                            }
-                            message_id?.let {
-                                getChat(it)
-                            }
-                        }
 
-                        is NetworkResult.Error -> {
-                            if (findNavControllerSafely()?.currentDestination?.id == R.id.chatFragment) {
-                                findNavControllerSafely()?.navigate(R.id.action_chatFragment_to_all_loginFragment)
-                            }
-                        }
+        vm.login(LoginBody(prefs.get(prefs.email, ""), prefs.get(prefs.password, "")))
+        vm.loginResponse.collectLA(lifecycleScope) {
+            when (it) {
+                is NetworkResult.Success -> {
+                    it.data?.token?.let {
+                        prefs.save(prefs.token, it)
+                    }
+                    body?.let {
+                        sendMessage(it)
+                    }
+                    message_id?.let {
+                        getChat(it)
                     }
                 }
+
+                is NetworkResult.Error -> {
+                    if (findNavControllerSafely()?.currentDestination?.id == R.id.chatFragment) {
+                        findNavControllerSafely()?.navigate(R.id.action_chatFragment_to_all_loginFragment)
+                    }
+                }
+
             }
         }
     }
@@ -263,7 +260,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
     }
 
     override fun onClick(p0: View?) {
-        p0.blockClickable(1000)
+        p0.blockClickable()
         when (p0) {
             binding.closeAndRating -> {
                 val dialog = CloseAndRatingDialog(binding.root.context)
@@ -308,8 +305,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                             binding.chatMessage.text.toString().toRequestBody(stringType),
                             message_id.toRequestBody(stringType),
                             if (image?.exists() == true && image != null) MultipartBody.Part.createFormData(
-                                "photo",
-                                image?.name,
+                                "photo", image?.name,
                                 RequestBody.create("multipart/form-data".toMediaTypeOrNull(), image!!)
                             ) else null
                         )
@@ -347,31 +343,38 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
         }
     }
 
+    private fun closeNotificationsFromAnother() {
+        try {
+            vm.postNotify(PushNotification(NotificationsData(null, "", "", "", null, "", "", "", "", "", "", "", "", "", 111), "/topics/support"))
+            vm.notificationResponse.collectLatestLA(lifecycleScope) {
+                when (it) {
+                    is NetworkResult.Success -> {
+
+                    }
+                    is NetworkResult.Error -> {
+
+                    }
+                    is NetworkResult.Loading -> {
+
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            snackBar("Error message->  : ${e.message}")
+        }
+    }
+
     private fun sendMessage(body: CreateChatBody) {
         vm.chatCreate(body)
         vm.chatCreateResponse.collectLatestLA(lifecycleScope) {
             when (it) {
                 is NetworkResult.Success -> {
+                    lg("Code response->" + it.code)
+
                     sendNotification(
-                        it.data,
                         PushNotification(
-                            NotificationsData(
-                                bodyToString(body.message_id),
-                                data_text,
-                                bodyToString(body.text),
-                                file,
-                                Gson().fromJson(data_updated_at, Date::class.java),
-                                prefs.get(prefs.fam, ""),
-                                fam,
-                                prefs.get(prefs.name, ""),
-                                name,
-                                lavozim,
-//                                        prefs.get(prefs.lavozim, ""),
-                                role,
-                                prefs.get(prefs.bolim_name, ""),
-                                bolim_name,
-                                prefs.get(prefs.userNameTopicInFireBase, "")
-                            ), "/topics/" + user_name
+                            NotificationsData(bodyToString(body.message_id), data_text, bodyToString(body.text), file, Gson().fromJson(data_updated_at, Date::class.java), prefs.get(prefs.fam, ""), fam, prefs.get(prefs.name, ""), name, lavozim, role, prefs.get(prefs.bolim_name, ""), bolim_name, prefs.get(prefs.userNameTopicInFireBase, "")),
+                            "/topics/$user_name"
                         )
                     )
                 }
@@ -401,15 +404,14 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
         }
     }
 
-    private fun sendNotification(response: CreateChatResponse?, notification: PushNotification) {
+    private fun sendNotification(notification: PushNotification) {
         try {
             vm.postNotify(notification) // api(requireContext()).postNotification(notification)
-            vm.notificationResponse.collectLatestLA(lifecycleScope) {
+            vm.notificationResponse.collectLA(lifecycleScope) {
                 when (it) {
                     is NetworkResult.Success -> {
                         closeLoader()
                         binding.charProgressbar.visibility = View.GONE
-//                                finish()
                         hideKeyBoard()
                         binding.answerLay.visibility = View.GONE
                         binding.addChat.setImageResource(R.drawable.ic_baseline_add_circle_24)
@@ -426,12 +428,12 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                     is NetworkResult.Error -> {
                         closeLoader()
                         binding.charProgressbar.visibility = View.GONE
-                        snackBar(it.message.toString())
+                        snackBar("Error in firebase->"+it.message.toString())
+                        lg("Error in firebase->"+it.message.toString())
                     }
                     is NetworkResult.Loading -> {
                         showLoader()
                     }
-
                 }
             }
         } catch (e: Exception) {

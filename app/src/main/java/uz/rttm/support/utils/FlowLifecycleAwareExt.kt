@@ -1,9 +1,20 @@
 package uz.rttm.support.utils
 
-import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+
+inline fun <T> Flow<T>.collectLA(
+    owner: LifecycleOwner,
+    crossinline onCollect: suspend (T) -> Unit
+) = owner.lifecycleScope.launch {
+    owner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+        collect {
+            onCollect(it)
+        }
+    }
+}
 
 inline fun <T> Flow<T>.collectLA(
     owner: LifecycleCoroutineScope,
@@ -14,6 +25,17 @@ inline fun <T> Flow<T>.collectLA(
         onCollect(it)
     }
 
+}
+
+inline fun <T> Flow<T>.collectLatestLA(
+    owner: LifecycleOwner,
+    crossinline onCollect: suspend (T) -> Unit
+) = owner.lifecycleScope.launch {
+    owner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+        collectLatest {
+            onCollect(it)
+        }
+    }
 }
 
 inline fun <T> Flow<T>.collectLatestLA(

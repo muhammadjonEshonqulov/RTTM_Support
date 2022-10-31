@@ -35,8 +35,7 @@ class FirebaseService : FirebaseMessagingService() {
         super.onMessageReceived(message)
 
         val intent = Intent(baseContext, MainActivity::class.java)
-        val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationID = Random.nextInt()
 
 //        val role = prefs.get(prefs.role, "")
@@ -77,8 +76,17 @@ class FirebaseService : FirebaseMessagingService() {
             .setSmallIcon(R.mipmap.ic_launcher)
             .build()
 
+        message.data["code"]?.toInt()?.let {
+            if (it == 111) {
+                notificationManager.cancelAll()
+            }
+        }
+
         notification.contentIntent = pendingIntent
-        notificationManager.notify(notificationID, notification)
+        if (message.data["code"]?.toInt() != 111) {
+            notificationManager.notify(notificationID, notification)
+        }
+//        notificationManager.notify(notificationID, notification)
 
     }
 

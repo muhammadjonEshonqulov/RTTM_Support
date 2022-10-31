@@ -3,6 +3,8 @@ package uz.rttm.support.ui.user_main
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
@@ -10,11 +12,13 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.view.menu.MenuPopupHelper
 import androidx.core.app.ActivityCompat
@@ -26,7 +30,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
 import com.google.firebase.messaging.FirebaseMessaging
-import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -39,11 +42,11 @@ import uz.rttm.support.models.body.CreateMessageBody
 import uz.rttm.support.models.body.LoginBody
 import uz.rttm.support.models.message.NotificationsData
 import uz.rttm.support.models.message.PushNotification
-import uz.rttm.support.ui.news.NewsFragment
 import uz.rttm.support.ui.base.BaseFragment
 import uz.rttm.support.ui.base.LogoutDialog
 import uz.rttm.support.ui.base.PageAdapter
 import uz.rttm.support.ui.base.ProgressDialog
+import uz.rttm.support.ui.news.NewsFragment
 import uz.rttm.support.utils.*
 import java.io.File
 import java.io.FileInputStream
@@ -80,6 +83,9 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
         binding.selectImage.setOnClickListener(this)
         binding.sendMessageBtn.setOnClickListener(this)
         binding.viewPager.addOnPageChangeListener(this)
+
+        val notificationManager = activity?.applicationContext?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancelAll()
     }
 
     private fun fragmentsToViewPager() {
@@ -299,7 +305,7 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
                                 prefs.get(prefs.role, ""),
                                 prefs.get(prefs.bolim_name, ""),
                                 prefs.get(prefs.bolim_name, ""),
-                                prefs.get(prefs.userNameTopicInFireBase, "")
+                                prefs.get(prefs.userNameTopicInFireBase, ""),
                             ), "/topics/support"
                         )
                     )
@@ -487,6 +493,7 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
         ) == PackageManager.PERMISSION_GRANTED
     }
 
+    @RequiresApi(Build.VERSION_CODES.FROYO)
     private fun getPhotoFile(fileName: String): File {
         val directoryStorage = activity?.getExternalFilesDir(
             Environment.DIRECTORY_PICTURES

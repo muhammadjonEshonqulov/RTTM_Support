@@ -1,6 +1,8 @@
 package uz.rttm.support.ui.manager_main
 
 import android.annotation.SuppressLint
+import android.app.NotificationManager
+import android.content.Context
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
@@ -12,12 +14,13 @@ import androidx.viewpager.widget.ViewPager
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import uz.rttm.support.R
+import uz.rttm.support.app.App
 import uz.rttm.support.databinding.ManagerMainFragmentBinding
-import uz.rttm.support.ui.news.NewsFragment
 import uz.rttm.support.ui.base.BaseFragment
 import uz.rttm.support.ui.base.LogoutDialog
 import uz.rttm.support.ui.base.PageAdapter
 import uz.rttm.support.ui.base.ProgressDialog
+import uz.rttm.support.ui.news.NewsFragment
 import uz.rttm.support.ui.user_main.UserMainViewModel
 import uz.rttm.support.utils.Prefs
 import uz.rttm.support.utils.blockClickable
@@ -25,9 +28,9 @@ import uz.rttm.support.utils.findNavControllerSafely
 import uz.rttm.support.utils.hasInternetConnection
 import javax.inject.Inject
 
+
 @AndroidEntryPoint
-class ManagerMainFragment :
-    BaseFragment<ManagerMainFragmentBinding>(ManagerMainFragmentBinding::inflate),
+class ManagerMainFragment : BaseFragment<ManagerMainFragmentBinding>(ManagerMainFragmentBinding::inflate),
     ViewPager.OnPageChangeListener, View.OnClickListener {
 
     @Inject
@@ -45,6 +48,8 @@ class ManagerMainFragment :
         binding.newBtn.setOnClickListener(this)
         binding.topManager.setOnClickListener(this)
         binding.viewPager.addOnPageChangeListener(this)
+        val notificationManager = activity?.applicationContext?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancelAll()
     }
 
     private fun fragmentsToViewPager() {
@@ -82,7 +87,7 @@ class ManagerMainFragment :
             override fun onMenuItemSelected(menu: MenuBuilder, item: MenuItem): Boolean {
                 when (item.itemId) {
                     R.id.profile -> {
-                        if (findNavControllerSafely()?.currentDestination?.id == R.id.managerMainFragment){
+                        if (findNavControllerSafely()?.currentDestination?.id == R.id.managerMainFragment) {
                             findNavControllerSafely()?.navigate(R.id.action_managerMainFragment_to_send_profileFragment)
                         }
                     }
@@ -98,7 +103,7 @@ class ManagerMainFragment :
                                             closeLoader()
                                             prefs.clear()
                                             logoutDialog.dismiss()
-                                            if (findNavControllerSafely()?.currentDestination?.id == R.id.managerMainFragment){
+                                            if (findNavControllerSafely()?.currentDestination?.id == R.id.managerMainFragment) {
                                                 findNavControllerSafely()?.navigate(R.id.action_managerMainFragment_to_loginFragment)
                                             }
                                         }
@@ -130,6 +135,7 @@ class ManagerMainFragment :
     private fun closeLoader() {
         progressDialog?.dismiss()
     }
+
     override fun onClick(p0: View?) {
         p0.blockClickable()
         when (p0) {
@@ -153,7 +159,7 @@ class ManagerMainFragment :
                 binding.tabUnderView.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.new_tab_color))
                 binding.ticketsActionbar.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.new_tab_color))
             }
-            binding.topManager->{
+            binding.topManager -> {
                 popupLogout(binding.topManager)
             }
 

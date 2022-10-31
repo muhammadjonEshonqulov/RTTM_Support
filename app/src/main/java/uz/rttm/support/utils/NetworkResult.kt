@@ -42,18 +42,18 @@ fun <T> handleResponse(response: Response<T>): NetworkResult<T> {
             return NetworkResult.Error("Timeout.")
         }
         response.code() == 401 -> {
-            return NetworkResult.Error("Login yoki parol noto'g'ri kiritildi", code = 401)
+            return NetworkResult.Error("Login yoki parol noto'g'ri kiritildi", code = response.code())
         }
         response.code() == 404 -> {
-            return NetworkResult.Error("Not found", code = 404)
+            return NetworkResult.Error("Not found", code = response.code())
         }
         response.code() == 422 -> {
             val jsonObject = response.errorBody()?.string()?.let { JSONObject(it) }
-            return NetworkResult.Error(jsonObject?.getString("msg"), code = 422)
+            return NetworkResult.Error(jsonObject?.getString("msg"), code = response.code())
         }
         response.isSuccessful -> {
             val data = response.body()
-            return NetworkResult.Success(data = data, code = 200)
+            return NetworkResult.Success(data = data, code = response.code())
         }
         else -> return NetworkResult.Error(response.message())
     }

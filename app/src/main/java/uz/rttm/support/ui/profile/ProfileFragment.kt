@@ -26,13 +26,9 @@ import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -150,46 +146,53 @@ class ProfileFragment : BaseFragment<ProfileFragmentBinding>(ProfileFragmentBind
 
     private fun getBolim(id: Int) {
         val sub_bolim_id = pref.get(pref.sub_bolim_id, 0)
+        var indexBolim = -1
+
+        val arraySpinnerDepartment = mutableListOf<String>()
+        arraySpinnerDepartment.add("tanlang")
+        var organizationAdapterDepartment = ArrayAdapter(binding.root.context, R.layout.simple_spinner_item, arraySpinnerDepartment)
+        organizationAdapterDepartment.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
+        binding.spinnerOrganizationName.adapter = organizationAdapterDepartment
+
 
         vm.bolim(id)
-        vm.bolimResponse.collectLatestLA(lifecycleScope) {
-            var arraySpinner = ArrayList<String>()
-            arraySpinner.clear()
-            arraySpinner.add("tanlang")
+        vm.bolimResponse.collectLA(lifecycleScope) {
             when (it) {
                 is NetworkResult.Success -> {
-
                     it.data?.let {
+                        arraySpinnerDepartment.clear()
+                        arraySpinnerDepartment.add("tanlang")
                         it.forEachIndexed { index, bolim ->
-                            arraySpinner.add(bolim.name.toString())
+                            bolim.name?.let {
+                                arraySpinnerDepartment.add(it)
+                            }
+                            if (bolim.id == sub_bolim_id) {
+                                indexBolim = index+1
+                            }
+                        }
+                        binding.spinnerOrganizationName.adapter = ArrayAdapter(binding.root.context, R.layout.simple_spinner_item, arraySpinnerDepartment)
+                        binding.spinnerOrganizationName.setSelection(indexBolim)
+                        binding.spinnerOrganizationName.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                                if (p2 > 0) {
+                                    it[p2 - 1].id?.let {
+                                        organization_sub_id = it
+                                    }
+                                }
+                                if (p2 > 0) {
+                                    binding.spinnerOrganizationNameMes.visibility = View.GONE
+                                }
+                            }
+
+                            override fun onNothingSelected(p0: AdapterView<*>?) {}
+
                         }
                     }
                 }
             }
-            val organizationAdapter = ArrayAdapter(binding.root.context, R.layout.simple_spinner_item, arraySpinner)
-            organizationAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
-            binding.spinnerOrganizationName.adapter = organizationAdapter
-            delay(100)
-
-            if (sub_bolim_id < arraySpinner.size) {
-                binding.spinnerOrganizationName.setSelection(sub_bolim_id)
-            }
-            binding.spinnerOrganizationName.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                    organization_sub_id = p2
-                    pref.save(pref.sub_bolim_id, organization_sub_id)
-                    pref.save(pref.bolim_name, arraySpinner.get(p2))
-                    lg("name -<>" + arraySpinner.get(p2))
-                    if (p2 > 0) {
-                        binding.spinnerOrganizationNameMes.visibility = View.GONE
-                    }
-                }
-
-                override fun onNothingSelected(p0: AdapterView<*>?) {}
-
-            }
-
         }
+
+//        }
     }
 
     override fun onClick(p0: View?) {
@@ -308,38 +311,35 @@ class ProfileFragment : BaseFragment<ProfileFragmentBinding>(ProfileFragmentBind
                                 if (image?.exists() == true) MultipartBody.Part.createFormData("photo", "", image.readBytes().toRequestBody(imageTypee)) else null
                             )
                         )
-                        viewLifecycleOwner.lifecycleScope.launch {
-                            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                                vm.updateResponse.collect {
-                                    when (it) {
-                                        is NetworkResult.Success -> {
-                                            progressDialog?.dismiss()
-                                            if (it.data?.succes == "ok") {
-                                                pref.save(pref.lavozim, binding.position.text.toString())
-                                                pref.save(pref.fam, binding.surname.text.toString())
-                                                pref.save(pref.name, binding.name.text.toString())
-                                                pref.save(pref.phone, binding.phone.text.toString())
-                                                pref.save(pref.bolim_id, organization_id)
-                                                snackBar("Shaxsiy malumotlaringiz muvaffaqiyatli o'zgartirildi.")
-                                                finish()
-                                            }
-                                        }
-                                        is NetworkResult.Error -> {
-
-                                            progressDialog?.dismiss()
-                                            if (it.code == 422) {
-                                                snackBar("Eski parol noto'g'ri kiritildi")
-                                            } else {
-                                                snackBar(it.message.toString())
-                                            }
-                                        }
-                                        is NetworkResult.Loading -> {
-                                            if (progressDialog == null) {
-                                                progressDialog = ProgressDialog(binding.root.context, "Yuklanmoqda")
-                                            }
-                                            progressDialog?.show()
-                                        }
+                        vm.updateResponse.collectLA(lifecycleScope) {
+                            when (it) {
+                                is NetworkResult.Success -> {
+                                    progressDialog?.dismiss()
+                                    if (it.data?.succes == "ok") {
+                                        pref.save(pref.lavozim, binding.position.text.toString())
+                                        pref.save(pref.fam, binding.surname.text.toString())
+                                        pref.save(pref.name, binding.name.text.toString())
+                                        pref.save(pref.phone, binding.phone.text.toString())
+                                        pref.save(pref.bolim_id, organization_id)
+                                        pref.save(pref.sub_bolim_id, organization_sub_id)
+                                        snackBar("Shaxsiy malumotlaringiz muvaffaqiyatli o'zgartirildi.")
+                                        finish()
                                     }
+                                }
+                                is NetworkResult.Error -> {
+
+                                    progressDialog?.dismiss()
+                                    if (it.code == 422) {
+                                        snackBar("Eski parol noto'g'ri kiritildi")
+                                    } else {
+                                        snackBar(it.message.toString())
+                                    }
+                                }
+                                is NetworkResult.Loading -> {
+                                    if (progressDialog == null) {
+                                        progressDialog = ProgressDialog(binding.root.context, "Yuklanmoqda")
+                                    }
+                                    progressDialog?.show()
                                 }
                             }
                         }
@@ -350,10 +350,6 @@ class ProfileFragment : BaseFragment<ProfileFragmentBinding>(ProfileFragmentBind
 
             }
         }
-    }
-
-    private fun checkAll() {
-
     }
 
     private fun validator() {

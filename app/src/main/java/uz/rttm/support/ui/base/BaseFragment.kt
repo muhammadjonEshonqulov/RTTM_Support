@@ -11,12 +11,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.snackbar.Snackbar
 import uz.rttm.support.R
+import uz.rttm.support.app.App
 import uz.rttm.support.utils.findNavControllerSafely
 import uz.rttm.support.utils.language.Language
 import uz.rttm.support.utils.language.LanguageManager
@@ -83,25 +85,46 @@ abstract class BaseFragment<VB : ViewBinding>(private val inflate: Inflate<VB>) 
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    fun EditText.showKeyboard(){
+    fun EditText.showKeyboard() {
         this.requestFocus()
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
         imm?.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
 
     }
+    fun snackBarAction(message: String) {
+        try {
+            binding.root.let {
+                val snackbar = Snackbar.make(it, message, Snackbar.LENGTH_INDEFINITE)
+                snackbar.setAction("Yopmoq") {
+                    snackbar.dismiss()
+                }
+                val textView: TextView = snackbar.view.findViewById(com.google.android.material.R.id.snackbar_text)
+                textView.maxLines = 6
+                snackbar.show()
+            }
+        } catch (e: Exception) {
 
+        }
+    }
     fun snackBar(message: String) {
-        binding.root.let {
-            val themeId = themeManager.currentTheme.id
-            val snackbar = Snackbar.make(it, message, Snackbar.LENGTH_SHORT)
-            snackbar.view.setBackgroundColor(
-                ContextCompat.getColor(
-                    it.context,
-                    if (themeId == ClassicTheme().id) R.color.cl_color_primary else R.color.black
+        try {
+            binding.root.let {
+                val themeId = themeManager.currentTheme.id
+                val snackbar = Snackbar.make(it, message, Snackbar.LENGTH_SHORT)
+                snackbar.view.setBackgroundColor(
+                    ContextCompat.getColor(
+                        it.context,
+                        if (themeId == ClassicTheme().id) R.color.cl_color_primary else R.color.black
+                    )
                 )
-            )
-            snackbar.setTextColor(ContextCompat.getColor(it.context, R.color.white))
-            snackbar.show()
+                snackbar.setTextColor(ContextCompat.getColor(it.context, R.color.white))
+                snackbar.show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(App.context, message, Toast.LENGTH_SHORT).show()
+        } catch (e:java.lang.Exception){
+            Toast.makeText(App.context, message, Toast.LENGTH_SHORT).show()
+
         }
     }
 

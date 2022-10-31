@@ -33,7 +33,8 @@ class Prefs @Inject constructor(context: Context) {
     val theme: String = "theme"
     val userNameTopicInFireBase: String = "userNameTopicInFireBase"
     val userLogin: String = "userLogin"
-//    val username: String = "username"
+
+    //    val username: String = "username"
     val password: String = "password"
     val firebaseToken: String = "FIREBASE_TOKEN"
 

@@ -86,6 +86,7 @@ class ChatViewModel @Inject constructor(
         if (hasInternetConnection(getApplication())) {
             try {
                 val response = repository.remote.chatActive(message_id)
+
             } catch (e: Exception) {
             }
         }

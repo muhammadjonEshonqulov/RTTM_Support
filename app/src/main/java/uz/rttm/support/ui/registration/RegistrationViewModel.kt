@@ -72,7 +72,7 @@ class RegistrationViewModel @Inject constructor(
         if (hasInternetConnection(getApplication())) {
             try {
                 val response = repository.remote.getBolim(id)
-                _bolimResponse.send( handleResponse(response))
+                _bolimResponse.send(handleResponse(response))
             } catch (e: Exception) {
                 _bolimResponse.send( NetworkResult.Error("Xatolik : " + e.message))
             }

@@ -140,40 +140,50 @@ class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(Registrat
     }
 
     private fun getBolim(id: Int) {
+
+        val arraySpinnerDepartment = mutableListOf<String>()
+        arraySpinnerDepartment.add("tanlang")
+        var organizationAdapterDepartment = ArrayAdapter(binding.root.context, R.layout.simple_spinner_item, arraySpinnerDepartment)
+        organizationAdapterDepartment.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
+        binding.spinnerOrganizationName.adapter = organizationAdapterDepartment
+
+
         vm.bolim(id)
-        vm.bolimResponse.collectLatestLA(lifecycleScope) {
-            var arraySpinner = ArrayList<String>()
-            arraySpinner.clear()
-            arraySpinner.add("tanlang")
+        vm.bolimResponse.collectLA(lifecycleScope) {
             when (it) {
                 is NetworkResult.Success -> {
-
                     it.data?.let {
-                        it.forEachIndexed { index, bolim ->
-                            arraySpinner.add(bolim.name.toString())
+                        arraySpinnerDepartment.clear()
+                        arraySpinnerDepartment.add("tanlang")
+                        it.forEach {
+                            it.name?.let {
+                                arraySpinnerDepartment.add(it)
+                            }
+                        }
+                        binding.spinnerOrganizationName.adapter = ArrayAdapter(binding.root.context, R.layout.simple_spinner_item, arraySpinnerDepartment)
+                        binding.spinnerOrganizationName.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                                if (p2 > 0) {
+                                    it[p2 - 1].id?.let {
+                                        organization_sub_id = it
+                                    }
+                                }
+                                if (p2 > 0) {
+                                    binding.spinnerOrganizationNameMes.visibility = View.GONE
+                                }
+                            }
+
+                            override fun onNothingSelected(p0: AdapterView<*>?) {}
+
                         }
                     }
                 }
             }
-            val organizationAdapter = ArrayAdapter(binding.root.context, R.layout.simple_spinner_item, arraySpinner)
-            organizationAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
-            binding.spinnerOrganizationName.adapter = organizationAdapter
-            binding.spinnerOrganizationName.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                    organization_sub_id = p2
-                    if (p2 > 0) {
-                        binding.spinnerOrganizationNameMes.visibility = View.GONE
-                    }
-                }
-
-                override fun onNothingSelected(p0: AdapterView<*>?) {}
-
-            }
-
         }
     }
 
     private fun setOrganizationItems() {
+
         var arraySpinner = arrayOf("tanlang", "Tarkibiy bo'linma", "Fakultet", "Kafedra")
         val organizationAdapter = ArrayAdapter(binding.root.context, R.layout.simple_spinner_item, arraySpinner)
         organizationAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)

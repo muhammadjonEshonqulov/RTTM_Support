@@ -112,8 +112,8 @@
                 <Spinner
                     android:id="@+id/spinner_organization"
                     android:layout_width="match_parent"
-                    android:paddingStart="@dimen/small_margin"
-                    android:layout_height="50dp" />
+                    android:layout_height="50dp"
+                    android:paddingStart="@dimen/small_margin" />
 
             </FrameLayout>
 
@@ -142,8 +142,8 @@
                 <Spinner
                     android:id="@+id/spinner_organization_name"
                     android:layout_width="match_parent"
-                    android:paddingStart="@dimen/small_margin"
-                    android:layout_height="50dp" />
+                    android:layout_height="50dp"
+                    android:paddingStart="@dimen/small_margin" />
             </FrameLayout>
 
             <TextView
@@ -163,11 +163,11 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/position_lay"
                 style="@style/TextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/left_right_margin_size"
                 android:layout_marginTop="@dimen/left_right_margin_size"
-                android:layout_marginEnd="@dimen/left_right_margin_size"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_marginEnd="@dimen/left_right_margin_size">
 
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -184,11 +184,11 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/surname_lay"
                 style="@style/TextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/left_right_margin_size"
                 android:layout_marginTop="@dimen/left_right_margin_size"
-                android:layout_marginEnd="@dimen/left_right_margin_size"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_marginEnd="@dimen/left_right_margin_size">
 
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -206,11 +206,11 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/name_lay"
                 style="@style/TextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/left_right_margin_size"
                 android:layout_marginTop="@dimen/left_right_margin_size"
-                android:layout_marginEnd="@dimen/left_right_margin_size"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_marginEnd="@dimen/left_right_margin_size">
 
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -248,23 +248,23 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/phone_lay"
                 style="@style/TextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/left_right_margin_size"
                 android:layout_marginTop="@dimen/left_right_margin_size"
-                android:layout_marginEnd="@dimen/left_right_margin_size"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_marginEnd="@dimen/left_right_margin_size">
 
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:hint="Telefon"
                     android:inputType="number"
                     android:maxLength="9"
                     android:padding="@dimen/default_margin"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textColor="@color/black" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -296,10 +296,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Email"
-                    android:textColor="@color/black"
                     android:inputType="textEmailAddress"
                     android:padding="@dimen/default_margin"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textColor="@color/black" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <FrameLayout
@@ -324,10 +324,10 @@
                         android:fontFamily="@font/ibm_plex_sans_medium"
                         android:hint="Parol"
                         android:inputType="textPassword"
-                        android:textColor="@color/black"
                         android:minHeight="48dp"
                         android:padding="10dp"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:textColor="@color/black" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <ImageView
@@ -379,11 +379,11 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/ibm_plex_sans_medium"
                         android:hint="Parolni takrorlash"
-                        android:textColor="@color/black"
                         android:inputType="textPassword"
                         android:minHeight="48dp"
                         android:padding="10dp"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:textColor="@color/black" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <ImageView
@@ -413,12 +413,12 @@
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/left_right_margin_size"
                 android:layout_marginTop="@dimen/left_right_margin_size"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="7dp"
                 android:layout_marginEnd="@dimen/left_right_margin_size"
                 android:layout_marginBottom="@dimen/left_right_margin_size"
+                app:cardCornerRadius="7dp"
                 app:cardElevation="@dimen/left_right_margin_size">
 
                 <Button
@@ -426,6 +426,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/cl_color_primary"
+                    android:foreground="?selectableItemBackground"
                     android:text="Yuborish"
                     android:textColor="@color/white" />
             </androidx.cardview.widget.CardView>
