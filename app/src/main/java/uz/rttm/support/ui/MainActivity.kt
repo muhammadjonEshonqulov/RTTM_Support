@@ -11,6 +11,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.appupdate.testing.FakeAppUpdateManager
 import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.ActivityResult
 import com.google.android.play.core.install.model.AppUpdateType
@@ -22,7 +23,6 @@ import uz.rttm.support.BuildConfig
 import uz.rttm.support.R
 import uz.rttm.support.databinding.ActivityMainBinding
 import uz.rttm.support.utils.Prefs
-import uz.rttm.support.utils.lg
 import uz.rttm.support.utils.snack
 import javax.inject.Inject
 
@@ -44,6 +44,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val fakeAppUpdateManager = FakeAppUpdateManager(binding.root.context)
+        fakeAppUpdateManager.setUpdateAvailable(1)
+
+        fakeAppUpdateManager.userAcceptsUpdate()
+        fakeAppUpdateManager.downloadStarts()
+        fakeAppUpdateManager.downloadCompletes()
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -59,25 +67,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkUpdate() {
         val appUpdateInfoTask = appUpdateManager.appUpdateInfo
-        lg("Checking for updates")
         appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
-            lg("Build version -> " + BuildConfig.VERSION_CODE)
-            lg("availableVersionCode  -> " + appUpdateInfo.availableVersionCode())
-          //  snack(binding.root, "Build version -> " + BuildConfig.VERSION_CODE + "\navailableVersionCode  -> " + appUpdateInfo.availableVersionCode())
+              snack(binding.root, "Build version -> " + BuildConfig.VERSION_CODE + "\navailableVersionCode  -> ${ appUpdateInfo.availableVersionCode() == UpdateAvailability.UPDATE_AVAILABLE }"  )
 
-            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE ) { // && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
-                lg("Update available")
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) { // && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
                 appUpdateManager.registerListener(listener)
-                appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.FLEXIBLE, this, MYREQUESTCODE)
+                if (appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE))
+                    appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.FLEXIBLE, this, MYREQUESTCODE)
+                else if (appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE))
+                    appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.IMMEDIATE, this, MYREQUESTCODE)
             } else {
-                lg("No Update available")
             }
         }
     }
 
     private val listener: InstallStateUpdatedListener = InstallStateUpdatedListener { installState ->
         if (installState.installStatus() == InstallStatus.DOWNLOADED) {
-            lg("An update has been downloaded")
             showSnackBarForCompleteUpdate()
         }
     }
@@ -109,14 +114,11 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == MYREQUESTCODE) {
             when (resultCode) {
                 Activity.RESULT_OK -> {
-                    lg("" + "Result Ok")
                 }
                 Activity.RESULT_CANCELED -> {
-                    lg("" + "Result Cancelled")
                     checkUpdate()
                 }
                 ActivityResult.RESULT_IN_APP_UPDATE_FAILED -> {
-                    lg("" + "Update Failure")
                     checkUpdate()
 
                 }
