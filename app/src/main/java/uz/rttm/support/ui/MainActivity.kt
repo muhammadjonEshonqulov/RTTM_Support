@@ -76,7 +76,6 @@ class MainActivity : AppCompatActivity() {
                     appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.FLEXIBLE, this, MYREQUESTCODE)
                 else if (appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE))
                     appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.IMMEDIATE, this, MYREQUESTCODE)
-            } else {
             }
         }
     }
