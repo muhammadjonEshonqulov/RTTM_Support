@@ -42,7 +42,7 @@ android {
             buildConfigField "Boolean", "isDebug", "true"
             buildConfigField 'boolean', 'UPDATE_ENABLED', 'true'
             multiDexEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         release {
             buildConfigField "Boolean", "isDebug", "false"
@@ -135,5 +135,8 @@ dependencies {
     // play updater
 //    implementation "com.google.android.play:app-update-ktx:2.0.0"
     implementation 'com.google.android.play:core-ktx:1.8.1'
+
+    implementation 'com.google.firebase:firebase-firestore:24.4.3'
+
 
 }

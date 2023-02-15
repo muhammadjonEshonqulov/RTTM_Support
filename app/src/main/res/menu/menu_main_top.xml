@@ -5,6 +5,9 @@
         android:id="@+id/profile"
         android:title="Profil" />
     <item
+        android:id="@+id/help"
+        android:title="Yordam" />
+    <item
         android:id="@+id/logout"
         android:title="Chiqish" />
 

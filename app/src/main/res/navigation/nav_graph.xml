@@ -44,6 +44,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_loginFragment_to_managersFragment"
+            app:destination="@id/managersFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
 
     </fragment>
 
@@ -90,6 +97,13 @@
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_right" />
         <action
+            android:id="@+id/action_userMainFragment_to_send_managersFragment"
+            app:destination="@id/managersFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
             android:id="@+id/action_userMainFragment_to_all_notificationsFragment"
             app:destination="@id/allNotificationsFragment"
             app:enterAnim="@anim/slide_in_left"
@@ -114,6 +128,13 @@
         <action
             android:id="@+id/action_managerMainFragment_to_send_profileFragment"
             app:destination="@id/profileFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_managerMainFragment_to_send_managersFragment"
+            app:destination="@id/managersFragment"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_right"
@@ -216,4 +237,9 @@
         android:name="uz.rttm.support.ui.profile.ProfileFragment"
         android:label="ProfileFragment"
         tools:layout="@layout/profile_fragment" />
+    <fragment
+        android:id="@+id/managersFragment"
+        android:name="uz.rttm.support.ui.managers.ManagersFragment"
+        android:label="ManagersFragment"
+        tools:layout="@layout/manager_main_fragment" />
 </navigation>

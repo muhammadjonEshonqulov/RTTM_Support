@@ -35,6 +35,7 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
         binding.loginBtn.setOnClickListener(this)
         binding.loginRegistration.setOnClickListener(this)
         binding.forgetPassword.setOnClickListener(this)
+        binding.loginHelp.setOnClickListener(this)
     }
 
     override fun onClick(p0: View?) {
@@ -169,6 +170,12 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
                 hideKeyBoard()
                 if (findNavControllerSafely()?.currentDestination?.id == R.id.loginFragment) {
                     findNavControllerSafely()?.navigate(R.id.action_loginFragment_to_registrationFragment)
+                }
+            }
+            binding.loginHelp -> {
+                hideKeyBoard()
+                if (findNavControllerSafely()?.currentDestination?.id == R.id.loginFragment) {
+                    findNavControllerSafely()?.navigate(R.id.action_loginFragment_to_managersFragment)
                 }
             }
             binding.forgetPassword -> {

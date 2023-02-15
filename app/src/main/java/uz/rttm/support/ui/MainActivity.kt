@@ -11,18 +11,21 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.google.android.play.core.appupdate.testing.FakeAppUpdateManager
 import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.ActivityResult
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import dagger.hilt.android.AndroidEntryPoint
 import uz.rttm.support.BuildConfig
 import uz.rttm.support.R
 import uz.rttm.support.databinding.ActivityMainBinding
+import uz.rttm.support.models.message.ManagerResponse
 import uz.rttm.support.utils.Prefs
+import uz.rttm.support.utils.lg
 import uz.rttm.support.utils.snack
 import javax.inject.Inject
 
@@ -44,16 +47,19 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val fakeAppUpdateManager = FakeAppUpdateManager(binding.root.context)
-        fakeAppUpdateManager.setUpdateAvailable(1)
-
-        fakeAppUpdateManager.userAcceptsUpdate()
-        fakeAppUpdateManager.downloadStarts()
-        fakeAppUpdateManager.downloadCompletes()
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
+        readDataFromFireStore()
+
+        //        val fakeAppUpdateManager = FakeAppUpdateManager(binding.root.context)
+        //        fakeAppUpdateManager.setUpdateAvailable(1)
+        //
+        //        fakeAppUpdateManager.userAcceptsUpdate()
+        //        fakeAppUpdateManager.downloadStarts()
+        //        fakeAppUpdateManager.downloadCompletes()
+
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.findNavController()
@@ -68,8 +74,6 @@ class MainActivity : AppCompatActivity() {
     private fun checkUpdate() {
         val appUpdateInfoTask = appUpdateManager.appUpdateInfo
         appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
-              snack(binding.root, "Build version -> " + BuildConfig.VERSION_CODE + "\navailableVersionCode  -> ${ appUpdateInfo.availableVersionCode() == UpdateAvailability.UPDATE_AVAILABLE }"  )
-
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) { // && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
                 appUpdateManager.registerListener(listener)
                 if (appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE))
@@ -130,4 +134,36 @@ class MainActivity : AppCompatActivity() {
         super.onStop()
 
     }
+
+    private lateinit var mFirestore: FirebaseFirestore
+    private var managerResponse: ManagerResponse? = null
+
+    private fun readDataFromFireStore() {
+//        mFirestore = FirebaseFirestore.getInstance()
+//        mFirestore.firestoreSettings = FirebaseFirestoreSettings.Builder().build()
+//
+//
+//
+//        mFirestore.collection("managers_list").document("managers")
+//            .get()
+//            .addOnSuccessListener { document ->
+//                try {
+//                    if (document != null) {
+//                        lg("document->$document")
+////                        managerResponse = document.toObject(ManagerResponse::class.java)
+//                        lg("first_name->" + (document.data?.get("my_data") as List<Map<String, String>>)[0].get("first_name"))
+//                        lg("image->" + (document.data?.get("my_data") as List<Map<String, String>>)[0].get("image"))
+//
+//                        snack(binding.root, "DocumentSnapshot read successfully!")
+//                    } else {
+//                        snack(binding.root, "No such document!")
+//                    }
+//                } catch (ex: Exception) {
+//                    lg("Error -->" + ex.message.toString())
+//                }
+//            }.addOnFailureListener { e ->
+//                lg("Error writing document->$e")
+//            }
+    }
 }
+

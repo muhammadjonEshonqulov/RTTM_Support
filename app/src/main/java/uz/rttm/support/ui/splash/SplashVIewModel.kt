@@ -1,4 +1,4 @@
-package uz.intalim.ui.splash
+package uz.rttm.support.ui.splash
 
 import android.app.Application
 import android.content.Context

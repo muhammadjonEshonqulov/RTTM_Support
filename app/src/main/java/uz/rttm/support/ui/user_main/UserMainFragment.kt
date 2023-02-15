@@ -128,6 +128,11 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
                             findNavControllerSafely()?.navigate(R.id.action_userMainFragment_to_send_profileFragment)
                         }
                     }
+                    R.id.help -> {
+                        if (findNavControllerSafely()?.currentDestination?.id == R.id.userMainFragment) {
+                            findNavControllerSafely()?.navigate(R.id.action_userMainFragment_to_send_managersFragment)
+                        }
+                    }
                     R.id.logout -> {
                         val logoutDialog = LogoutDialog(binding.root.context)
                         logoutDialog.show()

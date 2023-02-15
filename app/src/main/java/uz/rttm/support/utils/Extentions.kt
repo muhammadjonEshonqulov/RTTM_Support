@@ -9,6 +9,10 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import uz.rttm.support.BuildConfig
+import uz.rttm.support.R
+import uz.rttm.support.app.App
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -36,7 +40,19 @@ fun Fragment.findNavControllerSafely(): NavController? {
     }
 }
 
-
+fun <T> catchErrors(e: Exception): NetworkResult.Error<T> {
+    return when (e) {
+        is SocketTimeoutException -> {
+            NetworkResult.Error(App.context.getString(R.string.bad_network_message))
+        }
+        is UnknownHostException -> {
+            NetworkResult.Error(App.context.getString(R.string.bad_network_message))
+        }
+        else -> {
+            NetworkResult.Error(App.context.getString(R.string.onother_error) + e.message.toString())
+        }
+    }
+}
 @SuppressLint("SimpleDateFormat")
 fun formatDateStr(strDate: Date): String {
     val formatter: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ")

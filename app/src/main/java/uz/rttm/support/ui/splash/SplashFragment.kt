@@ -1,19 +1,20 @@
 package uz.rttm.support.ui.splash
 
 import android.content.pm.ActivityInfo
+import android.os.CountDownTimer
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import uz.intalim.ui.splash.SplashVIewModel
 import uz.rttm.support.R
 import uz.rttm.support.databinding.FragmentSplashBinding
 import uz.rttm.support.models.body.LoginBody
 import uz.rttm.support.ui.base.BaseFragment
-import uz.rttm.support.utils.*
+import uz.rttm.support.utils.NetworkResult
+import uz.rttm.support.utils.Prefs
+import uz.rttm.support.utils.collectLatestLA
+import uz.rttm.support.utils.findNavControllerSafely
 import uz.rttm.support.utils.theme.Theme
 import javax.inject.Inject
 
@@ -27,47 +28,57 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         onCreateTheme(themeManager.currentTheme)
 
+        object : CountDownTimer(1000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
 
-        activity?.application?.let {
-            if (hasInternetConnection(it)) {
-                vm.getMe()
-                vm.getMeResponse.collectLatestLA(lifecycleScope) {
-                    when (it) {
-                        is NetworkResult.Success -> {
-                            it.data?.app_version?.apply {
-                                version?.let {
-                                    prefs.save(prefs.versionCode, it)
-                                }
-                                name?.let {
-                                    prefs.save(prefs.versionName, it)
-                                }
-                                type?.let {
-                                    prefs.save(prefs.versionType, it)
-                                }
-                            }
-                            startDestination()
-                        }
-//                                is NetworkResult.Loading -> {
-//                                    startDestination()
-//                                }
-                        is NetworkResult.Error -> {
-                            if (it.code == 401) {
-                                login()
-                            } else {
-                                startDestination()
-                            }
-                        }
-                    }
-
-                }
-            } else {
-                viewLifecycleOwner.lifecycleScope.launch {
-                    delay(500).also {
-                        startDestination()
-                    }
-                }
             }
-        }
+
+            override fun onFinish() {
+                startDestination()
+            }
+        }.start()
+
+//        activity?.application?.let {
+//            if (hasInternetConnection(it)) {
+//                vm.getMe()
+//                vm.getMeResponse.collectLatestLA(lifecycleScope) {
+//                    when (it) {
+//                        is NetworkResult.Success -> {
+//                            it.data?.app_version?.apply {
+//                                version?.let {
+//                                    prefs.save(prefs.versionCode, it)
+//                                }
+//                                name?.let {
+//                                    prefs.save(prefs.versionName, it)
+//                                }
+//                                type?.let {
+//                                    prefs.save(prefs.versionType, it)
+//                                }
+//                            }
+//                            startDestination()
+//                        }
+////                                is NetworkResult.Loading -> {
+////                                    startDestination()
+////                                }
+//                        is NetworkResult.Error -> {
+//                            if (it.code == 401) {
+//                                login()
+//                            } else {
+//                                startDestination()
+//                            }
+//                        }
+//                    }
+//
+//                }
+//            } else {
+//                viewLifecycleOwner.lifecycleScope.launch {
+//                    delay(500).also {
+//                        startDestination()
+//                    }
+//                }
+//            }
+//        }
+
 
     }
 
