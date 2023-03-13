@@ -94,7 +94,6 @@ class NewsFragment(val status: Int) : BaseFragment<AllNotificationsFragmentBindi
                     }
                     getMessages()
                 }
-
                 is NetworkResult.Error -> {
                     if (findNavControllerSafely()?.currentDestination?.id == R.id.userMainFragment) {
                         prefs.clear()
@@ -104,7 +103,7 @@ class NewsFragment(val status: Int) : BaseFragment<AllNotificationsFragmentBindi
                         findNavControllerSafely()?.navigate(R.id.action_managerMainFragment_to_all_loginFragment)
                     }
                 }
-
+                is NetworkResult.Loading ->{}
             }
         }
     }

@@ -2,6 +2,8 @@ package uz.rttm.support.utils
 
 class Constants {
     companion object {
+
+        const val AD_UNIT_ID = "ca-app-pub-7809559901245312/4446150466"
         const val TABLE_NAME = "table_name"
         const val BASE_URL = "http://support.jbnuu.uz/api/"
         const val BASE_URL_IMG = "http://support.jbnuu.uz/"

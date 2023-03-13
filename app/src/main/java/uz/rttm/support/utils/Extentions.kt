@@ -1,6 +1,8 @@
 package uz.rttm.support.utils
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Handler
 import android.util.Log
 import android.view.View
@@ -17,6 +19,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 fun View?.blockClickable(blockTimeMilles: Long = 500) {
     this?.isClickable = false
     Handler().postDelayed({ this?.isClickable = true }, blockTimeMilles)
@@ -28,10 +31,18 @@ fun snack(view: View, text: String) {
 
 fun lg(text: String) {
     if(BuildConfig.isDebug){
-        Log.d("RTTM", text)
+        Log.d("RTTM_SUPPORT", text)
     }
 }
-
+fun isAppAvailable(context: Context, appName: String?): Boolean {
+    val pm: PackageManager = context.packageManager
+    return try {
+        pm.getPackageInfo(appName!!, PackageManager.GET_ACTIVITIES)
+        true
+    } catch (e: PackageManager.NameNotFoundException) {
+        false
+    }
+}
 fun Fragment.findNavControllerSafely(): NavController? {
     return if (isAdded) {
         findNavController()

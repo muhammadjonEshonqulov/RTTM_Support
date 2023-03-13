@@ -103,9 +103,7 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
                                         prefs.manager -> {
                                             prefs.save(prefs.email, userName)
                                             prefs.save(prefs.password, password)
-                                            val userNameTopicInFireBase =
-                                                userName.split("@jbnuu.uz").first()
-                                                    .toString()
+                                            val userNameTopicInFireBase = userName.split("@jbnuu.uz").first().toString()
                                             prefs.save(prefs.userNameTopicInFireBase, userNameTopicInFireBase)
                                             FirebaseMessaging.getInstance().subscribeToTopic("" + userNameTopicInFireBase)
                                             FirebaseMessaging.getInstance().subscribeToTopic("support")
@@ -116,14 +114,10 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
                                         prefs.user -> {
                                             prefs.save(prefs.email, userName)
                                             prefs.save(prefs.password, password)
-                                            val userNameTopicInFireBase =
-                                                userName.split("@jbnuu.uz").first()
-                                                    .toString()
-                                            prefs.save(
-                                                prefs.userNameTopicInFireBase,
-                                                userNameTopicInFireBase
-                                            )
+                                            val userNameTopicInFireBase = userName.split("@jbnuu.uz").first().toString()
+                                            prefs.save(prefs.userNameTopicInFireBase, userNameTopicInFireBase)
                                             FirebaseMessaging.getInstance().subscribeToTopic("" + userNameTopicInFireBase)
+                                            FirebaseMessaging.getInstance().subscribeToTopic("jbnuu_users")
                                             if (findNavControllerSafely()?.currentDestination?.id == R.id.loginFragment) {
                                                 hideKeyBoard()
                                                 findNavControllerSafely()?.navigate(R.id.action_loginFragment_to_user_mainFragment)
@@ -211,19 +205,9 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
                                             snackBar("Bu pochta orqali ro'yxatdan o'tilmagan")
                                         } else {
 
-                                            val dialogVerification =
-                                                AlertDialog.Builder(binding.root.context)
-                                                    .create()
-                                            val dialogVerificationView =
-                                                LayoutInflater.from(binding.root.context)
-                                                    .inflate(
-                                                        R.layout.dialog_email_verification_enter_password,
-                                                        null,
-                                                        false
-                                                    )
-                                            dialogVerification.setView(
-                                                dialogVerificationView
-                                            )
+                                            val dialogVerification = AlertDialog.Builder(binding.root.context).create()
+                                            val dialogVerificationView = LayoutInflater.from(binding.root.context).inflate(R.layout.dialog_email_verification_enter_password, null, false)
+                                            dialogVerification.setView(dialogVerificationView)
                                             dialogVerification.show()
                                             dialogVerification.setCancelable(false)
                                             val dialogVerificationBinding =
@@ -232,37 +216,22 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
                                                 )
                                             var password = ""
                                             var repassword = ""
-                                            dialogVerificationBinding.newPassword.addTextChangedListener(
-                                                object : TextWatcher {
-                                                    override fun beforeTextChanged(
-                                                        s: CharSequence?,
-                                                        start: Int,
-                                                        count: Int,
-                                                        after: Int
-                                                    ) {
+                                            dialogVerificationBinding.newPassword.addTextChangedListener(object : TextWatcher {
+                                                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
+                                                }
+
+                                                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                                                    password = dialogVerificationBinding.newPassword.text.toString()
+                                                    if (s!!.length < 6) {
+                                                        dialogVerificationBinding.newPasswordMes.visibility = View.VISIBLE
+                                                        dialogVerificationBinding.newPasswordMes.text = "Parol kamida 6ta belgidan iborat bo'lishi kerak"
+                                                    } else {
+                                                        dialogVerificationBinding.newPasswordMes.visibility = View.GONE
                                                     }
+                                                }
 
-                                                    override fun onTextChanged(
-                                                        s: CharSequence?,
-                                                        start: Int,
-                                                        before: Int,
-                                                        count: Int
-                                                    ) {
-                                                        password =
-                                                            dialogVerificationBinding.newPassword.text.toString()
-                                                        if (s!!.length < 6) {
-                                                            dialogVerificationBinding.newPasswordMes.visibility =
-                                                                View.VISIBLE
-                                                            dialogVerificationBinding.newPasswordMes.text =
-                                                                "Parol kamida 6ta belgidan iborat bo'lishi kerak"
-                                                        } else {
-                                                            dialogVerificationBinding.newPasswordMes.visibility =
-                                                                View.GONE
-                                                        }
-                                                    }
-
-                                                    override fun afterTextChanged(s: Editable?) {
+                                                override fun afterTextChanged(s: Editable?) {
 
                                                     }
 

@@ -189,6 +189,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentBinding>(ProfileFragmentBind
                         }
                     }
                 }
+                else ->{}
             }
         }
 

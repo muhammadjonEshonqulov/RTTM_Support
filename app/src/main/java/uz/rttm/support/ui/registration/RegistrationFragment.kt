@@ -178,6 +178,7 @@ class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(Registrat
                         }
                     }
                 }
+                else ->{}
             }
         }
     }

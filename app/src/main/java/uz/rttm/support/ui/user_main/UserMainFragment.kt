@@ -342,13 +342,12 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
                     }
                     sendMessage(body)
                 }
-
                 is NetworkResult.Error -> {
                     if (findNavControllerSafely()?.currentDestination?.id == R.id.userMainFragment) {
                         findNavControllerSafely()?.navigate(R.id.action_userMainFragment_to_loginFragment)
                     }
                 }
-
+                is NetworkResult.Loading ->{}
             }
         }
     }

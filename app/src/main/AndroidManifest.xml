@@ -9,6 +9,13 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.CALL_PHONE"/>
 
+    <queries>
+        <package android:name="org.telegram.messenger" />
+        <package android:name="org.telegram.plus" />
+        <package android:name="org.aka.messenger" />
+        <package android:name="ir.ilmili.telegraph" />
+    </queries>
+
 
     <application
         android:allowBackup="false"
@@ -18,6 +25,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
+        android:hardwareAccelerated="true"
         android:theme="@style/ClassicTheme"
         android:fullBackupContent="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -31,6 +39,11 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/providerfile" />
         </provider>
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-7809559901245312~8972537072"/>
+
         <service
             android:name=".models.message.FirebaseService"
             android:exported="false"

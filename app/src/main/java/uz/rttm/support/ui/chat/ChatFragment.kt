@@ -242,13 +242,12 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                         getChat(it)
                     }
                 }
-
                 is NetworkResult.Error -> {
                     if (findNavControllerSafely()?.currentDestination?.id == R.id.chatFragment) {
                         findNavControllerSafely()?.navigate(R.id.action_chatFragment_to_all_loginFragment)
                     }
                 }
-
+                is NetworkResult.Loading ->{}
             }
         }
     }
