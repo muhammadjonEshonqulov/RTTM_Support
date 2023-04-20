@@ -105,8 +105,22 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
                                             prefs.save(prefs.password, password)
                                             val userNameTopicInFireBase = userName.split("@jbnuu.uz").first().toString()
                                             prefs.save(prefs.userNameTopicInFireBase, userNameTopicInFireBase)
-                                            FirebaseMessaging.getInstance().subscribeToTopic("" + userNameTopicInFireBase)
-                                            FirebaseMessaging.getInstance().subscribeToTopic("support")
+                                            FirebaseMessaging.getInstance().subscribeToTopic("" + userNameTopicInFireBase).addOnCompleteListener {
+                                                lg("subscribeToTopic $userNameTopicInFireBase -> success +$it" )
+                                            }.addOnFailureListener {
+                                                lg("subscribeToTopic $userNameTopicInFireBase -> Fail $it" )
+
+                                            }.addOnCanceledListener {
+                                                lg("subscribeToTopic $userNameTopicInFireBase -> success cancel" )
+                                            }
+                                            FirebaseMessaging.getInstance().subscribeToTopic("support").addOnCompleteListener {
+                                                lg("subscribeToTopic support $userNameTopicInFireBase -> success +$it" )
+                                            }.addOnFailureListener {
+                                                lg("subscribeToTopic support $userNameTopicInFireBase -> Fail $it" )
+
+                                            }.addOnCanceledListener {
+                                                lg("subscribeToTopic support $userNameTopicInFireBase -> success cancel" )
+                                            }
                                             if (findNavControllerSafely()?.currentDestination?.id == R.id.loginFragment) {
                                                 findNavControllerSafely()?.navigate(R.id.action_loginFragment_to_manager_mainFragment)
                                             }

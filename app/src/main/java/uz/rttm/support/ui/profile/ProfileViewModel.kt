@@ -5,20 +5,14 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import uz.rttm.support.data.Repository
-import uz.rttm.support.models.body.LoginBody
 import uz.rttm.support.models.body.UpdateBody
 import uz.rttm.support.models.login.Bolim
-import uz.rttm.support.models.login.LoginResponse
-import uz.rttm.support.models.register.RegisterBody
-import uz.rttm.support.models.register.RegisterResponse
 import uz.rttm.support.models.register.UpdateResponse
 import uz.rttm.support.utils.NetworkResult
+import uz.rttm.support.utils.catchErrors
 import uz.rttm.support.utils.handleResponse
 import uz.rttm.support.utils.hasInternetConnection
 import javax.inject.Inject
@@ -40,7 +34,7 @@ class ProfileViewModel @Inject constructor(
                 val response = repository.remote.update(updateBody)
                 _updateResponse.send( handleResponse(response))
             } catch (e: Exception) {
-                _updateResponse.send( NetworkResult.Error("Xatolik : " + e.message))
+                _updateResponse.send(catchErrors(e))
             }
         } else {
             _updateResponse.send( NetworkResult.Error("Server bilan aloqa yo'q"))
@@ -57,7 +51,7 @@ class ProfileViewModel @Inject constructor(
                 val response = repository.remote.getBolim(id)
                 _bolimResponse.send( handleResponse(response))
             } catch (e: Exception) {
-                _bolimResponse.send( NetworkResult.Error("Xatolik : " + e.message))
+                _bolimResponse.send(catchErrors(e))
             }
         } else {
             _bolimResponse.send( NetworkResult.Error("Server bilan aloqa yo'q"))

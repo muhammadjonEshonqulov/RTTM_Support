@@ -13,10 +13,7 @@ import uz.rttm.support.data.Repository
 import uz.rttm.support.models.body.LoginBody
 import uz.rttm.support.models.getMe.GetMeResponse
 import uz.rttm.support.models.login.LoginResponse
-import uz.rttm.support.utils.NetworkResult
-import uz.rttm.support.utils.Prefs
-import uz.rttm.support.utils.handleResponse
-import uz.rttm.support.utils.hasInternetConnection
+import uz.rttm.support.utils.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,7 +34,7 @@ class SplashVIewModel @Inject constructor(
                 val response = repository.remote.getMe()
                 _getMeResponse.send(handleResponse(response))
             } catch (e: Exception) {
-                _getMeResponse.send(NetworkResult.Error("Xatolik:" + e.message.toString()))
+                _getMeResponse.send(catchErrors(e))
             }
         } else {
             _getMeResponse.send(NetworkResult.Error(context.getString(R.string.connection_error_message)))
@@ -59,7 +56,7 @@ class SplashVIewModel @Inject constructor(
                 )
                 _loginResponse.send(handleResponse(response))
             } catch (e: Exception) {
-                _loginResponse.send(NetworkResult.Error("Xatolik:" + e.message.toString()))
+                _loginResponse.send(catchErrors(e))
             }
         } else {
             _loginResponse.send(NetworkResult.Error(context.getString(R.string.connection_error_message)))

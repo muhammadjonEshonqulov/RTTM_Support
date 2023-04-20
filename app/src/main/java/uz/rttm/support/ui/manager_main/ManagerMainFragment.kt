@@ -13,8 +13,8 @@ import androidx.fragment.app.viewModels
 import androidx.viewpager.widget.ViewPager
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
+import uz.rttm.support.BuildConfig
 import uz.rttm.support.R
-import uz.rttm.support.app.App
 import uz.rttm.support.databinding.ManagerMainFragmentBinding
 import uz.rttm.support.ui.base.BaseFragment
 import uz.rttm.support.ui.base.LogoutDialog
@@ -49,7 +49,8 @@ class ManagerMainFragment : BaseFragment<ManagerMainFragmentBinding>(ManagerMain
         binding.topManager.setOnClickListener(this)
         binding.viewPager.addOnPageChangeListener(this)
         val notificationManager = activity?.applicationContext?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.cancelAll()
+        if (!BuildConfig.isDebug)
+            notificationManager.cancelAll()
     }
 
     private fun fragmentsToViewPager() {

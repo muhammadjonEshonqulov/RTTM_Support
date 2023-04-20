@@ -294,14 +294,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="@dimen/left_right_margin_size">
+                    android:layout_marginStart="@dimen/left_right_margin_size"
+                    android:layout_marginTop="@dimen/small_margin"
+                    android:paddingTop="@dimen/left_right_margin_size"
+                    android:layout_marginEnd="@dimen/left_right_margin_size"
+                    android:paddingBottom="@dimen/left_right_margin_size"
+                    android:background="#E9EAE9">
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginStart="@dimen/default_margin"
+                        android:layout_marginStart="@dimen/left_right_margin_size"
                         android:layout_weight="1"
+                        android:textColor="@color/black"
                         android:text="Parolni o'zgartirish"
                         android:textSize="@dimen/standard_text_size" />
 

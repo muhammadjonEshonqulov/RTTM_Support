@@ -24,23 +24,21 @@ class LogoutDialog:AlertDialog  {
         cancel_listener_onclick = l
     }
     
-    constructor(context:Context) : super(context){
+    constructor(context: Context, tittle: String? = null, message: String? = null, ok_text: String? = null) : super(context) {
         this.setCancelable(true)
         val view = LayoutInflater.from(context).inflate(R.layout.dialog_logut, null, false)
         binding = DialogLogutBinding.bind(view)
+        tittle?.let {
+            binding.logoutTittle.text = it
+        }
+        message?.let {
+            binding.logoutMessage.text = it
+        }
+        ok_text?.let {
+            binding.logoutSubmit.text = it
+        }
         view?.apply {
 
-
-//            binding.logoutTittle.text = title
-//            if (title == "another_role_message"){
-//                binding.logoutMessage.movementMethod = LinkMovementMethod.getInstance()
-//                binding.logoutMessage.text = Html.fromHtml(message)
-//            } else {
-//                binding.logoutMessage.text = message
-//            }
-//            binding.cancelLogout.text = cancel_text
-//            binding.logoutSubmit.text = ok_text
-            
             binding.logoutSubmit.setOnClickListener {
                 submit_listener_onclick?.invoke()
             }

@@ -3,6 +3,8 @@ package uz.rttm.support.ui.chat
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -26,12 +28,14 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okio.Buffer
+import uz.rttm.support.BuildConfig
 import uz.rttm.support.R
 import uz.rttm.support.adapter.ChatAdapter
 import uz.rttm.support.databinding.ChatFragmentsBinding
@@ -43,10 +47,7 @@ import uz.rttm.support.models.login.User
 import uz.rttm.support.models.message.MessageBallBody
 import uz.rttm.support.models.message.NotificationsData
 import uz.rttm.support.models.message.PushNotification
-import uz.rttm.support.ui.base.BaseFragment
-import uz.rttm.support.ui.base.BottomSheetDialogPhoto
-import uz.rttm.support.ui.base.CloseAndRatingDialog
-import uz.rttm.support.ui.base.ProgressDialog
+import uz.rttm.support.ui.base.*
 import uz.rttm.support.utils.*
 import java.io.File
 import java.io.FileInputStream
@@ -57,9 +58,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::inflate),
-    View.OnClickListener,
-    ChatAdapter.OnItemClickListener {
+class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::inflate), View.OnClickListener, ChatAdapter.OnItemClickListener {
 
     @Inject
     lateinit var prefs: Prefs
@@ -105,9 +104,21 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
         setupRecycle(arguments)
     }
 
+    var code = -1
     private fun setupRecycle(arguments: Bundle?) {
 
         arguments?.apply {
+            if (getString("my_code")?.let {
+                    code = it.toInt()
+                    snackBar("Code->$code")
+                    if (it.toInt() == 101 && prefs.get(prefs.role, "") == prefs.manager) {
+                        binding.closeAndRating.visibility = View.VISIBLE
+                        binding.closeIcon.visibility = View.INVISIBLE
+                        binding.closeText.text = "Qabul qildim"
+                    }
+                } == null) {
+//                snackBar("My code is null")
+            }
             getString("data_updated_at")?.let {
                 data_updated_at = it
             }
@@ -141,9 +152,14 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
             }
             getInt("message_status").let {
                 message_status = it
-                if (it == 2) {
+                if (it == 3) {
                     binding.actionBarAnswerLay.visibility = View.GONE
                     binding.closeAndRating.visibility = View.GONE
+                } else if (it == 1 && prefs.get(prefs.role, "") == prefs.manager) {
+                    code = 101
+                    binding.closeAndRating.visibility = View.VISIBLE
+                    binding.closeIcon.visibility = View.INVISIBLE
+                    binding.closeText.text = "Qabul qildim"
                 }
             }
             getString("role")?.let {
@@ -157,7 +173,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                     vm.chatActive(message_id.toInt())
                 }
             }
-            chatData = ChatData(0, data_text, file, 0, message_id.toInt(), null, Gson().fromJson(data_updated_at, Date::class.java), User(prefs.get(prefs.userId, 0), name, fam, role, user_name + "@jbnuu.uz", phone, photo, lavozim, 0, Bolim(0, bolim_name, 0, null, null)))
+            chatData = ChatData(0, data_text, file, 0, message_id.toInt(), null, gson.fromJson(data_updated_at, Date::class.java), User(prefs.get(prefs.userId, 0), name, fam, role, user_name + "@jbnuu.uz", phone, photo, lavozim, 0, Bolim(0, bolim_name, 0, null, null)))
             file = ""
             chatData?.let {
                 chatDataList.add(it)
@@ -173,20 +189,22 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
         }
         chatAdapter.setData(chatDataList)
         if (prefs.get(prefs.role, "") == prefs.manager) {
-            closeNotificationsFromAnother()
+//            closeNotificationsFromAnother()
         }
         getChat(message_id.toInt())
 
     }
 
+    val gson: Gson = GsonBuilder().setDateFormat("MMM dd, yyyy HH:mm:ss").create()
+
     private fun getChat(message_id: Int) {
         activity?.application?.let {
             if (hasInternetConnection(it)) {
-                if (message_status == 0) {
-                    if (prefs.get(prefs.role, "") != prefs.user) {
-                        vm.messageActive(message_id)
-                    }
-                }
+//                if (message_status == 0) {
+//                    if (prefs.get(prefs.role, "") != prefs.user) {
+//                        vm.messageActive(message_id)
+//                    }
+//                }
                 vm.getChat(message_id)
                 vm.getChatResponse.collectLatestLA(lifecycleScope) {
                     when (it) {
@@ -201,6 +219,10 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                                 chatDataList.addAll(it)
                                 chatAdapter.setData(chatDataList)
                                 binding.listChat.scrollToPosition(chatAdapter.itemCount - 1)
+                                val notificationManager = activity?.applicationContext?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                                if (!BuildConfig.isDebug)
+                                    notificationManager.cancelAll()
+//                                closeNotificationsFromAnother(10, "/topics/${prefs.get(prefs.userNameTopicInFireBase, "")}")
                             }
                         }
                         is NetworkResult.Loading -> {
@@ -259,46 +281,62 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
     }
 
     override fun onClick(p0: View?) {
-        p0.blockClickable()
+        p0.blockClickable(3000)
         when (p0) {
             binding.closeAndRating -> {
-                val dialog = CloseAndRatingDialog(binding.root.context)
-                dialog.show()
-                dialog.setOnCancelClick {
-                    dialog.dismiss()
-                }
-                dialog.setOnSubmitClick { ball, text ->
-                    hideKeyBoard()
-                    vm.ball(MessageBallBody(message_id.toInt(), ball, text))
-                    vm.ballResponse.collectLatestLA(lifecycleScope) {
-                        when (it) {
-                            is NetworkResult.Success -> {
-                                closeLoader()
-                                snackBar("Bildirishnomangiz yakunlandi.")
-                                dialog.dismiss()
-                                finish()
-                            }
-                            is NetworkResult.Loading -> {
-                                showLoader()
-                            }
-                            is NetworkResult.Error -> {
-                                closeLoader()
-                                snackBar(it.message.toString())
+                if (code == 101) {
+                    val dialog = LogoutDialog(binding.root.context, tittle = "Qabul qilish", message = "Siz rostdan ham shu bildirishnomani qabul qilmoqchimisiz ?", "Ha")
+                    dialog.setOnCancelClick {
+                        dialog.dismiss()
+                    }
+                    dialog.setOnSubmitClick {
+                        dialog.dismiss()
+                        vm.messageActive(message_id.toInt())
+                        closeNotificationsFromAnother(111, "/topics/support")
+                        binding.closeAndRating.visibility = View.GONE
+                        snackBar("Qabul qilindi.")
+                    }
+                    dialog.show()
+
+                } else {
+                    val dialog = CloseAndRatingDialog(binding.root.context)
+                    dialog.show()
+                    dialog.setOnCancelClick {
+                        dialog.dismiss()
+                    }
+                    dialog.setOnSubmitClick { ball, text ->
+                        hideKeyBoard()
+                        vm.ball(MessageBallBody(message_id.toInt(), ball, text))
+                        vm.ballResponse.collectLatestLA(lifecycleScope) {
+                            when (it) {
+                                is NetworkResult.Success -> {
+                                    closeLoader()
+                                    snackBar("Bildirishnomangiz yakunlandi.")
+                                    dialog.dismiss()
+                                    finish()
+                                }
+                                is NetworkResult.Loading -> {
+                                    showLoader()
+                                }
+                                is NetworkResult.Error -> {
+                                    closeLoader()
+                                    snackBar(it.message.toString())
+                                }
                             }
                         }
-                    }
 
+                    }
                 }
             }
             binding.sendChat -> {
                 hideKeyBoard()
                 val imageUri: Uri = Uri.parse(image_uri)
                 if (binding.chatMessage.text.toString().isNotEmpty()) {
+                    binding.charProgressbar.visibility = View.VISIBLE
                     val stringType = "text/plain".toMediaTypeOrNull()
 
                     val imageFile: File = FileUtils.getFile(requireContext(), imageUri)
                     image = saveBitmapToFile(imageFile)
-
                     sendMessage(
                         CreateChatBody(
                             binding.chatMessage.text.toString().toRequestBody(stringType),
@@ -342,9 +380,9 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
         }
     }
 
-    private fun closeNotificationsFromAnother() {
+    private fun closeNotificationsFromAnother(code: Int, to: String) {
         try {
-            vm.postNotify(PushNotification(NotificationsData(null, "", "", "", null, "", "", "", "", "", "", "", "", "", 111), "/topics/support"))
+            vm.postNotify(PushNotification(NotificationsData(null, "", "", "", null, "", "", "", "", "", "", "", "", "", code), to))
             vm.notificationResponse.collectLatestLA(lifecycleScope) {
                 when (it) {
                     is NetworkResult.Success -> {
@@ -369,10 +407,11 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
             when (it) {
                 is NetworkResult.Success -> {
                     lg("Code response->" + it.code)
-
+                    binding.charProgressbar.visibility = View.GONE
+                    closeLoader()
                     sendNotification(
                         PushNotification(
-                            NotificationsData(bodyToString(body.message_id), data_text, bodyToString(body.text), file, Gson().fromJson(data_updated_at, Date::class.java), prefs.get(prefs.fam, ""), fam, prefs.get(prefs.name, ""), name, lavozim, role, prefs.get(prefs.bolim_name, ""), bolim_name, prefs.get(prefs.userNameTopicInFireBase, "")),
+                            NotificationsData(bodyToString(body.message_id), data_text, bodyToString(body.text), file, gson.fromJson(data_updated_at, Date::class.java), prefs.get(prefs.fam, ""), fam, prefs.get(prefs.name, ""), name, lavozim, role, prefs.get(prefs.bolim_name, ""), bolim_name, prefs.get(prefs.userNameTopicInFireBase, ""), code = 100),
                             "/topics/$user_name"
                         )
                     )
@@ -420,8 +459,6 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                         image = null
                         chatAdapter.setData(listOf())
                         getChat(message_id.toInt())
-//                                chatDataList.add(ChatData(0, notification.data.data_text,notification.data.file, 0,notification.data.messageId?.toInt(), response?.created_at, response?.updated_at,User  ))
-//                                chatAdapter.notifyItemChanged()
                         snackBar("Habaringiz yuborildi.")
                     }
                     is NetworkResult.Error -> {
@@ -431,7 +468,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                         lg("Error in firebase->"+it.message.toString())
                     }
                     is NetworkResult.Loading -> {
-                        showLoader()
+//                        showLoader()
                     }
                 }
             }

@@ -31,8 +31,8 @@ android {
         applicationId "uz.rttm.support"
         minSdk 23
         targetSdk 33
-        versionCode 14 // 11
-        versionName "1.0.14" // 11
+        versionCode 16 // 11
+        versionName "1.0.16" // 11
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -116,8 +116,8 @@ dependencies {
     releaseImplementation 'com.github.chuckerteam.chucker:library-no-op:3.5.2'
 
     // Dagger - Hilt
-    implementation 'com.google.dagger:hilt-android:2.42'
-    kapt 'com.google.dagger:hilt-android-compiler:2.42'
+    implementation 'com.google.dagger:hilt-android:2.45'
+    kapt 'com.google.dagger:hilt-android-compiler:2.45'
 
     // Lifecycle
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"

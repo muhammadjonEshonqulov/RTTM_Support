@@ -14,10 +14,7 @@ import uz.rttm.support.models.body.CreateMessageBody
 import uz.rttm.support.models.body.LoginBody
 import uz.rttm.support.models.login.LoginResponse
 import uz.rttm.support.models.message.CreateMessageResponse
-import uz.rttm.support.utils.NetworkResult
-import uz.rttm.support.utils.handleResponse
-import uz.rttm.support.utils.hasInternetConnection
-import uz.rttm.support.utils.lg
+import uz.rttm.support.utils.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,7 +33,7 @@ class UserMainViewModel @Inject constructor(
                 val response = repository.remote.postNotification(notification)
                 _notificationResponse.send(handleResponse(response))
             } catch (e: Exception) {
-                _notificationResponse.send(NetworkResult.Error("Xatolik : " + e.message))
+                _notificationResponse.send(catchErrors(e))
             }
         } else {
             _notificationResponse.send(NetworkResult.Error("Server bilan aloqa yo'q"))
@@ -53,27 +50,27 @@ class UserMainViewModel @Inject constructor(
                 val response = repository.remote.messageCreate(body)
                 _sendMessageResponse.send(handleResponse(response))
             } catch (e: Exception) {
-                _sendMessageResponse.send(NetworkResult.Error("Xatolik : " + e.message))
+                _sendMessageResponse.send(catchErrors(e))
             }
         } else {
             _sendMessageResponse.send(NetworkResult.Error("Server bilan aloqa yo'q"))
         }
     }
 
-    private val _loginResponse: MutableStateFlow<NetworkResult<LoginResponse>> = MutableStateFlow(NetworkResult.Loading())
-    var loginResponse: StateFlow<NetworkResult<LoginResponse>> = _loginResponse.asStateFlow()
+    private val _loginResponse = Channel<NetworkResult<LoginResponse>>()
+    var loginResponse = _loginResponse.receiveAsFlow()
 
     fun login(loginBody: LoginBody) = viewModelScope.launch {
-        _loginResponse.value = NetworkResult.Loading()
+        _loginResponse.send(NetworkResult.Loading())
         if (hasInternetConnection(getApplication())) {
             try {
                 val response =repository.remote.login(loginBody)
-                _loginResponse.value = handleResponse(response)
+                _loginResponse.send(handleResponse(response))
             } catch (e: Exception) {
-                _loginResponse.value = NetworkResult.Error("Xatolik : "+e.message)
+                _loginResponse.send(catchErrors(e))
             }
         } else {
-            _loginResponse.value = NetworkResult.Error("Server bilan aloqa yo'q")
+            _loginResponse.send(NetworkResult.Error("Server bilan aloqa yo'q"))
         }
     }
 }

@@ -5,18 +5,15 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import uz.rttm.support.data.Repository
 import uz.rttm.support.models.body.LoginBody
 import uz.rttm.support.models.login.LoginResponse
-import uz.rttm.support.models.login.User
 import uz.rttm.support.models.register.ForgetResponse
 import uz.rttm.support.models.repeat.RepeatBody
 import uz.rttm.support.utils.NetworkResult
+import uz.rttm.support.utils.catchErrors
 import uz.rttm.support.utils.handleResponse
 import uz.rttm.support.utils.hasInternetConnection
 import javax.inject.Inject
@@ -37,7 +34,7 @@ class LoginViewModel @Inject constructor(
                 val response = repository.remote.login(loginBody)
                 _loginResponse.send(handleResponse(response))
             } catch (e: Exception) {
-                _loginResponse.send( NetworkResult.Error("Xatolik : "+e.message))
+                _loginResponse.send(catchErrors(e))
             }
         } else {
             _loginResponse.send( NetworkResult.Error("Server bilan aloqa yo'q"))
@@ -53,7 +50,7 @@ class LoginViewModel @Inject constructor(
                 val response = repository.remote.forget(email)
                 _forgetResponse.send(handleResponse(response))
             } catch (e: Exception) {
-                _forgetResponse.send( NetworkResult.Error("Xatolik : "+e.message))
+                _forgetResponse.send(catchErrors(e))
             }
         } else {
             _forgetResponse.send( NetworkResult.Error("Server bilan aloqa yo'q"))
@@ -69,7 +66,7 @@ class LoginViewModel @Inject constructor(
                 val response = repository.remote.repeat(repeatBody)
                 _repeatResponse.send(handleResponse(response))
             } catch (e: Exception) {
-                _repeatResponse.send( NetworkResult.Error("Xatolik : "+e.message))
+                _repeatResponse.send(catchErrors(e))
             }
         } else {
             _repeatResponse.send( NetworkResult.Error("Server bilan aloqa yo'q"))

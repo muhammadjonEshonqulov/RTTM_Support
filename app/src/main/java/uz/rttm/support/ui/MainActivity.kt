@@ -56,28 +56,34 @@ class MainActivity : AppCompatActivity() {
 
         mAdView.adListener = object : AdListener() {
             override fun onAdClicked() {
+                lg("onAdClicked->")
                 // Code to be executed when the user clicks on an ad.
             }
 
             override fun onAdClosed() {
+                lg("onAdClosed->")
                 // Code to be executed when the user is about to return
                 // to the app after tapping on an ad.
             }
 
             override fun onAdFailedToLoad(adError: LoadAdError) {
+                lg("onAdFailedToLoad->$adError")
                 // Code to be executed when an ad request fails.
             }
 
             override fun onAdImpression() {
+                lg("onAdImpression->")
                 // Code to be executed when an impression is recorded
                 // for an ad.
             }
 
             override fun onAdLoaded() {
+                lg("onAdLoaded->")
                 // Code to be executed when an ad finishes loading.
             }
 
             override fun onAdOpened() {
+                lg("onAdOpened->")
                 // Code to be executed when an ad opens an overlay that
                 // covers the screen.
             }
@@ -94,6 +100,11 @@ class MainActivity : AppCompatActivity() {
         if (installState.installStatus() == InstallStatus.DOWNLOADED) {
             notifyUser()
         }
+    }
+
+    override fun onDestroy() {
+        mAdView.destroy()
+        super.onDestroy()
     }
 
     private fun checkUpdate(priority: Long) {

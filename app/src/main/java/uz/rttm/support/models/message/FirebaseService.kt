@@ -16,9 +16,11 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
+import uz.rttm.support.BuildConfig
 import uz.rttm.support.R
 import uz.rttm.support.ui.MainActivity
 import uz.rttm.support.utils.Prefs
+import uz.rttm.support.utils.lg
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -49,7 +51,8 @@ class FirebaseService : FirebaseMessagingService() {
             "lavozim" to message.data["lavozim"],
             "user_name" to message.data["user_name"],
             "role" to message.data["role"],
-            "bolim_name" to message.data["bolim_name_mes"]
+            "bolim_name" to message.data["bolim_name_mes"],
+            "my_code" to message.data["code"].toString()
         )
         bundle.putString("data_updated_at", Gson().toJson(message.data["data_updated_at"]))
 
@@ -75,24 +78,40 @@ class FirebaseService : FirebaseMessagingService() {
             .setAutoCancel(true)
             .setSmallIcon(R.mipmap.ic_launcher)
             .build()
-
-        message.data["code"]?.toInt()?.let {
-            if (it == 111) {
-                notificationManager.cancelAll()
-            }
-        }
-
         notification.contentIntent = pendingIntent
-        if (message.data["code"]?.toInt() != 111) {
+
+        lg("Message firebase -> $message")
+        lg("Message code -> " + message.data["code"])
+
+        if (message.data["code"]?.toInt()?.let {
+                when (it) {
+                    111 -> {
+                        if (!BuildConfig.isDebug)
+                            notificationManager.cancelAll()
+                    }
+                    else -> {
+                        notificationManager.notify(notificationID, notification)
+                    }
+                }
+            } == null) {
             notificationManager.notify(notificationID, notification)
         }
+        /*
+        101 code qabul qildim tugmasini chiqarish uchun, message hali hech kimda degani
+        111 qabul qilindi, boshqalardan o'chiirsh
+        0 o'zidagi notify larni yopishda kerak bo'ladi.
+        * */
+
+//        if (message.data["code"]?.toInt() != 111) {
+//            notificationManager.notify(notificationID, notification)
+//        }
 //        notificationManager.notify(notificationID, notification)
 
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun createNotificationChannel(notificationManager: NotificationManager) {
-        val channelName = "JBNUU_Support_channel"
+        val channelName = "RTTM_Support_channel"
         val channel = NotificationChannel(CHANNEL_ID, channelName, IMPORTANCE_HIGH).apply {
             description = "my channel description"
             enableLights(true)

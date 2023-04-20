@@ -36,6 +36,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okio.Buffer
+import uz.rttm.support.BuildConfig
 import uz.rttm.support.R
 import uz.rttm.support.databinding.UserMainFragmentBinding
 import uz.rttm.support.models.body.CreateMessageBody
@@ -85,7 +86,8 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
         binding.viewPager.addOnPageChangeListener(this)
 
         val notificationManager = activity?.applicationContext?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.cancelAll()
+        if (!BuildConfig.isDebug)
+            notificationManager.cancelAll()
     }
 
     private fun fragmentsToViewPager() {
@@ -169,7 +171,7 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
     }
 
     override fun onClick(p0: View?) {
-        p0.blockClickable(1000)
+        p0.blockClickable(3000)
         when (p0) {
             binding.closed -> {
                 binding.viewPager.setCurrentItem(2, true)
@@ -311,6 +313,7 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
                                 prefs.get(prefs.bolim_name, ""),
                                 prefs.get(prefs.bolim_name, ""),
                                 prefs.get(prefs.userNameTopicInFireBase, ""),
+                                code = 101 // 101 code bu qabul qildim tugmasini chiqarish uchun kerak.
                             ), "/topics/support"
                         )
                     )

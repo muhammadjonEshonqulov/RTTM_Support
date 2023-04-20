@@ -19,6 +19,7 @@ import uz.rttm.support.models.register.RegisterBody
 import uz.rttm.support.models.register.RegisterResponse
 import uz.rttm.support.models.register.RegisterVerifyBody
 import uz.rttm.support.utils.NetworkResult
+import uz.rttm.support.utils.catchErrors
 import uz.rttm.support.utils.handleResponse
 import uz.rttm.support.utils.hasInternetConnection
 import javax.inject.Inject
@@ -40,7 +41,7 @@ class RegistrationViewModel @Inject constructor(
                 val response = repository.remote.register(registrBody)
                 _registerResponse.send( handleResponse(response))
             } catch (e: Exception) {
-                _registerResponse.send( NetworkResult.Error("Xatolik : " + e.message))
+                _registerResponse.send( catchErrors(e))
             }
         } else {
             _registerResponse.send( NetworkResult.Error("Server bilan aloqa yo'q"))
@@ -57,7 +58,7 @@ class RegistrationViewModel @Inject constructor(
                 val response = repository.remote.registerVerify(registerVerifyBody)
                 _registerVerifyResponse.send( handleResponse(response))
             } catch (e: Exception) {
-                _registerVerifyResponse.send( NetworkResult.Error("Xatolik : " + e.message))
+                _registerVerifyResponse.send( catchErrors(e))
             }
         } else {
             _registerVerifyResponse.send( NetworkResult.Error("Server bilan aloqa yo'q"))
@@ -74,7 +75,7 @@ class RegistrationViewModel @Inject constructor(
                 val response = repository.remote.getBolim(id)
                 _bolimResponse.send(handleResponse(response))
             } catch (e: Exception) {
-                _bolimResponse.send( NetworkResult.Error("Xatolik : " + e.message))
+                _bolimResponse.send( catchErrors(e))
             }
         } else {
             _bolimResponse.send( NetworkResult.Error("Server bilan aloqa yo'q"))

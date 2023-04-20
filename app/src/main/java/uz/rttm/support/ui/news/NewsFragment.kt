@@ -85,7 +85,6 @@ class NewsFragment(val status: Int) : BaseFragment<AllNotificationsFragmentBindi
     @SuppressLint("RepeatOnLifecycleWrongUsage")
     private fun login() {
         vm.login(LoginBody(prefs.get(prefs.email, ""), prefs.get(prefs.password, "")))
-
         vm.loginResponse.collectLatestLA(lifecycleScope) {
             when (it) {
                 is NetworkResult.Success -> {
@@ -134,7 +133,7 @@ class NewsFragment(val status: Int) : BaseFragment<AllNotificationsFragmentBindi
     override fun onItemClick(data: MessageResponse) {
 
         var bundle = bundleOf(
-            "message_status" to status,
+            "message_status" to status + 1,
             "message_id" to data.id.toString(),
             "data_text" to data.text,
             "chat_count" to data.chat_count,
