@@ -88,7 +88,6 @@ class ManagersFragment : BaseFragment<FragmentManagersBinding>(FragmentManagersB
     override fun onItemClick(data: Map<String, String>, type: Int) {
         when (type) {
             1 -> {
-                lg("permissin " + checkPermission())
                 if (checkPermission()) {
                     val callIntent = Intent(Intent.ACTION_CALL)
                     callIntent.data = Uri.parse("tel:${data["phone"]}")

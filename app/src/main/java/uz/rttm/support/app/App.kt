@@ -26,7 +26,7 @@ class App : Application(), Application.ActivityLifecycleCallbacks, LifecycleObse
         super.onCreate()
         registerActivityLifecycleCallbacks(this)
 
-        MobileAds.initialize(this) { }
+//        MobileAds.initialize(this) { }
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
 
         appOpenAdManager = AppOpenAdManager();

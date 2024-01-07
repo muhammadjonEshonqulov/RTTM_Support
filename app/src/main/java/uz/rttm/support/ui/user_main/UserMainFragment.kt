@@ -310,6 +310,7 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
                                 prefs.get(prefs.name, ""),
                                 prefs.get(prefs.lavozim, ""),
                                 prefs.get(prefs.role, ""),
+                                prefs.get(prefs.phone, ""),
                                 prefs.get(prefs.bolim_name, ""),
                                 prefs.get(prefs.bolim_name, ""),
                                 prefs.get(prefs.userNameTopicInFireBase, ""),

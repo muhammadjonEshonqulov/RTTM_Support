@@ -19,6 +19,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?selectableItemBackgroundBorderless"
             android:padding="16dp"
             android:src="@drawable/ic_baseline_arrow_back_ios_24" />
 
@@ -31,6 +34,18 @@
             android:text="RTTM SUPPORT"
             android:textColor="@color/white"
             android:textSize="@dimen/very_large_text_size" />
+
+        <ImageView
+            android:id="@+id/phone"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?selectableItemBackgroundBorderless"
+            android:padding="16dp"
+            android:src="@drawable/baseline_phone_forwarded_24"
+            app:tint="@color/white" />
     </LinearLayout>
 
     <FrameLayout
@@ -177,12 +192,12 @@
                             android:background="#f9f9f9"
                             android:fontFamily="@font/calibri"
                             android:gravity="top"
-                            android:textColor="@color/black"
-                            android:textColorHint="@color/default_text_color"
                             android:hint="Bildirishnoma mazmuni"
                             android:maxHeight="250dp"
                             android:minHeight="200dp"
                             android:padding="@dimen/default_margin"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/default_text_color"
                             android:textSize="@dimen/standard_text_size" />
                     </androidx.cardview.widget.CardView>
 

@@ -36,7 +36,7 @@ class FirebaseService : FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
-        val intent = Intent(baseContext, MainActivity::class.java)
+//        val intent = Intent(baseContext, MainActivity::class.java)
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationID = Random.nextInt()
 
@@ -51,6 +51,7 @@ class FirebaseService : FirebaseMessagingService() {
             "lavozim" to message.data["lavozim"],
             "user_name" to message.data["user_name"],
             "role" to message.data["role"],
+            "phone" to message.data["phone"],
             "bolim_name" to message.data["bolim_name_mes"],
             "my_code" to message.data["code"].toString()
         )
@@ -67,7 +68,7 @@ class FirebaseService : FirebaseMessagingService() {
             createNotificationChannel(notificationManager)
         }
 
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
 //        val pendingIntent = PendingIntent.getActivities(this, 0, arrayOf(intent, intent), FLAG_ONE_SHOT)
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
@@ -79,9 +80,6 @@ class FirebaseService : FirebaseMessagingService() {
             .setSmallIcon(R.mipmap.ic_launcher)
             .build()
         notification.contentIntent = pendingIntent
-
-        lg("Message firebase -> $message")
-        lg("Message code -> " + message.data["code"])
 
         if (message.data["code"]?.toInt()?.let {
                 when (it) {

@@ -100,6 +100,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
         binding.actionBarAnswerBtn.setOnClickListener(this)
         binding.closeAndRating.setOnClickListener(this)
         binding.cancelChat.setOnClickListener(this)
+        binding.phone.setOnClickListener(this)
         binding.uploadImage.setOnClickListener(this)
         setupRecycle(arguments)
     }
@@ -143,6 +144,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
             }
             getString("phone")?.let {
                 phone = it
+                lg("phone-> $phone")
             }
             getString("photo")?.let {
                 photo = it
@@ -225,10 +227,12 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
 //                                closeNotificationsFromAnother(10, "/topics/${prefs.get(prefs.userNameTopicInFireBase, "")}")
                             }
                         }
+
                         is NetworkResult.Loading -> {
                             binding.charProgressbar.visibility = View.VISIBLE
 
                         }
+
                         is NetworkResult.Error -> {
                             if (it.code == 401) {
                                 login(message_id = message_id)
@@ -264,12 +268,14 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                         getChat(it)
                     }
                 }
+
                 is NetworkResult.Error -> {
                     if (findNavControllerSafely()?.currentDestination?.id == R.id.chatFragment) {
                         findNavControllerSafely()?.navigate(R.id.action_chatFragment_to_all_loginFragment)
                     }
                 }
-                is NetworkResult.Loading ->{}
+
+                is NetworkResult.Loading -> {}
             }
         }
     }
@@ -315,9 +321,11 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                                     dialog.dismiss()
                                     finish()
                                 }
+
                                 is NetworkResult.Loading -> {
                                     showLoader()
                                 }
+
                                 is NetworkResult.Error -> {
                                     closeLoader()
                                     snackBar(it.message.toString())
@@ -328,6 +336,17 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                     }
                 }
             }
+
+            binding.phone -> {
+                if (checkPermissionCall()) {
+                    val callIntent = Intent(Intent.ACTION_CALL)
+                    callIntent.data = Uri.parse("tel:${phone}")
+                    startActivity(callIntent)
+                } else {
+                    requestPermissionCall()
+                }
+            }
+
             binding.sendChat -> {
                 hideKeyBoard()
                 val imageUri: Uri = Uri.parse(image_uri)
@@ -351,12 +370,15 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                     snackBar("Bildirishnoma mazmunini kiriting")
                 }
             }
+
             binding.backBtn -> {
                 finish()
             }
+
             binding.uploadImage -> {
                 popupCamera(binding.uploadImage)
             }
+
             binding.cancelChat -> {
                 binding.chatMessage.text.clear()
                 binding.imageName.text = "Fayl nomi"
@@ -365,6 +387,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                 binding.answerLay.visibility = View.GONE
                 binding.addChat.setImageResource(R.drawable.ic_baseline_add_circle_24)
             }
+
             binding.actionBarAnswerBtn -> {
                 if (binding.answerLay.visibility == View.GONE) {
                     binding.chatMessage.showKeyboard()
@@ -382,15 +405,17 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
 
     private fun closeNotificationsFromAnother(code: Int, to: String) {
         try {
-            vm.postNotify(PushNotification(NotificationsData(null, "", "", "", null, "", "", "", "", "", "", "", "", "", code), to))
+            vm.postNotify(PushNotification(NotificationsData(null, "", "", "", null, "", "", "", "", "", "", phone, "", "", "", code), to))
             vm.notificationResponse.collectLatestLA(lifecycleScope) {
                 when (it) {
                     is NetworkResult.Success -> {
 
                     }
+
                     is NetworkResult.Error -> {
 
                     }
+
                     is NetworkResult.Loading -> {
 
                     }
@@ -411,14 +436,16 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                     closeLoader()
                     sendNotification(
                         PushNotification(
-                            NotificationsData(bodyToString(body.message_id), data_text, bodyToString(body.text), file, gson.fromJson(data_updated_at, Date::class.java), prefs.get(prefs.fam, ""), fam, prefs.get(prefs.name, ""), name, lavozim, role, prefs.get(prefs.bolim_name, ""), bolim_name, prefs.get(prefs.userNameTopicInFireBase, ""), code = 100),
+                            NotificationsData(bodyToString(body.message_id), data_text, bodyToString(body.text), file, gson.fromJson(data_updated_at, Date::class.java), prefs.get(prefs.fam, ""), fam, prefs.get(prefs.name, ""), name, lavozim, role, phone, prefs.get(prefs.bolim_name, ""), bolim_name, prefs.get(prefs.userNameTopicInFireBase, ""), code = 100),
                             "/topics/$user_name"
                         )
                     )
                 }
+
                 is NetworkResult.Loading -> {
                     binding.charProgressbar.visibility = View.VISIBLE
                 }
+
                 is NetworkResult.Error -> {
                     if (it.code == 401) {
                         login(body = body)
@@ -430,6 +457,22 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
             }
 
         }
+    }
+
+    private fun requestPermissionCall() {
+        ActivityCompat.requestPermissions(
+            requireActivity(), arrayOf(
+                Manifest.permission.CALL_PHONE
+            ),
+            PERMISSION_CODE
+        )
+    }
+
+    private fun checkPermissionCall(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.CALL_PHONE
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun bodyToString(request: RequestBody?): String? {
@@ -461,12 +504,14 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                         getChat(message_id.toInt())
                         snackBar("Habaringiz yuborildi.")
                     }
+
                     is NetworkResult.Error -> {
                         closeLoader()
                         binding.charProgressbar.visibility = View.GONE
-                        snackBar("Error in firebase->"+it.message.toString())
-                        lg("Error in firebase->"+it.message.toString())
+                        snackBar("Error in firebase->" + it.message.toString())
+                        lg("Error in firebase->" + it.message.toString())
                     }
+
                     is NetworkResult.Loading -> {
 //                        showLoader()
                     }
@@ -530,7 +575,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
             file?.createNewFile()
             val outputStream = FileOutputStream(file)
 
-            selectedBitmap!!.compress(Bitmap.CompressFormat.PNG, 50, outputStream)
+            selectedBitmap.compress(Bitmap.CompressFormat.PNG, 50, outputStream)
 
             return file
         } catch (e: Exception) {
@@ -574,6 +619,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                             requestPermission()
                         }
                     }
+
                     R.id.open_galeriya -> {
 
                         if (PermissionChecker.checkSelfPermission(
@@ -649,10 +695,6 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
         if (requestCode == IMAGE_CHOOSE && resultCode == Activity.RESULT_OK) {
             image_uri = data?.data.toString()
             binding.imageName.text = filePhoto?.name
-//            Glide
-//                .with(this)
-//                .load(image_uri)
-//                .into(binding.image)
         }
     }
 }
