@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <LinearLayout
@@ -123,10 +124,10 @@
                     android:background="@drawable/stroke_chat_user"
                     android:fontFamily="@font/calibri"
                     android:minHeight="100dp"
-                    android:textColor="@color/black"
                     android:padding="@dimen/default_margin"
                     android:paddingStart="@dimen/left_right_margin_size"
-                    android:text="Sizga tushlikdan keyin yordam berishadi. Sizga tushlikdan keyin yordam berishadi. Sizga tushlikdan keyin yordam berishadi.Sizga tushlikdan keyin yordam berishadi.Sizga tushlikdan keyin yordam berishadi.Sizga tushlikdan keyin yordam berishadi. Sizga tushlikdan keyin yordam berishadi.Sizga tushlikdan keyin yordam berishadi.Sizga tushlikdan keyin yordam berishadi. Sizga tushlikdan keyin yordam berishadi. Sizga tushlikdan keyin yordam berishadi. Sizga tushlikdan keyin yordam berishadi" />
+                    android:text="Sizga tushlikdan keyin yordam berishadi. Sizga tushlikdan keyin yordam berishadi. Sizga tushlikdan keyin yordam berishadi.Sizga tushlikdan keyin yordam berishadi.Sizga tushlikdan keyin yordam berishadi.Sizga tushlikdan keyin yordam berishadi. Sizga tushlikdan keyin yordam berishadi.Sizga tushlikdan keyin yordam berishadi.Sizga tushlikdan keyin yordam berishadi. Sizga tushlikdan keyin yordam berishadi. Sizga tushlikdan keyin yordam berishadi. Sizga tushlikdan keyin yordam berishadi"
+                    android:textColor="@color/black" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </LinearLayout>
@@ -135,10 +136,10 @@
         android:id="@+id/user_img"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:visibility="gone"
         android:layout_gravity="center"
         android:layout_marginBottom="@dimen/left_right_margin_size"
-        android:src="@color/black" />
+        android:src="@color/black"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/manager_has_chat"
@@ -250,6 +251,272 @@
                         android:textColor="@color/white" />
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/additional"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="@dimen/left_right_margin_size"
+                            android:layout_marginTop="@dimen/left_right_margin_size"
+                            android:fontFamily="@font/calibri"
+                            android:text="Ichki inventor: "
+                            android:textColor="@color/black"
+                            android:textFontWeight="600"
+                            android:textSize="@dimen/standard_text_size" />
+
+                        <TextView
+                            android:id="@+id/text_paste"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="@dimen/small_margin"
+                            android:layout_marginTop="@dimen/left_right_margin_size"
+                            android:fontFamily="@font/calibri"
+                            android:text=""
+                            android:textColor="@color/black"
+                            android:textFontWeight="500"
+                            android:textSize="@dimen/standard_text_size" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="@dimen/left_right_margin_size"
+                            android:fontFamily="@font/calibri"
+                            android:text="Holati: "
+                            android:textColor="@color/black"
+                            android:textFontWeight="600"
+                            android:textSize="@dimen/standard_text_size" />
+
+                        <TextView
+                            android:id="@+id/state_of_tech"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="@dimen/small_margin"
+                            android:fontFamily="@font/calibri"
+                            android:text=""
+                            android:textColor="@color/black"
+                            android:textFontWeight="500"
+                            android:textSize="@dimen/standard_text_size" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="@dimen/left_right_margin_size"
+                            android:fontFamily="@font/calibri"
+                            android:text="Bino: "
+                            android:textColor="@color/black"
+                            android:textFontWeight="600"
+                            android:textSize="@dimen/standard_text_size" />
+
+                        <TextView
+                            android:id="@+id/building"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="@dimen/small_margin"
+                            android:fontFamily="@font/calibri"
+                            android:text=""
+                            android:textColor="@color/black"
+                            android:textFontWeight="500"
+                            android:textSize="@dimen/standard_text_size" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="@dimen/left_right_margin_size"
+                            android:fontFamily="@font/calibri"
+                            android:text="Xona: "
+                            android:textColor="@color/black"
+                            android:textFontWeight="600"
+                            android:textSize="@dimen/standard_text_size" />
+
+                        <TextView
+                            android:id="@+id/room"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="@dimen/small_margin"
+                            android:fontFamily="@font/calibri"
+                            android:text=""
+                            android:textColor="@color/black"
+                            android:textFontWeight="500"
+                            android:textSize="@dimen/standard_text_size" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/left_right_margin_size"
+                        android:fontFamily="@font/calibri"
+                        android:paddingStart="@dimen/default_margin"
+                        android:paddingEnd="@dimen/default_margin"
+                        android:textStyle="bold"
+                        android:text="Qo'shimcha qurilmalar:"
+                        android:textColor="@color/black" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="@dimen/default_margin"
+                        android:layout_marginTop="@dimen/default_margin"
+                        android:layout_marginEnd="@dimen/default_margin"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="40dp"
+                            android:background="@color/default_text_color" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:orientation="vertical">
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:background="@color/default_text_color" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/ibm_plex_sans_medium"
+                                android:gravity="center"
+                                android:text="Nomi"
+                                android:textColor="@color/black" />
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:background="@color/default_text_color" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="40dp"
+                            android:background="@color/default_text_color" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:background="@color/default_text_color" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/ibm_plex_sans_medium"
+                                android:gravity="center"
+                                android:text="Holati"
+                                android:textColor="@color/black" />
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:background="@color/default_text_color" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="40dp"
+                            android:background="@color/default_text_color" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:background="@color/default_text_color" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/ibm_plex_sans_medium"
+                                android:gravity="center"
+                                android:text="Mavjudligi"
+                                android:textColor="@color/black" />
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:background="@color/default_text_color" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="40dp"
+                            android:background="@color/default_text_color" />
+
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/list_additional"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/default_margin"
+                        android:layout_marginEnd="@dimen/default_margin" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/title_chat_manager"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:fontFamily="@font/calibri"
+                    android:visibility="gone"
+                    android:padding="@dimen/default_margin"
+                    android:paddingStart="@dimen/default_margin"
+                    android:textStyle="bold"
+                    android:paddingEnd="@dimen/default_margin"
+                    android:text="Bildirishnoma mazmuni:"
+                    android:textColor="@color/black" />
+
                 <TextView
                     android:id="@+id/message_chat_manager"
                     android:layout_width="match_parent"
@@ -260,7 +527,9 @@
                     android:padding="@dimen/default_margin"
                     android:paddingStart="@dimen/default_margin"
                     android:paddingEnd="@dimen/default_margin"
-                    android:text="Sizga tushlikdan keyin yordam berishadi" />
+                    android:text="Sizga tushlikdan keyin yordam berishadi"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -269,8 +538,8 @@
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_gravity="center"
-            android:visibility="gone"
             android:layout_marginBottom="@dimen/left_right_margin_size"
-            android:src="@color/black" />
+            android:src="@color/black"
+            android:visibility="gone" />
     </LinearLayout>
 </LinearLayout>

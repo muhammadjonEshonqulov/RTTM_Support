@@ -56,6 +56,7 @@ class NewsFragment(val status: Int) : BaseFragment<AllNotificationsFragmentBindi
                 is NetworkResult.Loading -> {
                     showLoader()
                 }
+
                 is NetworkResult.Success -> {
                     closeLoader()
                     it.data?.let {
@@ -69,8 +70,11 @@ class NewsFragment(val status: Int) : BaseFragment<AllNotificationsFragmentBindi
                         }
                     }
                 }
+
                 is NetworkResult.Error -> {
                     if (it.code == 401) {
+                        login()
+                    } else if (it.code == 101) {
                         login()
                     } else {
                         closeLoader()
@@ -93,6 +97,7 @@ class NewsFragment(val status: Int) : BaseFragment<AllNotificationsFragmentBindi
                     }
                     getMessages()
                 }
+
                 is NetworkResult.Error -> {
                     if (findNavControllerSafely()?.currentDestination?.id == R.id.userMainFragment) {
                         prefs.clear()
@@ -102,7 +107,8 @@ class NewsFragment(val status: Int) : BaseFragment<AllNotificationsFragmentBindi
                         findNavControllerSafely()?.navigate(R.id.action_managerMainFragment_to_all_loginFragment)
                     }
                 }
-                is NetworkResult.Loading ->{}
+
+                is NetworkResult.Loading -> {}
             }
         }
     }
@@ -160,25 +166,4 @@ class NewsFragment(val status: Int) : BaseFragment<AllNotificationsFragmentBindi
         super.onDestroyView()
         binding.listMessages.adapter = null
     }
-//    viewLifecycleOwner.lifecycleScope.launch {
-//        viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-//            vm.login()
-//            vm.loginResponse.collect { response ->
-//                when (response) {
-//                    is NetworkResult.Success -> {
-//                        response.data?.let {
-//
-//                        }
-//                    }
-//                    is NetworkResult.Error -> {
-//                        showError(response.message.toString())
-//
-//                    }
-//                    is NetworkResult.Loading -> {
-//                        showLoader()
-//                    }
-//                }
-//            }
-//        }
-//    }
 }

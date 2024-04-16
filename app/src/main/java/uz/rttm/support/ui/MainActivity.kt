@@ -1,11 +1,16 @@
 package uz.rttm.support.ui
 
+import android.content.ClipboardManager
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
-import com.google.android.gms.ads.*
+import androidx.navigation.findNavController
+import com.google.android.gms.ads.AdView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.InstallStateUpdatedListener
@@ -16,6 +21,8 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import uz.rttm.support.BuildConfig
 import uz.rttm.support.R
 import uz.rttm.support.databinding.ActivityMainBinding
@@ -36,10 +43,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var mAdView: AdView
 
 
-    //    private var appUpdateManager: AppUpdateManager? = null
     private val appUpdateManager by lazy { AppUpdateManagerFactory.create(this) }
     private val MYREQUESTCODE = 100
-//    private var mAppUpdateManager: AppUpdateManager? = null
 
     private lateinit var navController: NavController
 
@@ -47,59 +52,38 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        MobileAds.initialize(this)
-
-        mAdView = findViewById(R.id.adView)
-        val adRequest = AdRequest.Builder().build()
-        mAdView.loadAd(adRequest)
-
-        mAdView.adListener = object : AdListener() {
-            override fun onAdClicked() {
-                lg("onAdClicked->")
-                // Code to be executed when the user clicks on an ad.
-            }
-
-            override fun onAdClosed() {
-                lg("onAdClosed->")
-                // Code to be executed when the user is about to return
-                // to the app after tapping on an ad.
-            }
-
-            override fun onAdFailedToLoad(adError: LoadAdError) {
-                lg("onAdFailedToLoad->$adError")
-                // Code to be executed when an ad request fails.
-            }
-
-            override fun onAdImpression() {
-                lg("onAdImpression->")
-                // Code to be executed when an impression is recorded
-                // for an ad.
-            }
-
-            override fun onAdLoaded() {
-                lg("onAdLoaded->")
-                // Code to be executed when an ad finishes loading.
-            }
-
-            override fun onAdOpened() {
-                lg("onAdOpened->")
-                // Code to be executed when an ad opens an overlay that
-                // covers the screen.
-            }
-        }
-
         readDataFromFireStore()
-
-//        showSnackBarForCompleteUpdate()
-
-//        checkUpdate()
     }
 
     private val listener = InstallStateUpdatedListener { installState ->
         if (installState.installStatus() == InstallStatus.DOWNLOADED) {
             notifyUser()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        lifecycleScope.launch {
+            delay(1000)
+
+            try {
+                val clipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                val pData = clipboardManager.primaryClip
+                val item = pData?.getItemAt(0)
+                val txtPaste = item?.text?.toString() ?: "No text found on clipboard"
+                if (txtPaste.startsWith("additional#")) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        clipboardManager.clearPrimaryClip()
+                    }
+                    val navController = findNavController(R.id.nav_host_fragment)
+                    navController.navigate(R.id.sendApplicationFragment, bundleOf("MyKeyTech" to txtPaste))
+                }
+
+            } catch (e: Exception) {
+                lg("clipboardManager error -> $e")
+            }
+        }
+
     }
 
     override fun onDestroy() {
@@ -113,14 +97,14 @@ class MainActivity : AppCompatActivity() {
         appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
                 when (priority) {
-                    0L -> { // Flexible
+                    0L -> {
                         appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.FLEXIBLE, this, MYREQUESTCODE)
                     }
-                    1L -> { // IMMEDIATE
+
+                    1L -> {
                         appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.IMMEDIATE, this, MYREQUESTCODE)
                     }
                 }
-//                resume()
             }
         }.addOnFailureListener {
             snack(binding.root, "Error in update -> " + it.message.toString())
@@ -151,10 +135,12 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "RESULT_OK$resultCode", Toast.LENGTH_LONG).show()
                     lg("RESULT_OK  :" + "" + resultCode)
                 }
+
                 RESULT_CANCELED -> {
                     Toast.makeText(this, "RESULT_CANCELED$resultCode", Toast.LENGTH_LONG).show()
                     lg("RESULT_CANCELED  :" + "" + resultCode)
                 }
+
                 RESULT_IN_APP_UPDATE_FAILED -> {
                     Toast.makeText(this, "RESULT_IN_APP_UPDATE_FAILED$resultCode", Toast.LENGTH_LONG).show()
                     lg("RESULT_IN_APP_FAILED:" + "" + resultCode)

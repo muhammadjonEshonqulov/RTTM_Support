@@ -143,7 +143,7 @@ class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(Registrat
 
         val arraySpinnerDepartment = mutableListOf<String>()
         arraySpinnerDepartment.add("tanlang")
-        var organizationAdapterDepartment = ArrayAdapter(binding.root.context, R.layout.simple_spinner_item, arraySpinnerDepartment)
+        val organizationAdapterDepartment = ArrayAdapter(binding.root.context, R.layout.simple_spinner_item, arraySpinnerDepartment)
         organizationAdapterDepartment.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
         binding.spinnerOrganizationName.adapter = organizationAdapterDepartment
 
@@ -240,19 +240,19 @@ class RegistrationFragment : BaseFragment<RegistrationFragmentBinding>(Registrat
                             requestPermission()
                         }
                     }
-                    R.id.open_galeriya -> {
-
-                        if (PermissionChecker.checkSelfPermission(
-                                requireContext(),
-                                Manifest.permission.READ_EXTERNAL_STORAGE
-                            ) == PackageManager.PERMISSION_DENIED
-                        ) {
-                            val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-                            requestPermissions(permissions, PERMISSION_CODE)
-                        } else {
-                            chooseImageGallery();
-                        }
-                    }
+//                    R.id.open_galeriya -> {
+//
+//                        if (PermissionChecker.checkSelfPermission(
+//                                requireContext(),
+//                                Manifest.permission.READ_EXTERNAL_STORAGE
+//                            ) == PackageManager.PERMISSION_DENIED
+//                        ) {
+//                            val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+//                            requestPermissions(permissions, PERMISSION_CODE)
+//                        } else {
+//                            chooseImageGallery();
+//                        }
+//                    }
                 }
                 notifyLanguageChanged()
                 return true

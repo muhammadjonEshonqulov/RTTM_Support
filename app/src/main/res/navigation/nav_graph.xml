@@ -242,4 +242,8 @@
         android:name="uz.rttm.support.ui.managers.ManagersFragment"
         android:label="ManagersFragment"
         tools:layout="@layout/manager_main_fragment" />
+    <fragment
+        android:id="@+id/sendApplicationFragment"
+        android:name="uz.rttm.support.ui.sendApplication.SendApplicationFragment"
+        android:label="SendApplicationFragment" />
 </navigation>

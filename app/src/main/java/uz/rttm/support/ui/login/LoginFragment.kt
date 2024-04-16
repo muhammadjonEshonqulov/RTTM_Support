@@ -1,10 +1,12 @@
 package uz.rttm.support.ui.login
 
 import android.app.AlertDialog
+import android.content.ClipboardManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.messaging.FirebaseMessaging
@@ -175,10 +177,28 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
                 }
             }
             binding.loginRegistration -> {
-                hideKeyBoard()
-                if (findNavControllerSafely()?.currentDestination?.id == R.id.loginFragment) {
-                    findNavControllerSafely()?.navigate(R.id.action_loginFragment_to_registrationFragment)
+                try {
+//
+//                    val clipBoardManager = binding.root.context.getSystemService(AppCompatActivity.CLIPBOARD_SERVICE) as ClipboardManager
+//                    clipBoardManager.addPrimaryClipChangedListener {
+//                        val copiedString = clipBoardManager.primaryClip?.getItemAt(0)?.text?.toString()
+//                        snack(binding.root, "Copied: $copiedString")
+//                        lg("Copied: ${clipBoardManager.primaryClip?.itemCount.toString()}")
+//                        lg("hasPrimaryClip: ${clipBoardManager.hasPrimaryClip()}")
+//                    }
+
+                    val clipboardManager = activity?.getSystemService(AppCompatActivity.CLIPBOARD_SERVICE) as ClipboardManager
+                    val pData = clipboardManager.primaryClip
+                    val item = pData?.getItemAt(0)
+                    val txtPaste = item?.text?.toString() ?: "No text found on clipboard"
+                    lg("login clipboardManager -> Qo'shildi: $txtPaste")
+                } catch (e: Exception) {
+                    lg("login clipboardManager error -> $e")
                 }
+                hideKeyBoard()
+//                if (findNavControllerSafely()?.currentDestination?.id == R.id.loginFragment) {
+//                    findNavControllerSafely()?.navigate(R.id.action_loginFragment_to_registrationFragment)
+//                }
             }
             binding.loginHelp -> {
                 hideKeyBoard()

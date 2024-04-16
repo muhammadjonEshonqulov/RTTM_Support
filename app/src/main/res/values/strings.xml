@@ -8,6 +8,6 @@
     <string name="connection_error_message">Tarmoqqa ulanmagansiz</string>
     <string name="managers">Texniklar</string>
     <string name="not_found">Ma\'lumotlar qo\'shilmagan</string>
-    <string name="bad_network_message">" Serverga bog'lanish amalga oshmadi. Tarmoqqa ulanganligingizni tekshirib ko'ring."</string>
+    <string name="bad_network_message">" Serverga bog'lanish amalga oshmadi. Tarmoqqa ulanganligingizni tekshirib ko'ring. Aloqa sifatingiz yaxshi emas."</string>
     <string name="onother_error">" \"Kutilmagan xatolik : \""</string>
 </resources>

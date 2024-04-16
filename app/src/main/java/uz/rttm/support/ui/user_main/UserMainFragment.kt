@@ -24,7 +24,6 @@ import androidx.appcompat.view.menu.MenuPopupHelper
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.content.PermissionChecker
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -48,7 +47,13 @@ import uz.rttm.support.ui.base.LogoutDialog
 import uz.rttm.support.ui.base.PageAdapter
 import uz.rttm.support.ui.base.ProgressDialog
 import uz.rttm.support.ui.news.NewsFragment
-import uz.rttm.support.utils.*
+import uz.rttm.support.utils.FileUtils
+import uz.rttm.support.utils.NetworkResult
+import uz.rttm.support.utils.Prefs
+import uz.rttm.support.utils.blockClickable
+import uz.rttm.support.utils.collectLatestLA
+import uz.rttm.support.utils.findNavControllerSafely
+import uz.rttm.support.utils.hasInternetConnection
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -130,11 +135,13 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
                             findNavControllerSafely()?.navigate(R.id.action_userMainFragment_to_send_profileFragment)
                         }
                     }
+
                     R.id.help -> {
                         if (findNavControllerSafely()?.currentDestination?.id == R.id.userMainFragment) {
                             findNavControllerSafely()?.navigate(R.id.action_userMainFragment_to_send_managersFragment)
                         }
                     }
+
                     R.id.logout -> {
                         val logoutDialog = LogoutDialog(binding.root.context)
                         logoutDialog.show()
@@ -178,23 +185,28 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
                 binding.tabUnderView.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.closed_tab_color))
                 binding.ticketsActionbar.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.closed_tab_color))
             }
+
             binding.selectImage -> {
                 popupCamera(binding.selectImage)
             }
+
             binding.unClosed -> {
                 binding.viewPager.setCurrentItem(1, true)
                 binding.tabUnderView.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.un_closed_tab_color))
                 binding.ticketsActionbar.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.un_closed_tab_color))
 
             }
+
             binding.mainTopUser -> {
                 popupLogout(binding.mainTopUser)
             }
+
             binding.newBtn -> {
                 binding.viewPager.setCurrentItem(0, true)
                 binding.tabUnderView.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.new_tab_color))
                 binding.ticketsActionbar.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.new_tab_color))
             }
+
             binding.actionBarAnswerBtn -> {
                 if (binding.answerLay.visibility == View.GONE) {
                     binding.chatTitle.showKeyboard()
@@ -207,6 +219,7 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
                     binding.addMessage.setImageResource(R.drawable.ic_baseline_add_circle_24)
                 }
             }
+
             binding.cancelMessageBtn -> {
                 binding.chatMessage.text.clear()
                 binding.chatTitle.text.clear()
@@ -215,6 +228,7 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
                 binding.answerLay.visibility = View.GONE
                 binding.addMessage.setImageResource(R.drawable.ic_baseline_add_circle_24)
             }
+
             binding.sendMessageBtn -> {
                 hideKeyBoard()
                 if (binding.chatMessage.text.toString().isNotEmpty() && binding.chatTitle.text.toString().isNotEmpty()) {
@@ -235,10 +249,10 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
                             )
                         }
                     }?.let {
+                        showLoader()
                         sendMessage(it)
                     }
                     message = null
-                    title = null
                 } else {
                     if (binding.chatTitle.text.toString().isEmpty()) {
                         snackBar("Bildirishnoma sarlavhasini kiriting")
@@ -266,10 +280,12 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
                         fragments?.get(0)?.getMessages()
                         snackBar("Bildirishnomangiz qabul qilindi. Tez orada sizga xizmat ko'rsatiladi.")
                     }
+
                     is NetworkResult.Error -> {
                         closeLoader()
                         snackBar(it.message.toString())
                     }
+
                     is NetworkResult.Loading -> {
                         showLoader()
                     }
@@ -319,9 +335,11 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
                         )
                     )
                 }
+
                 is NetworkResult.Loading -> {
                     showLoader()
                 }
+
                 is NetworkResult.Error -> {
                     if (it.code == 401) {
                         login(body)
@@ -346,12 +364,14 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
                     }
                     sendMessage(body)
                 }
+
                 is NetworkResult.Error -> {
                     if (findNavControllerSafely()?.currentDestination?.id == R.id.userMainFragment) {
                         findNavControllerSafely()?.navigate(R.id.action_userMainFragment_to_loginFragment)
                     }
                 }
-                is NetworkResult.Loading ->{}
+
+                is NetworkResult.Loading -> {}
             }
         }
     }
@@ -377,10 +397,12 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
                 binding.tabUnderView.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.closed_tab_color))
                 binding.ticketsActionbar.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(binding.root.context, R.color.closed_tab_color))
             }
+
             1 -> {
                 binding.tabUnderView.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.un_closed_tab_color))
                 binding.ticketsActionbar.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(binding.root.context, R.color.un_closed_tab_color))
             }
+
             0 -> {
                 binding.tabUnderView.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.new_tab_color))
                 binding.ticketsActionbar.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(binding.root.context, R.color.new_tab_color))
@@ -471,19 +493,19 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
                             requestPermission()
                         }
                     }
-                    R.id.open_galeriya -> {
-
-                        if (PermissionChecker.checkSelfPermission(
-                                requireContext(),
-                                Manifest.permission.READ_EXTERNAL_STORAGE
-                            ) == PackageManager.PERMISSION_DENIED
-                        ) {
-                            val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-                            requestPermissions(permissions, PERMISSION_CODE)
-                        } else {
-                            chooseImageGallery();
-                        }
-                    }
+//                    R.id.open_galeriya -> {
+//
+//                        if (PermissionChecker.checkSelfPermission(
+//                                requireContext(),
+//                                Manifest.permission.READ_EXTERNAL_STORAGE
+//                            ) == PackageManager.PERMISSION_DENIED
+//                        ) {
+//                            val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+//                            requestPermissions(permissions, PERMISSION_CODE)
+//                        } else {
+//                            chooseImageGallery();
+//                        }
+//                    }
                 }
                 notifyLanguageChanged()
                 return true

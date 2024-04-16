@@ -5,10 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import org.json.JSONArray
 import uz.rttm.support.databinding.ItemChatBinding
 import uz.rttm.support.models.chat.ChatData
+import uz.rttm.support.ui.sendApplication.TechItem
 import uz.rttm.support.utils.Constants.Companion.BASE_URL_IMG
 import uz.rttm.support.utils.MyDiffUtil
 import uz.rttm.support.utils.formatDateStr
@@ -44,6 +47,11 @@ class ChatAdapter(val listener: OnItemClickListener) : RecyclerView.Adapter<Chat
 
         @SuppressLint("SetTextI18n")
         fun bind(data: ChatData) {
+            binding.additional.visibility = View.GONE
+            binding.titleChatManager.visibility = View.GONE
+
+
+
             if (data.user?.role == "1") {   //  role = 1   User
                 binding.userHasChat.visibility = View.VISIBLE
                 binding.managerHasChat.visibility = View.GONE
@@ -76,6 +84,7 @@ class ChatAdapter(val listener: OnItemClickListener) : RecyclerView.Adapter<Chat
                     binding.userName.text = "" + data.user.name.first().uppercase() + "." + data.user.fam.uppercase()
                 }
             } else if (data.user?.role == "2" || data.user?.role == "3") {
+
                 binding.userHasChat.visibility = View.GONE
                 binding.managerHasChat.visibility = View.VISIBLE
 
@@ -105,7 +114,39 @@ class ChatAdapter(val listener: OnItemClickListener) : RecyclerView.Adapter<Chat
                 if (data.user.name?.isNotEmpty() == true && data.user.fam?.isNotEmpty() == true) {
                     binding.managerName.text = "" + data.user.name.first().uppercase() + "." + data.user.fam.uppercase()
                 }
+
             }
+
+
+            if (data.text?.startsWith("additional#") == true) {
+                try {
+                    binding.additional.visibility = View.VISIBLE
+                    binding.titleChatManager.visibility = View.VISIBLE
+
+                    val myKeyTech = data.text.split("#")
+                    binding.textPaste.text = myKeyTech[1]
+                    binding.stateOfTech.text = myKeyTech[2]
+                    binding.building.text = myKeyTech[3]
+                    binding.room.text = myKeyTech[4]
+
+                    val data1 = parseJsonToList(myKeyTech[5])
+
+                    val adapter = AdditionalAdapter(object : AdditionalAdapter.OnItemClickListener {
+                        override fun onItemClick(data: TechItem, type: Int) {
+
+                        }
+
+                    })
+                    binding.listAdditional.adapter = adapter
+                    binding.listAdditional.layoutManager = LinearLayoutManager(binding.room.context)
+                    adapter.setData(data1)
+                    binding.messageChatManager.text = myKeyTech[6]
+                } catch (e: Exception) {
+                    lg("additional error -> ${e.message}")
+                }
+
+            }
+
             binding.userImg.setOnClickListener {
                 listener.onItemClick(data)
             }
@@ -114,4 +155,27 @@ class ChatAdapter(val listener: OnItemClickListener) : RecyclerView.Adapter<Chat
             }
         }
     }
+
+    private fun parseJsonToList(jsonString: String): List<TechItem> {
+        val jsonArray = JSONArray(jsonString)
+        val techItems = mutableListOf<TechItem>()
+
+        for (i in 0 until jsonArray.length()) {
+            val jsonObject = jsonArray.getJSONObject(i)
+            val techItem = TechItem(
+                _id = jsonObject.getString("_id"),
+                tip = TechItem.Tip(
+                    _id = jsonObject.getJSONObject("tip").getString("_id"),
+                    text = jsonObject.getJSONObject("tip").getString("text"),
+                    __v = jsonObject.getJSONObject("tip").getInt("__v")
+                ),
+                condition = jsonObject.getInt("condition"),
+                status = jsonObject.getInt("status")
+            )
+            techItems.add(techItem)
+        }
+
+        return techItems
+    }
+
 }

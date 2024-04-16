@@ -349,6 +349,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
 
             binding.sendChat -> {
                 hideKeyBoard()
+                showLoader()
                 val imageUri: Uri = Uri.parse(image_uri)
                 if (binding.chatMessage.text.toString().isNotEmpty()) {
                     binding.charProgressbar.visibility = View.VISIBLE
@@ -620,19 +621,19 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                         }
                     }
 
-                    R.id.open_galeriya -> {
-
-                        if (PermissionChecker.checkSelfPermission(
-                                requireContext(),
-                                Manifest.permission.READ_EXTERNAL_STORAGE
-                            ) == PackageManager.PERMISSION_DENIED
-                        ) {
-                            val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-                            requestPermissions(permissions, PERMISSION_CODE)
-                        } else {
-                            chooseImageGallery();
-                        }
-                    }
+//                    R.id.open_galeriya -> {
+//
+//                        if (PermissionChecker.checkSelfPermission(
+//                                requireContext(),
+//                                Manifest.permission.READ_EXTERNAL_STORAGE
+//                            ) == PackageManager.PERMISSION_DENIED
+//                        ) {
+//                            val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+//                            requestPermissions(permissions, PERMISSION_CODE)
+//                        } else {
+//                            chooseImageGallery();
+//                        }
+//                    }
                 }
                 notifyLanguageChanged()
                 return true

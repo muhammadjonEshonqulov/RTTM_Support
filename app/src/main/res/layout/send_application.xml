@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/action_bar_answer_lay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/action_bar_answer_btn"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:background="#FF9F88">
+
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center|start"
+                android:layout_marginStart="@dimen/left_right_margin_size"
+                android:src="@drawable/answear_icon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|start"
+                android:layout_marginStart="60dp"
+                android:fontFamily="@font/novaround"
+                android:text="So'rovnoma yozish"
+                android:textColor="@color/white"
+                android:textSize="@dimen/very_large_text_size" />
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/answer_lay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/left_right_margin_size"
+                    android:layout_marginTop="@dimen/left_right_margin_size"
+                    android:fontFamily="@font/calibri"
+                    android:text="Ichki inventor: "
+                    android:textColor="@color/black"
+                    android:textFontWeight="600"
+                    android:textSize="@dimen/standard_text_size" />
+
+                <TextView
+                    android:id="@+id/text_paste"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/small_margin"
+                    android:layout_marginTop="@dimen/left_right_margin_size"
+                    android:fontFamily="@font/calibri"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textFontWeight="500"
+                    android:textSize="@dimen/standard_text_size" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/left_right_margin_size"
+                    android:fontFamily="@font/calibri"
+                    android:text="Holati: "
+                    android:textColor="@color/black"
+                    android:textFontWeight="600"
+                    android:textSize="@dimen/standard_text_size" />
+
+                <TextView
+                    android:id="@+id/state_of_tech"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/small_margin"
+                    android:fontFamily="@font/calibri"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textFontWeight="500"
+                    android:textSize="@dimen/standard_text_size" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/left_right_margin_size"
+                    android:fontFamily="@font/calibri"
+                    android:text="Bino: "
+                    android:textColor="@color/black"
+                    android:textFontWeight="600"
+                    android:textSize="@dimen/standard_text_size" />
+
+                <TextView
+                    android:id="@+id/building"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/small_margin"
+                    android:fontFamily="@font/calibri"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textFontWeight="500"
+                    android:textSize="@dimen/standard_text_size" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/left_right_margin_size"
+                    android:fontFamily="@font/calibri"
+                    android:text="Xona: "
+                    android:textColor="@color/black"
+                    android:textFontWeight="600"
+                    android:textSize="@dimen/standard_text_size" />
+
+                <TextView
+                    android:id="@+id/room"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/small_margin"
+                    android:fontFamily="@font/calibri"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textFontWeight="500"
+                    android:textSize="@dimen/standard_text_size" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginStart="@dimen/default_margin"
+                android:layout_marginTop="@dimen/default_margin"
+                android:layout_marginEnd="@dimen/default_margin"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="40dp"
+                    android:background="@color/default_text_color" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/default_text_color" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/ibm_plex_sans_medium"
+                        android:gravity="center"
+                        android:text="Nomi"
+                        android:textColor="@color/black" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/default_text_color" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="40dp"
+                    android:background="@color/default_text_color" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/default_text_color" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/ibm_plex_sans_medium"
+                        android:gravity="center"
+                        android:text="Holati"
+                        android:textColor="@color/black" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/default_text_color" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="40dp"
+                    android:background="@color/default_text_color" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/default_text_color" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/ibm_plex_sans_medium"
+                        android:gravity="center"
+                        android:text="Mavjudligi"
+                        android:textColor="@color/black" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/default_text_color" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="40dp"
+                    android:background="@color/default_text_color" />
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list_additional"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/default_margin"
+                android:layout_marginEnd="@dimen/default_margin" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/left_right_margin_size"
+                android:layout_marginTop="@dimen/left_right_margin_size"
+                android:fontFamily="@font/calibri"
+                android:text="Bildirishnoma mazmunini kiriting"
+                android:textColor="@color/black"
+                android:textSize="@dimen/min_text_size" />
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small_margin">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="@dimen/left_right_margin_size">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/left_right_margin_size"
+                        android:layout_marginTop="@dimen/default_margin"
+                        android:layout_marginEnd="@dimen/left_right_margin_size"
+                        app:cardBackgroundColor="#f9f9f9"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="@dimen/left_right_margin_size">
+
+                        <EditText
+                            android:id="@+id/chat_message"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="#f9f9f9"
+                            android:fontFamily="@font/calibri"
+                            android:gravity="top"
+                            android:hint="Bildirishnoma mazmuni"
+                            android:maxHeight="250dp"
+                            android:minHeight="200dp"
+                            android:padding="@dimen/default_margin"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/default_text_color"
+                            android:textSize="@dimen/standard_text_size" />
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/left_right_margin_size"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/left_right_margin_size"
+                            app:cardBackgroundColor="#ff0024"
+                            app:cardCornerRadius="5dp"
+                            app:cardElevation="@dimen/left_right_margin_size"
+                            app:cardUseCompatPadding="true">
+
+                            <LinearLayout
+                                android:id="@+id/cancel_chat"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:padding="@dimen/default_margin">
+
+                                <androidx.cardview.widget.CardView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    app:cardCornerRadius="100dp">
+
+                                    <ImageView
+                                        android:layout_width="20dp"
+                                        android:layout_height="20dp"
+                                        android:background="#ff0024"
+                                        android:src="@drawable/close_icon" />
+                                </androidx.cardview.widget.CardView>
+
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/default_margin"
+                                    android:text="BEKOR QILISH"
+                                    android:textColor="@color/white"
+                                    android:textSize="@dimen/small_text_size" />
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/left_right_margin_size"
+                            app:cardBackgroundColor="#38800c"
+                            app:cardCornerRadius="5dp"
+                            app:cardElevation="@dimen/left_right_margin_size"
+                            app:cardUseCompatPadding="true">
+
+                            <LinearLayout
+                                android:id="@+id/send_chat"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:padding="@dimen/default_margin">
+
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/send_chat_icon" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/default_margin"
+                                    android:text="YUBORISH"
+                                    android:textColor="@color/white"
+                                    android:textSize="@dimen/small_text_size" />
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+                    </LinearLayout>
+                </LinearLayout>
+            </ScrollView>
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+</ScrollView>

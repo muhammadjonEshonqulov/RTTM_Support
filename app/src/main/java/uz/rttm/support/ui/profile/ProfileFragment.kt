@@ -125,11 +125,15 @@ class ProfileFragment : BaseFragment<ProfileFragmentBinding>(ProfileFragmentBind
         }
 
 
-        var arraySpinner = arrayOf("tanlang", "Tarkibiy bo'linma", "Fakultet", "Kafedra")
+        val arraySpinner = arrayOf("tanlang", "Tarkibiy bo'linma", "Fakultet", "Kafedra")
         val organizationAdapter = ArrayAdapter(binding.root.context, R.layout.simple_spinner_item, arraySpinner)
         organizationAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
         binding.spinnerOrganization.adapter = organizationAdapter
-        binding.spinnerOrganization.setSelection(pref.get(pref.bolim_id, 0))
+        try {
+            binding.spinnerOrganization.setSelection(pref.get(pref.bolim_id, 0))
+        } catch (e: Exception) {
+
+        }
         binding.spinnerOrganization.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 organization_id = p2
@@ -150,7 +154,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentBinding>(ProfileFragmentBind
 
         val arraySpinnerDepartment = mutableListOf<String>()
         arraySpinnerDepartment.add("tanlang")
-        var organizationAdapterDepartment = ArrayAdapter(binding.root.context, R.layout.simple_spinner_item, arraySpinnerDepartment)
+        val organizationAdapterDepartment = ArrayAdapter(binding.root.context, R.layout.simple_spinner_item, arraySpinnerDepartment)
         organizationAdapterDepartment.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
         binding.spinnerOrganizationName.adapter = organizationAdapterDepartment
 
@@ -166,12 +170,16 @@ class ProfileFragment : BaseFragment<ProfileFragmentBinding>(ProfileFragmentBind
                             bolim.name?.let {
                                 arraySpinnerDepartment.add(it)
                             }
-                            if (bolim.id == sub_bolim_id) {
-                                indexBolim = index+1
+                            if (bolim.id == id) {
+                                indexBolim = index + 1
                             }
                         }
                         binding.spinnerOrganizationName.adapter = ArrayAdapter(binding.root.context, R.layout.simple_spinner_item, arraySpinnerDepartment)
-                        binding.spinnerOrganizationName.setSelection(indexBolim)
+                        try {
+                            binding.spinnerOrganizationName.setSelection(indexBolim)
+                        } catch (e: IndexOutOfBoundsException) {
+                            lg("bolimResponse error -> ${e.toString()}")
+                        }
                         binding.spinnerOrganizationName.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                                 if (p2 > 0) {
@@ -189,7 +197,8 @@ class ProfileFragment : BaseFragment<ProfileFragmentBinding>(ProfileFragmentBind
                         }
                     }
                 }
-                else ->{}
+
+                else -> {}
             }
         }
 
@@ -203,9 +212,11 @@ class ProfileFragment : BaseFragment<ProfileFragmentBinding>(ProfileFragmentBind
                 hideKeyBoard()
                 finish()
             }
+
             binding.imgUser -> {
                 popupCamera(binding.imgUser)
             }
+
             binding.send -> {
                 hideKeyBoard()
                 if (isPasswordChange) {
@@ -245,6 +256,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentBinding>(ProfileFragmentBind
                                             finish()
                                         }
                                     }
+
                                     is NetworkResult.Error -> {
 
                                         progressDialog?.dismiss()
@@ -254,6 +266,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentBinding>(ProfileFragmentBind
                                             snackBar(it.message.toString())
                                         }
                                     }
+
                                     is NetworkResult.Loading -> {
                                         if (progressDialog == null) {
                                             progressDialog = ProgressDialog(binding.root.context, "Yuklanmoqda")
@@ -327,6 +340,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentBinding>(ProfileFragmentBind
                                         finish()
                                     }
                                 }
+
                                 is NetworkResult.Error -> {
 
                                     progressDialog?.dismiss()
@@ -336,6 +350,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentBinding>(ProfileFragmentBind
                                         snackBar(it.message.toString())
                                     }
                                 }
+
                                 is NetworkResult.Loading -> {
                                     if (progressDialog == null) {
                                         progressDialog = ProgressDialog(binding.root.context, "Yuklanmoqda")
@@ -498,19 +513,20 @@ class ProfileFragment : BaseFragment<ProfileFragmentBinding>(ProfileFragmentBind
                             requestPermission()
                         }
                     }
-                    R.id.open_galeriya -> {
 
-                        if (PermissionChecker.checkSelfPermission(
-                                requireContext(),
-                                Manifest.permission.READ_EXTERNAL_STORAGE
-                            ) == PackageManager.PERMISSION_DENIED
-                        ) {
-                            val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-                            requestPermissions(permissions, PERMISSION_CODE)
-                        } else {
-                            chooseImageGallery();
-                        }
-                    }
+//                    R.id.open_galeriya -> {
+//
+//                        if (PermissionChecker.checkSelfPermission(
+//                                requireContext(),
+//                                Manifest.permission.READ_EXTERNAL_STORAGE
+//                            ) == PackageManager.PERMISSION_DENIED
+//                        ) {
+//                            val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+//                            requestPermissions(permissions, PERMISSION_CODE)
+//                        } else {
+//                            chooseImageGallery();
+//                        }
+//                    }
                 }
                 notifyLanguageChanged()
                 return true
