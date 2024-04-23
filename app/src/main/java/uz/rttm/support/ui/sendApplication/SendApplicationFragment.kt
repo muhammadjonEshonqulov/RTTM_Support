@@ -39,14 +39,16 @@ class SendApplicationFragment : BaseFragment<SendApplicationBinding>(SendApplica
         arguments?.getString("MyKeyTech")?.let { arg ->
             try {
                 val myKeyTech = arg.split("#")
-                binding.textPaste.text = myKeyTech[1]
-                binding.stateOfTech.text = myKeyTech[2]
-                binding.building.text = myKeyTech[3]
-                binding.room.text = myKeyTech[4]
-                lg("additional -> 12 ${myKeyTech[5]}")
-                val data = parseJsonToList(myKeyTech[5])
-                lg("additional ->${data.size} -> ${data}")
 
+                with(binding) {
+                    textPaste.text = myKeyTech[0]
+                    textPaste.text = myKeyTech[1]
+                    stateOfTech.text = myKeyTech[2]
+                    building.text = myKeyTech[3]
+                    room.text = myKeyTech[4]
+                }
+
+                val data = parseJsonToList(myKeyTech[5])
                 val adapter = AdditionalAdapter(object : AdditionalAdapter.OnItemClickListener {
                     override fun onItemClick(data: TechItem, type: Int) {
 
