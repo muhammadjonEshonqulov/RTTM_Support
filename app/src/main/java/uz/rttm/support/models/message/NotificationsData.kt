@@ -18,6 +18,6 @@ data class NotificationsData(
     val bolim_name: String,
     val bolim_name_mes: String,
     val user_name: String?,
-    val code: Int?,
+    val code: String?,
 //    val status: Int? = null
 )

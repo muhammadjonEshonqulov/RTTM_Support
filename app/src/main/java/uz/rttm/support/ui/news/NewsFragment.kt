@@ -167,3 +167,4 @@ class NewsFragment(val status: Int) : BaseFragment<AllNotificationsFragmentBindi
         binding.listMessages.adapter = null
     }
 }
+

@@ -1,6 +1,7 @@
 package uz.rttm.support.ui.login
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,8 +33,10 @@ class LoginViewModel @Inject constructor(
         if (hasInternetConnection(getApplication())) {
             try {
                 val response = repository.remote.login(loginBody)
+                Log.d("response ==>", response.toString())
                 _loginResponse.send(handleResponse(response))
             } catch (e: Exception) {
+                Log.d("catchErrors ==>", e.toString())
                 _loginResponse.send(catchErrors(e))
             }
         } else {
@@ -73,20 +76,4 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-//    private val _userResponse: MutableStateFlow<NetworkResult<User>> = MutableStateFlow(NetworkResult.Loading())
-//    var userResponse: StateFlow<NetworkResult<User>> = _userResponse.asStateFlow()
-//
-//    fun user() = viewModelScope.launch {
-//        _userResponse.value = NetworkResult.Loading()
-//        if (hasInternetConnection(getApplication())) {
-//            try {
-//                val response =repository.remote.user()
-//                _userResponse.value = handleResponse(response)
-//            } catch (e: Exception) {
-//                _userResponse.value = NetworkResult.Error("Xatolik : "+e.message)
-//            }
-//        } else {
-//            _userResponse.value = NetworkResult.Error("Server bilan aloqa yo'q")
-//        }
-//    }
 }

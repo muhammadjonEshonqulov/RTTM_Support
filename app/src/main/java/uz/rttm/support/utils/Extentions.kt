@@ -78,6 +78,8 @@ fun <T> catchErrors(e: Exception): NetworkResult.Error<T> {
         }
 
         else -> {
+            print("Error in else => ${App.context.getString(R.string.onother_error) + e.message.toString()}")
+
             NetworkResult.Error(App.context.getString(R.string.onother_error) + e.message.toString(), code = 101)
         }
     }

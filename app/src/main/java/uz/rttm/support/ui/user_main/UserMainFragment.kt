@@ -40,6 +40,7 @@ import uz.rttm.support.R
 import uz.rttm.support.databinding.UserMainFragmentBinding
 import uz.rttm.support.models.body.CreateMessageBody
 import uz.rttm.support.models.body.LoginBody
+import uz.rttm.support.models.message.NotificationTo
 import uz.rttm.support.models.message.NotificationsData
 import uz.rttm.support.models.message.PushNotification
 import uz.rttm.support.ui.base.BaseFragment
@@ -314,24 +315,26 @@ class UserMainFragment : BaseFragment<UserMainFragmentBinding>(UserMainFragmentB
                 is NetworkResult.Success -> {
                     sendNotification(
                         PushNotification(
-                            NotificationsData(
-                                it.data?.id.toString(),
-                                it.data?.text,
-                                it.data?.title,
-                                it.data?.img,
-                                it.data?.updated_at,
-                                prefs.get(prefs.fam, ""),
-                                prefs.get(prefs.fam, ""),
-                                prefs.get(prefs.name, ""),
-                                prefs.get(prefs.name, ""),
-                                prefs.get(prefs.lavozim, ""),
-                                prefs.get(prefs.role, ""),
-                                prefs.get(prefs.phone, ""),
-                                prefs.get(prefs.bolim_name, ""),
-                                prefs.get(prefs.bolim_name, ""),
-                                prefs.get(prefs.userNameTopicInFireBase, ""),
-                                code = 101 // 101 code bu qabul qildim tugmasini chiqarish uchun kerak.
-                            ), "/topics/support"
+                            NotificationTo(
+                                "support", NotificationsData(
+                                    it.data?.id.toString(),
+                                    it.data?.text,
+                                    it.data?.title,
+                                    it.data?.img,
+                                    it.data?.updated_at,
+                                    prefs.get(prefs.fam, ""),
+                                    prefs.get(prefs.fam, ""),
+                                    prefs.get(prefs.name, ""),
+                                    prefs.get(prefs.name, ""),
+                                    prefs.get(prefs.lavozim, ""),
+                                    prefs.get(prefs.role, ""),
+                                    prefs.get(prefs.phone, ""),
+                                    prefs.get(prefs.bolim_name, ""),
+                                    prefs.get(prefs.bolim_name, ""),
+                                    prefs.get(prefs.userNameTopicInFireBase, ""),
+                                    code = 101.toString() // 101 code bu qabul qildim tugmasini chiqarish uchun kerak.
+                                )
+                            )
                         )
                     )
                 }

@@ -1,6 +1,11 @@
 package uz.rttm.support.models.message
 
 data class PushNotification(
-    val data: NotificationsData,
-    val to: String
+    val message: NotificationTo
 )
+
+data class  NotificationTo(
+    val topic: String,
+    val data: NotificationsData,
+
+    )

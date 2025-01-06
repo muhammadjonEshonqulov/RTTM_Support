@@ -11,7 +11,8 @@ import uz.rttm.support.utils.Constants.Companion.SERVER_KEY
 
 interface NotificationApi {
 
-    @Headers("Authorization: key=$SERVER_KEY", "Content-Type:$CONTENT_TYPE")
-    @POST("fcm/send")
+    @Headers("Content-Type:$CONTENT_TYPE")
+    @POST("v1/projects/jbnuu-support/messages:send")
     suspend fun postNotification(@Body notification: PushNotification): Response<ResponseBody>
+
 }

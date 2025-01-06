@@ -170,7 +170,7 @@ class App : Application(), Application.ActivityLifecycleCallbacks, LifecycleObse
 
     override fun onActivityStarted(activity: Activity) {
         // Updating the currentActivity only when an ad is not showing.
-        if (!appOpenAdManager?.isShowingAd) {
+        if (!appOpenAdManager.isShowingAd) {
             currentActivity = activity
         }
     }

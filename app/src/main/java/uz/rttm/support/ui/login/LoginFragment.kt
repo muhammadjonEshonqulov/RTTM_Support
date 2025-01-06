@@ -177,28 +177,11 @@ class LoginFragment : BaseFragment<LoginFragmentBinding>(LoginFragmentBinding::i
                 }
             }
             binding.loginRegistration -> {
-                try {
-//
-//                    val clipBoardManager = binding.root.context.getSystemService(AppCompatActivity.CLIPBOARD_SERVICE) as ClipboardManager
-//                    clipBoardManager.addPrimaryClipChangedListener {
-//                        val copiedString = clipBoardManager.primaryClip?.getItemAt(0)?.text?.toString()
-//                        snack(binding.root, "Copied: $copiedString")
-//                        lg("Copied: ${clipBoardManager.primaryClip?.itemCount.toString()}")
-//                        lg("hasPrimaryClip: ${clipBoardManager.hasPrimaryClip()}")
-//                    }
 
-                    val clipboardManager = activity?.getSystemService(AppCompatActivity.CLIPBOARD_SERVICE) as ClipboardManager
-                    val pData = clipboardManager.primaryClip
-                    val item = pData?.getItemAt(0)
-                    val txtPaste = item?.text?.toString() ?: "No text found on clipboard"
-                    lg("login clipboardManager -> Qo'shildi: $txtPaste")
-                } catch (e: Exception) {
-                    lg("login clipboardManager error -> $e")
-                }
                 hideKeyBoard()
-//                if (findNavControllerSafely()?.currentDestination?.id == R.id.loginFragment) {
-//                    findNavControllerSafely()?.navigate(R.id.action_loginFragment_to_registrationFragment)
-//                }
+                if (findNavControllerSafely()?.currentDestination?.id == R.id.loginFragment) {
+                    findNavControllerSafely()?.navigate(R.id.action_loginFragment_to_registrationFragment)
+                }
             }
             binding.loginHelp -> {
                 hideKeyBoard()

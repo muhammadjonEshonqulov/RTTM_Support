@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="uz.rttm.support">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
@@ -16,7 +15,6 @@
         <package android:name="ir.ilmili.telegraph" />
     </queries>
 
-
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
@@ -30,6 +28,7 @@
         android:fullBackupContent="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         tools:targetApi="s">
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="uz.rttm.support.fileprovider"
@@ -44,6 +43,12 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-7809559901245312~8972537072"/>
 
+        <!-- Add tools:replace to resolve conflict -->
+        <property
+            android:name="android.adservices.AD_SERVICES_CONFIG"
+            android:resource="@xml/ga_ad_services_config"
+            tools:replace="android:resource" />
+
         <service
             android:name=".models.message.FirebaseService"
             android:exported="false"
@@ -51,18 +56,16 @@
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-
             </intent-filter>
         </service>
+
         <activity
             android:name=".ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

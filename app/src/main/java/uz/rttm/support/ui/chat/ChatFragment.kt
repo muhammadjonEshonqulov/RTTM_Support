@@ -22,7 +22,6 @@ import androidx.appcompat.view.menu.MenuPopupHelper
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.content.PermissionChecker
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -45,15 +44,29 @@ import uz.rttm.support.models.chat.CreateChatBody
 import uz.rttm.support.models.login.Bolim
 import uz.rttm.support.models.login.User
 import uz.rttm.support.models.message.MessageBallBody
+import uz.rttm.support.models.message.NotificationTo
 import uz.rttm.support.models.message.NotificationsData
 import uz.rttm.support.models.message.PushNotification
-import uz.rttm.support.ui.base.*
-import uz.rttm.support.utils.*
+import uz.rttm.support.ui.base.BaseFragment
+import uz.rttm.support.ui.base.BottomSheetDialogPhoto
+import uz.rttm.support.ui.base.CloseAndRatingDialog
+import uz.rttm.support.ui.base.LogoutDialog
+import uz.rttm.support.ui.base.ProgressDialog
+import uz.rttm.support.utils.Constants
+import uz.rttm.support.utils.FileUtils
+import uz.rttm.support.utils.NetworkResult
+import uz.rttm.support.utils.Prefs
+import uz.rttm.support.utils.blockClickable
+import uz.rttm.support.utils.collectLA
+import uz.rttm.support.utils.collectLatestLA
+import uz.rttm.support.utils.findNavControllerSafely
+import uz.rttm.support.utils.hasInternetConnection
+import uz.rttm.support.utils.lg
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 
@@ -111,7 +124,6 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
         arguments?.apply {
             if (getString("my_code")?.let {
                     code = it.toInt()
-                    snackBar("Code->$code")
                     if (it.toInt() == 101 && prefs.get(prefs.role, "") == prefs.manager) {
                         binding.closeAndRating.visibility = View.VISIBLE
                         binding.closeIcon.visibility = View.INVISIBLE
@@ -224,7 +236,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                                 val notificationManager = activity?.applicationContext?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                                 if (!BuildConfig.isDebug)
                                     notificationManager.cancelAll()
-//                                closeNotificationsFromAnother(10, "/topics/${prefs.get(prefs.userNameTopicInFireBase, "")}")
+//                                closeNotificationsFromAnother(10, "${prefs.get(prefs.userNameTopicInFireBase, "")}")
                             }
                         }
 
@@ -298,7 +310,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                     dialog.setOnSubmitClick {
                         dialog.dismiss()
                         vm.messageActive(message_id.toInt())
-                        closeNotificationsFromAnother(111, "/topics/support")
+                        closeNotificationsFromAnother(111, "support")
                         binding.closeAndRating.visibility = View.GONE
                         snackBar("Qabul qilindi.")
                     }
@@ -406,7 +418,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
 
     private fun closeNotificationsFromAnother(code: Int, to: String) {
         try {
-            vm.postNotify(PushNotification(NotificationsData(null, "", "", "", null, "", "", "", "", "", "", phone, "", "", "", code), to))
+            vm.postNotify(PushNotification(NotificationTo(to, NotificationsData(null, "", "", "", null, "", "", "", "", "", "", phone, "", "", "", code.toString()))))
             vm.notificationResponse.collectLatestLA(lifecycleScope) {
                 when (it) {
                     is NetworkResult.Success -> {
@@ -437,8 +449,7 @@ class ChatFragment : BaseFragment<ChatFragmentsBinding>(ChatFragmentsBinding::in
                     closeLoader()
                     sendNotification(
                         PushNotification(
-                            NotificationsData(bodyToString(body.message_id), data_text, bodyToString(body.text), file, gson.fromJson(data_updated_at, Date::class.java), prefs.get(prefs.fam, ""), fam, prefs.get(prefs.name, ""), name, lavozim, role, phone, prefs.get(prefs.bolim_name, ""), bolim_name, prefs.get(prefs.userNameTopicInFireBase, ""), code = 100),
-                            "/topics/$user_name"
+                            NotificationTo("$user_name", NotificationsData(bodyToString(body.message_id), data_text, bodyToString(body.text), file, gson.fromJson(data_updated_at, Date::class.java), prefs.get(prefs.fam, ""), fam, prefs.get(prefs.name, ""), name, lavozim, role, phone, prefs.get(prefs.bolim_name, ""), bolim_name, prefs.get(prefs.userNameTopicInFireBase, ""), code = 100.toString()))
                         )
                     )
                 }

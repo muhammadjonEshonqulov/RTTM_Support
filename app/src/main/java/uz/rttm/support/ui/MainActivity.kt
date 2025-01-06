@@ -40,7 +40,6 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var prefss: Prefs
 
-    lateinit var mAdView: AdView
 
 
     private val appUpdateManager by lazy { AppUpdateManagerFactory.create(this) }
@@ -86,10 +85,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    override fun onDestroy() {
-        mAdView.destroy()
-        super.onDestroy()
-    }
 
     private fun checkUpdate(priority: Long) {
         appUpdateManager.registerListener(listener)
@@ -149,15 +144,6 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
-
-//    private fun showSnackBarForCompleteUpdate() {
-//        val snackbar = Snackbar.make(binding.root, "New app is ready!", Snackbar.LENGTH_INDEFINITE)
-//        snackbar.setAction("Install") { view: View? ->
-//            appUpdateManager.completeUpdate()
-//        }
-//        snackbar.setActionTextColor(ContextCompat.getColor(binding.root.context, uz.rttm.support.R.color.cl_color_primary))
-//        snackbar.show()
-//    }
 
     private lateinit var mFirestore: FirebaseFirestore
     private fun readDataFromFireStore() {
